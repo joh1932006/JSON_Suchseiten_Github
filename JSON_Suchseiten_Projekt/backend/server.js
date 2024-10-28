@@ -53,6 +53,7 @@ app.get('/api/daten', async (req, res) => {
             { headers: { 'Content-Type': 'application/json' } }
         );
 
+        
         // SQL-Statement aus der API-Antwort
         const sqlStatement = apiResponse.data;
 
