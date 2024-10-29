@@ -1,3 +1,13 @@
 
 
-<app-apirequests></app-apirequests>
+<div class="dropdown-container">
+    <label for="databaseSelect">Wählen Sie eine Datenbank:</label>
+    <select id="databaseSelect" [(ngModel)]="selectedDatabase">
+      <option *ngFor="let database of databases" [value]="database">{{ database }}</option>
+    </select>
+  </div>
+  
+  <p *ngIf="selectedDatabase" style="text-align: center;">Aktuell ausgewählte Datenbank: {{ selectedDatabase }}</p>
+  
+  <app-apirequests></app-apirequests>
+  
