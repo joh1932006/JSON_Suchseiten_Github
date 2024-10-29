@@ -1,0 +1,11 @@
+<p>apirequests works!</p>
+<input type="text" [(ngModel)]="inputText" placeholder="Geben Sie etwas ein" />
+<button (click)="sendText()">An API senden</button>
+
+<p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
+
+<!-- Begrenztes Textfeld für das SQL-Statement -->
+<div *ngIf="sqlStatement">
+  <label for="sqlOutput">SQL-Statement:</label>
+  <textarea id="sqlOutput" [value]="sqlStatement" readonly rows="10" cols="60" style="resize: none;"></textarea>
+</div>

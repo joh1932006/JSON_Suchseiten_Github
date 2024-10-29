@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { APIRequestsComponent } from './apirequests/apirequests.component'; // Pfad zur apirequests-Komponente
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [APIRequestsComponent, HttpClientModule], // Komponente importieren
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'database-query-frontend';
+  title = 'mein-projekt';
 }

@@ -1,75 +1,55 @@
 const express = require('express');
-const axios = require('axios'); // Für den HTTP-Request zur API
-const sql = require('mssql');
-const cors = require('cors'); // CORS aktivieren für Angular-Anfragen
-const app = express();
-const port = 3000;
-
-// CORS aktivieren
-app.use(cors());
+const bodyParser = require('body-parser');
+const axios = require('axios');
+const cors = require('cors');
 
 // SQL Server Konfiguration
 const dbConfig = {
     user: 'f4mbsappl',
-    password: 'bTemrHU6Tn3pnkPRBuKc', // Passwort
-    server: '192.168.44.20',          // Server-IP
-    database: 'F4MBS',                // Name der Datenbank
+    password: 'bTemrHU6Tn3pnkPRBuKc',
+    server: '192.168.44.20',
+    database: 'F4MBS',
     port: 1433,
     options: {
         encrypt: false,
-        trustServerCertificate: true, // Für lokale Entwicklung aktivieren
+        trustServerCertificate: true,
     },
 };
 
-// Test-Endpoint, um die Verbindung zum SQL Server zu prüfen
-app.get('/api/test-connection', async (req, res) => {
-    try {
-        // Verbindung herstellen
-        let pool = await sql.connect(dbConfig);
+const app = express();
+const port = 3000;
 
-        // Einfache Testabfrage
-        let result = await pool.request().query('SELECT 1 AS test');
+app.use(cors());
+app.use(bodyParser.json());
 
-        // Erfolgsnachricht zurücksenden
-        res.json({ message: 'Verbindung erfolgreich', result: result.recordset });
-    } catch (err) {
-        console.error('Verbindungsfehler:', err);
-        res.status(500).json({ message: 'Verbindung fehlgeschlagen', error: err.message });
+app.post('/convert-json-to-sql', async (req, res) => {
+    let { jsonString } = req.body;
+    
+    // Falls jsonString ein Objekt ist, wird es in einen String umgewandelt
+    if (typeof jsonString !== 'string') {
+        try {
+            jsonString = JSON.stringify(jsonString);
+        } catch (error) {
+            console.error("Ungültiges JSON-Format:", error);
+            return res.status(400).json({ error: 'Ungültiges JSON-Format. Bitte überprüfen Sie den eingegebenen Text.' });
+        }
     }
-});
 
-// Haupt-Endpoint zum Abrufen und Ausführen des SQL-Statements
-app.get('/api/daten', async (req, res) => {
     try {
-        // JSON-Objekt, das an die API gesendet wird
-        const jsonString = {
-            "jsonString": "{ \"name\": \"Kontrakte\", \"itemsPerPage\": 30, \"tableWidth\": null, \"preventSearchWithoutRestriction\": false, \"showInStartMenu\": false, \"selectSingleEntity\": true, \"searchOnType\": true, \"hideHeadersOnNoRestriction\": false, \"automaticRun\": true, \"implementationId\": 1, \"querySid\": null, \"filterXDSid\": 3, \"filterXDJoinGroupId\": null, \"filterChooseRoleSid\": null, \"filterRoleSid\": null, \"filterAdditionalColumnIds\": null, \"defaultValuesInterfaceSid\": 5083, \"roleSid\": null, \"interfaceSid\": null, \"table\": \"F4MBS.dbo.CoPos cp\", \"whereClause\": \"cp.FK_RecordState_SID IN (0,10)\" }"
-        };
-
-        // JSON-Request an die externe API senden
-        const apiResponse = await axios.post(
+        // Sende den JSON-Inhalt direkt an die API, ohne ihn in ein weiteres Objekt zu packen
+        const response = await axios.post(
             'https://servicefabby.fab4minds.com/ACM/api/search/getsqlstatementforjsonobject',
-            jsonString,
-            { headers: { 'Content-Type': 'application/json' } }
+            JSON.parse(jsonString) // JSON-String parsen, damit axios ihn als Objekt sendet
         );
 
-        
-        // SQL-Statement aus der API-Antwort
-        const sqlStatement = apiResponse.data;
-
-        // Verbindung zum SQL Server herstellen und SQL-Statement ausführen
-        let pool = await sql.connect(dbConfig);
-        let result = await pool.request().query(sqlStatement);
-
-        // Ergebnisse an den Client senden
-        res.json(result.recordset);
-    } catch (err) {
-        console.error('Fehler:', err);
-        res.status(500).send('Fehler beim Abrufen der Daten');
+        res.json({ sqlStatement: response.data });
+    } catch (error) {
+        console.error("Fehler bei der API-Anfrage:", error.response ? error.response.data : error.message);
+        res.status(500).json({ error: 'Fehler beim Abrufen des SQL-Statements.' });
     }
 });
 
-// Server starten
+
 app.listen(port, () => {
     console.log(`Server läuft auf http://localhost:${port}`);
 });
