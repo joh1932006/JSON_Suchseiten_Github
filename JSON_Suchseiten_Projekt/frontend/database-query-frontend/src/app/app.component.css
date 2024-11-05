@@ -1,29 +1,134 @@
 /* Stil für das Dropdown-Menü */
 .dropdown-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  label {
-    font-size: 1em;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 5px;
-  }
-  
-  select {
-    width: 200px;
-    padding: 8px;
-    font-size: 1em;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f8f8f8;
-    transition: border-color 0.3s;
-  }
-  
-  select:focus {
-    border-color: #007bff;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+label {
+  font-size: 1em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+select {
+  width: 200px;
+  padding: 8px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  transition: border-color 0.3s;
+}
+
+select:focus {
+  border-color: #007bff;
+}
+
+/* Stil für den Hinzufügen-Button */
+.add-db-button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  font-size: 1em;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-db-button:hover {
+  background-color: #0056b3;
+}
+
+/* Stil für das Pop-up-Fenster */
+.modal {
+  display: flex;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: left;
+  font-size: 1em;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.modal-content label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="password"],
+.modal-content input[type="number"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modal-content button {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.modal-content button:hover {
+  background-color: #0056b3;
+}
+
+/* Schließen-Button */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #aaa;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.close:hover {
+  color: #333;
+}
+
+/* Textstil für die ausgewählte Datenbank */
+p {
+  font-size: 1em;
+  color: #333;
+  text-align: center;
+  margin-top: 15px;
+}

@@ -2,19 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const cors = require('cors');
-
-// SQL Server Konfiguration
-const dbConfig = {
-    user: 'f4mbsappl',
-    password: 'bTemrHU6Tn3pnkPRBuKc',
-    server: '192.168.44.20',
-    database: 'F4MBS',
-    port: 1433,
-    options: {
-        encrypt: false,
-        trustServerCertificate: true,
-    },
-};
+const sql = require('mssql'); // Microsoft SQL Server Client
 
 const app = express();
 const port = 3000;
@@ -22,34 +10,67 @@ const port = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
+// Variable zur Speicherung der aktuellen Datenbankkonfiguration
+let currentDbConfig = null;
+
+// Route zum Aktualisieren der Datenbankkonfiguration
+app.post('/set-database', (req, res) => {
+    const { user, password, server, database, port, options } = req.body;
+    if (!user || !password || !server || !database) {
+        return res.status(400).json({ error: 'Missing database configuration fields' });
+    }
+    
+    // Konfiguration der ausgewählten Datenbank speichern
+    currentDbConfig = { user, password, server, database, port: port || 1433, options };
+    res.json({ message: 'Database configuration updated successfully' });
+});
+
+// Beispiel-Route für eine Datenbankabfrage mit dynamischer Konfiguration
+app.post('/execute-sql', async (req, res) => {
+    if (!currentDbConfig) {
+        return res.status(400).json({ error: 'No database configuration set' });
+    }
+
+    const { sqlQuery } = req.body;
+
+    try {
+        // Verbindung zur Datenbank mit der aktuellen Konfiguration
+        const pool = await sql.connect(currentDbConfig);
+        const result = await pool.request().query(sqlQuery);
+
+        res.json({ result: result.recordset });
+    } catch (error) {
+        console.error("Database query error:", error);
+        res.status(500).json({ error: 'Error executing SQL query.' });
+    }
+});
+
+// Beispiel für die JSON-to-SQL-Umwandlung ohne Abhängigkeit von SQL-Konfiguration
 app.post('/convert-json-to-sql', async (req, res) => {
     let { jsonString } = req.body;
-    
-    // Falls jsonString ein Objekt ist, wird es in einen String umgewandelt
+
     if (typeof jsonString !== 'string') {
         try {
             jsonString = JSON.stringify(jsonString);
         } catch (error) {
-            console.error("Ungültiges JSON-Format:", error);
-            return res.status(400).json({ error: 'Ungültiges JSON-Format. Bitte überprüfen Sie den eingegebenen Text.' });
+            console.error("Invalid JSON format:", error);
+            return res.status(400).json({ error: 'Invalid JSON format. Please check the input.' });
         }
     }
 
     try {
-        // Sende den JSON-Inhalt direkt an die API, ohne ihn in ein weiteres Objekt zu packen
         const response = await axios.post(
             'https://servicefabby.fab4minds.com/ACM/api/search/getsqlstatementforjsonobject',
-            JSON.parse(jsonString) // JSON-String parsen, damit axios ihn als Objekt sendet
+            JSON.parse(jsonString)
         );
 
         res.json({ sqlStatement: response.data });
     } catch (error) {
-        console.error("Fehler bei der API-Anfrage:", error.response ? error.response.data : error.message);
-        res.status(500).json({ error: 'Fehler beim Abrufen des SQL-Statements.' });
+        console.error("API request error:", error.response ? error.response.data : error.message);
+        res.status(500).json({ error: 'Error retrieving SQL statement.' });
     }
 });
 
-
 app.listen(port, () => {
-    console.log(`Server läuft auf http://localhost:${port}`);
+    console.log(`Server running at http://localhost:${port}`);
 });

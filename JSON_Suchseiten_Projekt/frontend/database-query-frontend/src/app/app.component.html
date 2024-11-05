@@ -1,13 +1,47 @@
-
-
 <div class="dropdown-container">
-    <label for="databaseSelect">Wählen Sie eine Datenbank:</label>
-    <select id="databaseSelect" [(ngModel)]="selectedDatabase">
-      <option *ngFor="let database of databases" [value]="database">{{ database }}</option>
-    </select>
+  <label for="databaseSelect">Select a Database:</label>
+  <select id="databaseSelect" (change)="updateDatabaseConfig()" [(ngModel)]="selectedDatabase">
+    <option *ngFor="let database of databases" [value]="database.name">{{ database.name }}</option>
+  </select>
+  
+  <!-- Button zum Hinzufügen einer neuen Datenbank -->
+  <button (click)="openDbConfigModal()" class="add-db-button">+</button>
+</div>
+
+<p *ngIf="selectedDatabase" style="text-align: center;">
+  Currently selected database: {{ selectedDatabase }}
+</p>
+
+<!-- Modal zum Hinzufügen einer neuen Datenbank -->
+<div *ngIf="showDbConfigModal" class="modal">
+  <div class="modal-content">
+    <span (click)="closeDbConfigModal()" class="close">&times;</span>
+    <h3>Add New Database</h3>
+    <label>Database Name:</label>
+    <input [(ngModel)]="newDatabase.name" placeholder="Database Name">
+    
+    <label>User:</label>
+    <input [(ngModel)]="newDatabase.user" placeholder="User">
+    
+    <label>Password:</label>
+    <input [(ngModel)]="newDatabase.password" type="password" placeholder="Password">
+    
+    <label>Server:</label>
+    <input [(ngModel)]="newDatabase.server" placeholder="Server IP">
+    
+    <label>Database:</label>
+    <input [(ngModel)]="newDatabase.database" placeholder="Database Name">
+    
+    <label>Port:</label>
+    <input [(ngModel)]="newDatabase.port" type="number" placeholder="Port" value="1433">
+    
+    <!-- Optionen für verschlüsselte Verbindung -->
+    <label><input type="checkbox" [(ngModel)]="newDatabase.options.encrypt"> Encrypt</label>
+    <label><input type="checkbox" [(ngModel)]="newDatabase.options.trustServerCertificate"> Trust Server Certificate</label>
+    
+    <button (click)="addDatabase()">Add Database</button>
   </div>
-  
-  <p *ngIf="selectedDatabase" style="text-align: center;">Aktuell ausgewählte Datenbank: {{ selectedDatabase }}</p>
-  
-  <app-apirequests></app-apirequests>
-  
+</div>
+
+
+<app-apirequests></app-apirequests>
