@@ -1,47 +1,89 @@
-<div class="dropdown-container">
-  <label for="databaseSelect">Select a Database:</label>
-  <select id="databaseSelect" (change)="updateDatabaseConfig()" [(ngModel)]="selectedDatabase">
-    <option *ngFor="let database of databases" [value]="database.name">{{ database.name }}</option>
-  </select>
-  
-  <!-- Button zum Hinzufügen einer neuen Datenbank -->
-  <button (click)="openDbConfigModal()" class="add-db-button">+</button>
-</div>
+<div class="container">
+  <h2>Database Manager</h2>
 
-<p *ngIf="selectedDatabase" style="text-align: center;">
-  Currently selected database: {{ selectedDatabase }}
-</p>
+  <div class="dropdown-container">
+    <label for="databaseSelect">Select a Database:</label>
+    <select id="databaseSelect" (change)="updateDatabaseConfig()" [(ngModel)]="selectedDatabase" [disabled]="!databases.length">
+      <option *ngFor="let database of databases" [value]="database.name">{{ database.name }}</option>
+    </select>
+    
+    <button (click)="openDbConfigModal()" class="btn add-btn">+</button>
+    <button (click)="editDatabase()" [disabled]="!selectedDatabase" class="btn edit-btn">Edit</button>
+    <button (click)="deleteDatabase()" [disabled]="!selectedDatabase" class="btn delete-btn">Delete</button>
+  </div>
 
-<!-- Modal zum Hinzufügen einer neuen Datenbank -->
-<div *ngIf="showDbConfigModal" class="modal">
-  <div class="modal-content">
-    <span (click)="closeDbConfigModal()" class="close">&times;</span>
-    <h3>Add New Database</h3>
-    <label>Database Name:</label>
-    <input [(ngModel)]="newDatabase.name" placeholder="Database Name">
-    
-    <label>User:</label>
-    <input [(ngModel)]="newDatabase.user" placeholder="User">
-    
-    <label>Password:</label>
-    <input [(ngModel)]="newDatabase.password" type="password" placeholder="Password">
-    
-    <label>Server:</label>
-    <input [(ngModel)]="newDatabase.server" placeholder="Server IP">
-    
-    <label>Database:</label>
-    <input [(ngModel)]="newDatabase.database" placeholder="Database Name">
-    
-    <label>Port:</label>
-    <input [(ngModel)]="newDatabase.port" type="number" placeholder="Port" value="1433">
-    
-    <!-- Optionen für verschlüsselte Verbindung -->
-    <label><input type="checkbox" [(ngModel)]="newDatabase.options.encrypt"> Encrypt</label>
-    <label><input type="checkbox" [(ngModel)]="newDatabase.options.trustServerCertificate"> Trust Server Certificate</label>
-    
-    <button (click)="addDatabase()">Add Database</button>
+  <p *ngIf="selectedDatabase" class="selected-db">
+    Currently selected database: <strong>{{ selectedDatabase }}</strong>
+  </p>
+
+  <!-- Message when no databases are available -->
+  <p *ngIf="!databases.length" class="no-db-message">No databases available. Add a new one!</p>
+
+  <!-- Modal for adding a new database -->
+  <div *ngIf="showDbConfigModal" class="modal">
+    <div class="modal-content">
+      <span (click)="closeDbConfigModal()" class="close">&times;</span>
+      <h3>Add New Database</h3>
+
+      <label>Database Name:</label>
+      <input [(ngModel)]="newDatabase.name" placeholder="Database Name">
+
+      <label>User:</label>
+      <input [(ngModel)]="newDatabase.user" placeholder="User">
+
+      <label>Password:</label>
+      <input [(ngModel)]="newDatabase.password" type="password" placeholder="Password">
+
+      <label>Server:</label>
+      <input [(ngModel)]="newDatabase.server" placeholder="Server IP">
+
+      <label>Database:</label>
+      <input [(ngModel)]="newDatabase.database" placeholder="Database Name">
+
+      <label>Port:</label>
+      <input [(ngModel)]="newDatabase.port" type="number" placeholder="Port" value="1433">
+
+      <div class="checkbox-container">
+        <label><input type="checkbox" [(ngModel)]="newDatabase.options.encrypt"> Encrypt</label>
+        <label><input type="checkbox" [(ngModel)]="newDatabase.options.trustServerCertificate"> Trust Server Certificate</label>
+      </div>
+
+      <button (click)="addDatabase()" class="btn confirm-btn">Add Database</button>
+    </div>
+  </div>
+
+  <!-- Modal for editing the selected database -->
+  <div *ngIf="showEditDbConfigModal" class="modal">
+    <div class="modal-content">
+      <span (click)="closeEditDbConfigModal()" class="close">&times;</span>
+      <h3>Edit Database Configuration</h3>
+
+      <label>Database Name:</label>
+      <input [(ngModel)]="newDatabase.name" placeholder="Database Name" disabled>
+
+      <label>User:</label>
+      <input [(ngModel)]="newDatabase.user" placeholder="User">
+
+      <label>Password:</label>
+      <input [(ngModel)]="newDatabase.password" type="password" placeholder="Password">
+
+      <label>Server:</label>
+      <input [(ngModel)]="newDatabase.server" placeholder="Server IP">
+
+      <label>Database:</label>
+      <input [(ngModel)]="newDatabase.database" placeholder="Database Name">
+
+      <label>Port:</label>
+      <input [(ngModel)]="newDatabase.port" type="number" placeholder="Port">
+
+      <div class="checkbox-container">
+        <label><input type="checkbox" [(ngModel)]="newDatabase.options.encrypt"> Encrypt</label>
+        <label><input type="checkbox" [(ngModel)]="newDatabase.options.trustServerCertificate"> Trust Server Certificate</label>
+      </div>
+
+      <button (click)="saveDatabaseConfig()" class="btn confirm-btn">Save Changes</button>
+    </div>
   </div>
 </div>
-
 
 <app-apirequests></app-apirequests>
