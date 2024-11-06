@@ -19,38 +19,51 @@
   <!-- Message when no databases are available -->
   <p *ngIf="!databases.length" class="no-db-message">No databases available. Add a new one!</p>
 
-  <!-- Modal for adding a new database -->
-  <div *ngIf="showDbConfigModal" class="modal">
-    <div class="modal-content">
-      <span (click)="closeDbConfigModal()" class="close">&times;</span>
-      <h3>Add New Database</h3>
+<!-- Modal for adding a new database -->
+<div *ngIf="showDbConfigModal" class="modal">
+  <div class="modal-content">
+    <span (click)="closeDbConfigModal()" class="close">&times;</span>
+    <h3>Add New Database</h3>
 
-      <label>Database Name:</label>
+    <div class="form-group">
+      <label>Database Name: </label>
       <input [(ngModel)]="newDatabase.name" placeholder="Database Name">
-
-      <label>User:</label>
-      <input [(ngModel)]="newDatabase.user" placeholder="User">
-
-      <label>Password:</label>
-      <input [(ngModel)]="newDatabase.password" type="password" placeholder="Password">
-
-      <label>Server:</label>
-      <input [(ngModel)]="newDatabase.server" placeholder="Server IP">
-
-      <label>Database:</label>
-      <input [(ngModel)]="newDatabase.database" placeholder="Database Name">
-
-      <label>Port:</label>
-      <input [(ngModel)]="newDatabase.port" type="number" placeholder="Port" value="1433">
-
-      <div class="checkbox-container">
-        <label><input type="checkbox" [(ngModel)]="newDatabase.options.encrypt"> Encrypt</label>
-        <label><input type="checkbox" [(ngModel)]="newDatabase.options.trustServerCertificate"> Trust Server Certificate</label>
-      </div>
-
-      <button (click)="addDatabase()" class="btn confirm-btn">Add Database</button>
     </div>
+
+    <div class="form-group">
+      <label>User: </label>
+      <input [(ngModel)]="newDatabase.user" placeholder="User">
+    </div>
+
+    <div class="form-group">
+      <label>Password: </label>
+      <input [(ngModel)]="newDatabase.password" type="password" placeholder="Password">
+    </div>
+
+    <div class="form-group">
+      <label>Server: </label>
+      <input [(ngModel)]="newDatabase.server" placeholder="Server IP">
+    </div>
+
+    <div class="form-group">
+      <label>Database: </label>
+      <input [(ngModel)]="newDatabase.database" placeholder="Database Name">
+    </div>
+
+    <div class="form-group">
+      <label>Port: </label>
+      <input [(ngModel)]="newDatabase.port" type="number" placeholder="Port" value="1433">
+    </div>
+
+    <div class="checkbox-container form-group">
+      <label><input type="checkbox" [(ngModel)]="newDatabase.options.encrypt"> Encrypt</label>
+      <label><input type="checkbox" [(ngModel)]="newDatabase.options.trustServerCertificate"> Trust Server Certificate</label>
+    </div>
+
+    <button (click)="addDatabase()" class="btn confirm-btn">Add Database</button>
   </div>
+</div>
+
 
   <!-- Modal for editing the selected database -->
   <div *ngIf="showEditDbConfigModal" class="modal">
@@ -58,23 +71,35 @@
       <span (click)="closeEditDbConfigModal()" class="close">&times;</span>
       <h3>Edit Database Configuration</h3>
 
-      <label>Database Name:</label>
-      <input [(ngModel)]="newDatabase.name" placeholder="Database Name" disabled>
+      <div class="form-group">
+        <label>Database Name:</label>
+        <input [(ngModel)]="newDatabase.name" placeholder="Database Name" disabled>
+      </div>
 
+      <div class="form-group">
       <label>User:</label>
       <input [(ngModel)]="newDatabase.user" placeholder="User">
+    </div>
 
+    <div class="form-group">
       <label>Password:</label>
       <input [(ngModel)]="newDatabase.password" type="password" placeholder="Password">
+    </div>
 
+    <div class="form-group">
       <label>Server:</label>
       <input [(ngModel)]="newDatabase.server" placeholder="Server IP">
+    </div>
 
+    <div class="form-group">
       <label>Database:</label>
       <input [(ngModel)]="newDatabase.database" placeholder="Database Name">
+    </div>
 
+    <div class="form-group">
       <label>Port:</label>
       <input [(ngModel)]="newDatabase.port" type="number" placeholder="Port">
+    </div>
 
       <div class="checkbox-container">
         <label><input type="checkbox" [(ngModel)]="newDatabase.options.encrypt"> Encrypt</label>

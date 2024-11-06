@@ -115,3 +115,17 @@ select {
   justify-content: space-between;
   margin-top: 10px;
 }
+.form-group {
+  margin-bottom: 15px;
+}
+
+.checkbox-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.modal-content button {
+  margin-top: 20px;
+}
+
