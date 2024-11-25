@@ -129,3 +129,41 @@ select {
   margin-top: 20px;
 }
 
+.login-popup {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -20%);
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.login-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.login-content input {
+  padding: 8px;
+  font-size: 16px;
+}
+
+.login-content button {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.user-info {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 14px;
+}

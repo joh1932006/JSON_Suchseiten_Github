@@ -16,7 +16,6 @@ export class AppComponent {
   title = 'mein-projekt';
 
   databases: { name: string; config: any }[] = [];
-
   selectedDatabase: string = '';
   showDbConfigModal: boolean = false;
   showEditDbConfigModal: boolean = false;
@@ -33,20 +32,28 @@ export class AppComponent {
     }
   };
 
+  username: string = '';
+  loggedInUser: string | null = null;
+
   constructor(private http: HttpClient) {}
 
-  // Opens the modal for adding a new database
+  // Login-Funktion
+  login() {
+    if (this.username.trim()) {
+      this.loggedInUser = this.username;
+    }
+  }
+
+  // Vorherige Methoden bleiben unverändert
   openDbConfigModal() {
-    this.resetNewDatabaseForm(); // Reset the form when opening the modal
+    this.resetNewDatabaseForm();
     this.showDbConfigModal = true;
   }
 
-  // Closes the modal
   closeDbConfigModal() {
     this.showDbConfigModal = false;
   }
 
-  // Adds a new database to the list and sends it to the backend
   addDatabase() {
     if (this.newDatabase.name) {
       this.databases.push({
@@ -54,10 +61,8 @@ export class AppComponent {
         config: { ...this.newDatabase }
       });
 
-      // Automatically select the newly added database
       this.selectedDatabase = this.newDatabase.name;
 
-      // Send the new configuration to the backend
       this.http.post('http://localhost:3000/set-database', this.newDatabase).subscribe(
         () => console.log('Database configuration sent to backend successfully'),
         error => console.error('Error updating database configuration on the backend:', error)
@@ -70,7 +75,6 @@ export class AppComponent {
     }
   }
 
-  // Opens the modal to edit the selected database configuration
   editDatabase() {
     const selectedDbConfig = this.databases.find(db => db.name === this.selectedDatabase);
     if (selectedDbConfig) {
@@ -79,7 +83,6 @@ export class AppComponent {
     }
   }
 
-  // Saves changes to the selected database configuration
   saveDatabaseConfig() {
     const selectedDb = this.databases.find(db => db.name === this.newDatabase.name);
     if (selectedDb) {
@@ -89,18 +92,15 @@ export class AppComponent {
     }
   }
 
-  // Deletes the selected database from the list
   deleteDatabase() {
     this.databases = this.databases.filter(db => db.name !== this.selectedDatabase);
     this.selectedDatabase = '';
   }
 
-  // Closes the edit modal
   closeEditDbConfigModal() {
     this.showEditDbConfigModal = false;
   }
 
-  // Resets the form for a new database
   resetNewDatabaseForm() {
     this.newDatabase = {
       name: '',
@@ -116,7 +116,6 @@ export class AppComponent {
     };
   }
 
-  // Sends the selected database configuration to the backend
   updateDatabaseConfig() {
     const selectedDbConfig = this.databases.find(db => db.name === this.selectedDatabase)?.config;
     if (selectedDbConfig) {
