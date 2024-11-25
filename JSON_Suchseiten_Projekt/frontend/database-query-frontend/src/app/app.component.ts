@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 export class AppComponent {
   title = 'mein-projekt';
 
+  // Database management variables
   databases: { name: string; config: any }[] = [];
   selectedDatabase: string = '';
   showDbConfigModal: boolean = false;
@@ -35,6 +36,9 @@ export class AppComponent {
   username: string = '';
   loggedInUser: string | null = null;
 
+  // Dynamic join management variables
+  joinRows: { table: string; joinType: string; condition: string }[] = [];
+
   constructor(private http: HttpClient) {}
 
   // Login-Funktion
@@ -44,7 +48,7 @@ export class AppComponent {
     }
   }
 
-  // Vorherige Methoden bleiben unverändert
+  // Database management methods
   openDbConfigModal() {
     this.resetNewDatabaseForm();
     this.showDbConfigModal = true;
@@ -124,5 +128,20 @@ export class AppComponent {
         error => console.error('Error updating database configuration:', error)
       );
     }
+  }
+
+  // Dynamic join management methods
+  addJoinRow() {
+    const newRow = {
+      table: '', // Default table name
+      joinType: 'INNER JOIN', // Default join type
+      condition: '' // Default condition
+    };
+
+    this.joinRows.push(newRow); // Add the new row to the array
+  }
+
+  removeJoinRow(index: number) {
+    this.joinRows.splice(index, 1); // Remove the row at the specified index
   }
 }

@@ -7,6 +7,71 @@
   <link rel="stylesheet" href="app.component.css">
 </head>
 <body>
+  <div class="table-container">
+    <h2>Tabellen</h2>
+  
+    <!-- Dropdown for Ausgangstabelle -->
+    <div>
+      <label for="baseTable">Ausgangstabelle:</label>
+      <select id="baseTable" [(ngModel)]="selectedDatabase">
+        <option value="" disabled>Auswählen...</option>
+        <option *ngFor="let db of databases" [value]="db.name">
+          {{ db.name }}
+        </option>
+      </select>
+    </div>
+  
+    <!-- Join Conditions -->
+    <h3>Join-Bedingungen</h3>
+    <div *ngFor="let row of joinRows; let i = index" class="join-row">
+      
+  
+      <!-- Dropdown for Join Type -->
+      <div>
+        <label for="joinType-{{ i }}">Join-Typ:</label>
+        <select id="joinType-{{ i }}" [(ngModel)]="row.joinType">
+          <option value="INNER JOIN">INNER JOIN</option>
+          <option value="LEFT OUTER JOIN">LEFT OUTER JOIN</option>
+          <option value="RIGHT OUTER JOIN">RIGHT OUTER JOIN</option>
+          <option value="SELF JOIN">SELF JOIN</option>
+          <option value="CROSS JOIN">CROSS JOIN</option>
+        </select>
+      </div>
+
+      <!-- Dropdown for Tabelle -->
+      <div>
+        <label for="table-{{ i }}">Tabelle:</label>
+        <select id="table-{{ i }}" [(ngModel)]="row.table">
+          <option value="" disabled>Auswählen...</option>
+          <option *ngFor="let db of databases" [value]="db.name">
+            {{ db.name }}
+          </option>
+        </select>
+      </div>
+  
+      <!-- Field for JOIN-Bedingung -->
+      <div>
+        <label for="condition-{{ i }}">JOIN-Bedingung:</label>
+        <input
+          id="condition-{{ i }}"
+          type="text"
+          [(ngModel)]="row.condition"
+        />
+      </div>
+  
+      <!-- Remove Row Button -->
+      <button class="remove-row" (click)="removeJoinRow(i)">X</button>
+    </div>
+  
+    <!-- Add Table Button -->
+    <button class="add-table" (click)="addJoinRow()">+ Tabelle hinzufügen</button>
+  </div>
+  
+  
+  
+
+
+
   <div class="container">
     <h2>Database Manager</h2>
 
