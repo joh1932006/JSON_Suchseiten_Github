@@ -28,7 +28,7 @@
       <!-- Dropdown for Join Type -->
       <div>
         <label for="joinType-{{ i }}">Join-Typ:</label>
-        <select id="joinType-{{ i }}" [(ngModel)]="row.joinType">
+        <select id="joinType-{{ i }}" [(ngModel)]="row.joinType" (change)="generateJoinCondition(i)">
           <option value="INNER JOIN">INNER JOIN</option>
           <option value="LEFT OUTER JOIN">LEFT OUTER JOIN</option>
           <option value="RIGHT OUTER JOIN">RIGHT OUTER JOIN</option>
@@ -40,7 +40,7 @@
       <!-- Dropdown for Tabelle -->
       <div>
         <label for="table-{{ i }}">Tabelle:</label>
-        <select id="table-{{ i }}" [(ngModel)]="row.table">
+        <select id="table-{{ i }}" [(ngModel)]="row.table" (change)="generateJoinCondition(i)">
           <option value="" disabled>Auswählen...</option>
           <option *ngFor="let table of tables" [value]="table">
             {{ table }}

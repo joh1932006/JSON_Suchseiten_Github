@@ -168,4 +168,12 @@ export class AppComponent {
   removeJoinRow(index: number) {
     this.joinRows.splice(index, 1); // Remove the row at the specified index
   }
+
+  // Automatically generate the JOIN condition
+  generateJoinCondition(index: number) {
+    const joinRow = this.joinRows[index];
+    if (this.selectedBaseTable && joinRow.table && joinRow.joinType) {
+      joinRow.condition = `${joinRow.joinType} ${joinRow.table} ON ${this.selectedBaseTable}.id = ${joinRow.table}.base_id`;
+    }
+  }
 }
