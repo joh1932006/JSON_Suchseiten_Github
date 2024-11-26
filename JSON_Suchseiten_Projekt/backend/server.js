@@ -34,6 +34,25 @@ app.post('/set-database', async (req, res) => {
     }
 });
 
+// Route to fetch tables from the current database
+app.get('/get-tables', async (req, res) => {
+    if (!currentDbConfig) {
+        return res.status(400).json({ error: 'No database configuration set' });
+    }
+
+    try {
+        const pool = await sql.connect(currentDbConfig);
+        const result = await pool.request().query(
+            "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'"
+        );
+        res.json({ tables: result.recordset.map(row => row.TABLE_NAME) });
+        sql.close();
+    } catch (error) {
+        console.error("Error fetching tables:", error);
+        res.status(500).json({ error: 'Failed to fetch tables.' });
+    }
+});
+
 // Example route to execute a SQL query with dynamic configuration
 app.post('/execute-sql', async (req, res) => {
     if (!currentDbConfig) {

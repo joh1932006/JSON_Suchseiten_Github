@@ -13,10 +13,10 @@
     <!-- Dropdown for Ausgangstabelle -->
     <div>
       <label for="baseTable">Ausgangstabelle:</label>
-      <select id="baseTable" [(ngModel)]="selectedDatabase">
+      <select id="baseTable" [(ngModel)]="selectedBaseTable">
         <option value="" disabled>Auswählen...</option>
-        <option *ngFor="let db of databases" [value]="db.name">
-          {{ db.name }}
+        <option *ngFor="let table of tables" [value]="table">
+          {{ table }}
         </option>
       </select>
     </div>
@@ -25,7 +25,6 @@
     <h3>Join-Bedingungen</h3>
     <div *ngFor="let row of joinRows; let i = index" class="join-row">
       
-  
       <!-- Dropdown for Join Type -->
       <div>
         <label for="joinType-{{ i }}">Join-Typ:</label>
@@ -43,8 +42,8 @@
         <label for="table-{{ i }}">Tabelle:</label>
         <select id="table-{{ i }}" [(ngModel)]="row.table">
           <option value="" disabled>Auswählen...</option>
-          <option *ngFor="let db of databases" [value]="db.name">
-            {{ db.name }}
+          <option *ngFor="let table of tables" [value]="table">
+            {{ table }}
           </option>
         </select>
       </div>
@@ -67,11 +66,6 @@
     <button class="add-table" (click)="addJoinRow()">+ Tabelle hinzufügen</button>
   </div>
   
-  
-  
-
-
-
   <div class="container">
     <h2>Database Manager</h2>
 

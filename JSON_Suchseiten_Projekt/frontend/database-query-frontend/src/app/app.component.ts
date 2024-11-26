@@ -18,6 +18,7 @@ export class AppComponent {
   // Database management variables
   databases: { name: string; config: any }[] = [];
   selectedDatabase: string = '';
+  selectedBaseTable: string = ''; // Selected Ausgangstabelle
   showDbConfigModal: boolean = false;
   showEditDbConfigModal: boolean = false;
   newDatabase = {
@@ -33,6 +34,7 @@ export class AppComponent {
     }
   };
 
+  tables: string[] = []; // Stores fetched table names
   username: string = '';
   loggedInUser: string | null = null;
 
@@ -58,6 +60,10 @@ export class AppComponent {
     this.showDbConfigModal = false;
   }
 
+  closeEditDbConfigModal() {
+    this.showEditDbConfigModal = false;
+  }
+
   addDatabase() {
     if (this.newDatabase.name) {
       this.databases.push({
@@ -68,7 +74,10 @@ export class AppComponent {
       this.selectedDatabase = this.newDatabase.name;
 
       this.http.post('http://localhost:3000/set-database', this.newDatabase).subscribe(
-        () => console.log('Database configuration sent to backend successfully'),
+        () => {
+          console.log('Database configuration sent to backend successfully');
+          this.fetchTables(); // Fetch tables after adding database
+        },
         error => console.error('Error updating database configuration on the backend:', error)
       );
 
@@ -76,6 +85,34 @@ export class AppComponent {
       this.resetNewDatabaseForm();
     } else {
       console.error('Database name is required');
+    }
+  }
+
+  fetchTables() {
+    if (!this.selectedDatabase) {
+      console.error("No database selected");
+      return;
+    }
+
+    this.http.get<{ tables: string[] }>('http://localhost:3000/get-tables').subscribe(
+      response => {
+        this.tables = response.tables;
+        console.log("Tables fetched:", this.tables);
+      },
+      error => console.error('Error fetching tables:', error)
+    );
+  }
+
+  updateDatabaseConfig() {
+    const selectedDbConfig = this.databases.find(db => db.name === this.selectedDatabase)?.config;
+    if (selectedDbConfig) {
+      this.http.post('http://localhost:3000/set-database', selectedDbConfig).subscribe(
+        () => {
+          console.log('Database configuration updated on the server');
+          this.fetchTables(); // Fetch tables after database selection
+        },
+        error => console.error('Error updating database configuration:', error)
+      );
     }
   }
 
@@ -99,10 +136,7 @@ export class AppComponent {
   deleteDatabase() {
     this.databases = this.databases.filter(db => db.name !== this.selectedDatabase);
     this.selectedDatabase = '';
-  }
-
-  closeEditDbConfigModal() {
-    this.showEditDbConfigModal = false;
+    this.tables = []; // Clear tables when database is deleted
   }
 
   resetNewDatabaseForm() {
@@ -118,16 +152,6 @@ export class AppComponent {
         trustServerCertificate: true
       }
     };
-  }
-
-  updateDatabaseConfig() {
-    const selectedDbConfig = this.databases.find(db => db.name === this.selectedDatabase)?.config;
-    if (selectedDbConfig) {
-      this.http.post('http://localhost:3000/set-database', selectedDbConfig).subscribe(
-        () => console.log('Database configuration updated on the server'),
-        error => console.error('Error updating database configuration:', error)
-      );
-    }
   }
 
   // Dynamic join management methods
