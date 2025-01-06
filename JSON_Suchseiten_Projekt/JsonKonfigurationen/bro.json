@@ -1,0 +1,129 @@
+{
+    "name": "bro",
+    "itemsPerPage": 100,
+    "tableWidth": 1200,
+    "preventSearchWithoutRestriction": false,
+    "showInStartMenu": false,
+    "selectSingleEntity": true,
+    "searchOnType": true,
+    "hideHeadersOnNoRestriction": false,
+    "automaticRun": true,
+    "implementationId": 1,
+    "querySid": null,
+    "filterXDJoinGroupId": null,
+    "filterChooseRoleSid": null,
+    "filterRoleSid": null,
+    "roleSid": null,
+    "interfaceSid": null,
+    "table": "RegionRegion",
+    "whereClause": [
+        "RegionRegion.SID",
+        "RegionRegion.aName",
+        "RestrictionType.aDescription",
+        "RestrictionType.remark",
+        "StoreType.lastReplServer_SID",
+        "StoreType.lastReplClient_SID"
+    ],
+    "joinGroups": [
+        {
+            "id": 1,
+            "joinClause": "INNER JOIN RestrictionType ON RegionRegion.SID = RestrictionType.SID"
+        },
+        {
+            "id": 2,
+            "joinClause": "INNER JOIN StoreType ON RegionRegion.SID = StoreType.SID"
+        }
+    ],
+    "columnGroups": [
+        {
+            "id": 1,
+            "name": "Group for StoreType",
+            "columns": [
+                {
+                    "id": 1,
+                    "name": "lastReplServer_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "StoreType.lastReplServer_SID",
+                    "alias": "lastReplServer_SID"
+                },
+                {
+                    "id": 2,
+                    "name": "lastReplClient_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "StoreType.lastReplClient_SID",
+                    "alias": "lastReplClient_SID"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Group for RegionRegion",
+            "columns": [
+                {
+                    "id": 1,
+                    "name": "SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "RegionRegion.SID",
+                    "alias": "SID"
+                },
+                {
+                    "id": 2,
+                    "name": "aName",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "RegionRegion.aName",
+                    "alias": "aName"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "Group for RestrictionType",
+            "columns": [
+                {
+                    "id": 1,
+                    "name": "aDescription",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "RestrictionType.aDescription",
+                    "alias": "aDescription"
+                },
+                {
+                    "id": 2,
+                    "name": "remark",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "RestrictionType.remark",
+                    "alias": "remark"
+                }
+            ]
+        }
+    ],
+    "searchColumns": [
+        "RegionRegion.SID",
+        "RegionRegion.aName",
+        "RestrictionType.aDescription",
+        "RestrictionType.remark",
+        "StoreType.lastReplServer_SID",
+        "StoreType.lastReplClient_SID"
+    ],
+    "resultColumns": [
+        "RegionRegion.SID",
+        "RegionRegion.aName",
+        "RestrictionType.aDescription",
+        "RestrictionType.remark",
+        "StoreType.lastReplServer_SID",
+        "StoreType.lastReplClient_SID"
+    ],
+    "orderByColumns": [
+        "RegionRegion.SID",
+        "RegionRegion.aName",
+        "RestrictionType.aDescription",
+        "RestrictionType.remark",
+        "StoreType.lastReplServer_SID",
+        "StoreType.lastReplClient_SID"
+    ]
+}

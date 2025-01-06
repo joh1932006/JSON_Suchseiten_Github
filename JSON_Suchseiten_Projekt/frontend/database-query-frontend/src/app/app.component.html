@@ -8,6 +8,18 @@
 </head>
 <body>
 
+  <div>
+    <input 
+      id="configName" 
+      type="text" 
+      [(ngModel)]="configName" 
+      placeholder="Konfigurationsname"
+      class="config-name-input"
+    />
+  </div>
+  
+
+
   <div class="container">
     <h2>Database Manager</h2>
 
@@ -196,7 +208,56 @@
   </div>
   
   
+  <div class="tables-columns-container">
+    <div class="table-container">
+        <h2>Tabellen</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tabellen</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td (click)="loadColumns(selectedBaseTable)" class="clickable">
+                        {{ selectedBaseTable || 'Ausgangstabelle nicht ausgewählt' }}
+                    </td>
+                </tr>
+                <tr *ngFor="let joinRow of joinRows">
+                    <td (click)="loadColumns(joinRow.table)" class="clickable">
+                        {{ joinRow.table || 'Nicht ausgewählt' }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-  <app-apirequests></app-apirequests>
+    
+    <div class="columns-display" *ngIf="activeTable">
+      <h3>Spalten von {{ activeTable }}</h3>
+      <ul class="columns-list">
+        <div *ngFor="let column of tableColumns" class="columns-item">
+          <label>
+            <input 
+              type="checkbox"
+              [value]="column"
+              (change)="toggleColumnSelection(column, activeTable, $event)" 
+              [checked]="selectedColumns.includes(activeTable + '.' + column)" />
+            {{ column }}
+          </label>
+        </div>
+      </ul>
+    </div>
+</div>
+  
+<div class="json-config-save-container">
+  <button (click)="saveJsonConfig()" class="btn save-btn">JSON-Konfiguration speichern</button>
+</div>
+
+
+
+<app-apirequests></app-apirequests>
+
+
 </body>
 </html>

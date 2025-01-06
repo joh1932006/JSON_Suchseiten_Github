@@ -1,0 +1,129 @@
+{
+    "name": "okegal",
+    "itemsPerPage": 100,
+    "tableWidth": 1200,
+    "preventSearchWithoutRestriction": false,
+    "showInStartMenu": false,
+    "selectSingleEntity": true,
+    "searchOnType": true,
+    "hideHeadersOnNoRestriction": false,
+    "automaticRun": true,
+    "implementationId": 1,
+    "querySid": null,
+    "filterXDJoinGroupId": null,
+    "filterChooseRoleSid": null,
+    "filterRoleSid": null,
+    "roleSid": null,
+    "interfaceSid": null,
+    "table": "ArticleReceipe",
+    "whereClause": [
+        "ArticleReceipe.SID",
+        "ArticleReceipe.aName",
+        "CostRateUsage.aName",
+        "CostRateUsage.aDescription",
+        "RegionType.actDate",
+        "RegionType.FK_User_SID"
+    ],
+    "joinGroups": [
+        {
+            "id": 1,
+            "joinClause": "INNER JOIN CostRateUsage ON ArticleReceipe.SID = CostRateUsage.SID"
+        },
+        {
+            "id": 2,
+            "joinClause": "INNER JOIN RegionType ON ArticleReceipe.SID = RegionType.SID"
+        }
+    ],
+    "columnGroups": [
+        {
+            "id": 1,
+            "name": "Group for ArticleReceipe",
+            "columns": [
+                {
+                    "id": 1,
+                    "name": "SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "ArticleReceipe.SID",
+                    "alias": "SID"
+                },
+                {
+                    "id": 2,
+                    "name": "aName",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "ArticleReceipe.aName",
+                    "alias": "aName"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Group for CostRateUsage",
+            "columns": [
+                {
+                    "id": 3,
+                    "name": "aName",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "CostRateUsage.aName",
+                    "alias": "aName"
+                },
+                {
+                    "id": 4,
+                    "name": "aDescription",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "CostRateUsage.aDescription",
+                    "alias": "aDescription"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "Group for RegionType",
+            "columns": [
+                {
+                    "id": 5,
+                    "name": "actDate",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "RegionType.actDate",
+                    "alias": "actDate"
+                },
+                {
+                    "id": 6,
+                    "name": "FK_User_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "RegionType.FK_User_SID",
+                    "alias": "FK_User_SID"
+                }
+            ]
+        }
+    ],
+    "searchColumns": [
+        "ArticleReceipe.SID",
+        "ArticleReceipe.aName",
+        "CostRateUsage.aName",
+        "CostRateUsage.aDescription",
+        "RegionType.actDate",
+        "RegionType.FK_User_SID"
+    ],
+    "resultColumns": [
+        "ArticleReceipe.SID",
+        "ArticleReceipe.aName",
+        "CostRateUsage.aName",
+        "CostRateUsage.aDescription",
+        "RegionType.actDate",
+        "RegionType.FK_User_SID"
+    ],
+    "orderByColumns": [
+        "ArticleReceipe.SID",
+        "ArticleReceipe.aName",
+        "CostRateUsage.aName",
+        "CostRateUsage.aDescription",
+        "RegionType.actDate",
+        "RegionType.FK_User_SID"
+    ]
+}

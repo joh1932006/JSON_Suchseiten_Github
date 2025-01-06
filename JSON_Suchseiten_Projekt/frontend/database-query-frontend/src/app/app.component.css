@@ -288,3 +288,145 @@ button.add-table {
 button.add-table:hover {
   background-color: #0056b3;
 }
+
+/*Spalten-Auswahl Tabelle*/
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #2a2a2a;
+  color: white;
+}
+
+tbody tr:hover {
+  background-color: #f2f2f2;
+}
+
+
+/*POP UP*/
+
+/* Container für Tabellen und Spalten */
+.tables-columns-container {
+  position: relative; /* Referenzpunkt für die absolute Positionierung */
+  display: flex;
+  gap: 20px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-top: 20px;
+  max-width: 100%;
+}
+
+/* Bereich für die Tabellenliste */
+.table-container {
+  flex: 1; 
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+/* Spaltenanzeige */
+.columns-display {
+  position: absolute; 
+  top: 0;
+  right: 50px; 
+  width: 300px; 
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+/* Listenstyling für die Spaltenanzeige */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul li {
+  margin: 5px 0;
+  font-size: 14px;
+  text-align: left;
+}
+
+/* Hervorhebung klickbarer Elemente */
+.clickable {
+  cursor: pointer;
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.clickable:hover {
+  color: #0056b3;
+}
+.columns-display {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+.columns-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.columns-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.columns-item label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.config-name-input {
+  width: 300px;
+  padding: 10px;
+  font-size: 14px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  transition: border-color 0.3s;
+}
+
+.config-name-input:focus {
+  outline: none;
+  border-color: #007BFF;
+}
+
+.save-btn {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.save-btn:hover {
+  background-color: #45a049;
+}
+
+
+
+
+
+
+
+
+
+
+

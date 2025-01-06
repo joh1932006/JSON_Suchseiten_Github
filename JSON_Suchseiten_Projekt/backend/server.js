@@ -3,12 +3,15 @@ const bodyParser = require('body-parser');
 const axios = require('axios');
 const cors = require('cors');
 const sql = require('mssql'); // Microsoft SQL Server Client
+const saveJSONRoute = require("./saveJsonRoute");
 
 const app = express();
 const port = 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
+
+app.use(saveJSONRoute);
 
 // Variable to store the current database configuration
 let currentDbConfig = null;
@@ -100,3 +103,36 @@ app.post('/convert-json-to-sql', async (req, res) => {
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
+
+
+
+// Route to fetch columns for a specific table
+app.get('/get-columns', async (req, res) => {
+    if (!currentDbConfig) {
+        return res.status(400).json({ error: 'No database configuration set' });
+    }
+
+    const { table } = req.query;
+
+    if (!table) {
+        return res.status(400).json({ error: 'Table name is required' });
+    }
+
+    try {
+        const pool = await sql.connect(currentDbConfig);
+        const result = await pool.request().query(`
+            SELECT COLUMN_NAME 
+            FROM INFORMATION_SCHEMA.COLUMNS 
+            WHERE TABLE_NAME = '${table}'
+        `);
+
+        res.json({ columns: result.recordset.map(row => row.COLUMN_NAME) });
+    } catch (error) {
+        console.error("Error fetching columns:", error);
+        res.status(500).json({ error: 'Failed to fetch columns.' });
+    } finally {
+        sql.close();
+    }
+});
+
+  

@@ -1,0 +1,101 @@
+{
+    "name": "loser",
+    "itemsPerPage": 100,
+    "tableWidth": 1200,
+    "preventSearchWithoutRestriction": false,
+    "showInStartMenu": false,
+    "selectSingleEntity": true,
+    "searchOnType": true,
+    "hideHeadersOnNoRestriction": false,
+    "automaticRun": true,
+    "implementationId": 1,
+    "querySid": null,
+    "filterXDJoinGroupId": null,
+    "filterChooseRoleSid": null,
+    "filterRoleSid": null,
+    "roleSid": null,
+    "interfaceSid": null,
+    "table": "aGroup",
+    "whereClause": [],
+    "joinGroups": [
+        {
+            "id": 1,
+            "joinClause": "INNER JOIN FiOpenPosition ON aGroup.SID = FiOpenPosition.SID"
+        },
+        {
+            "id": 2,
+            "joinClause": "INNER JOIN ArticlePartner ON aGroup.SID = ArticlePartner.SID"
+        }
+    ],
+    "columnGroups": [
+        {
+            "id": 1,
+            "name": "",
+            "columns": [
+                {
+                    "id": 1,
+                    "name": "man",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "ArticlePartner.man",
+                    "alias": "man"
+                },
+                {
+                    "id": 2,
+                    "name": "FK_Article_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "ArticlePartner.FK_Article_SID",
+                    "alias": "FK_Article_SID"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "",
+            "columns": [
+                {
+                    "id": 1,
+                    "name": "SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "aGroup.SID",
+                    "alias": "SID"
+                },
+                {
+                    "id": 2,
+                    "name": "aName",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "aGroup.aName",
+                    "alias": "aName"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "",
+            "columns": [
+                {
+                    "id": 1,
+                    "name": "finished",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "FiOpenPosition.finished",
+                    "alias": "finished"
+                },
+                {
+                    "id": 2,
+                    "name": "FK_FiBookingPosCreate_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "FiOpenPosition.FK_FiBookingPosCreate_SID",
+                    "alias": "FK_FiBookingPosCreate_SID"
+                }
+            ]
+        }
+    ],
+    "searchColumns": [],
+    "resultColumns": [],
+    "orderByColumns": []
+}

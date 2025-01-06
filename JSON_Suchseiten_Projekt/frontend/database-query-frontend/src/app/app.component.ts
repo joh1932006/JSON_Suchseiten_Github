@@ -4,6 +4,7 @@ import { APIRequestsComponent } from './apirequests/apirequests.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,10 @@ import { FormsModule } from '@angular/forms';
 })
 export class AppComponent {
   title = 'mein-projekt';
+
+
+  configName: string = ''; // Beispielwert
+
 
   // Liste der Datenbanken mit Fab4Minds als Option im Dropdown
   databases: { name: string; config: any }[] = [
@@ -195,4 +200,128 @@ export class AppComponent {
       joinRow.condition = `${joinRow.joinType} ${joinRow.table} ON ${this.selectedBaseTable}.SID = ${joinRow.table}.SID`;
     }
   }
+
+  activeTable: string = '';
+  tableColumns: string[] = [];
+
+  // Funktion zum Abrufen und Anzeigen der Spalten
+  loadColumns(tableName: string) {
+    if (!tableName) {
+      console.error('Keine Tabelle ausgewählt');
+      return;
+    }
+  
+    // Setze aktuelle Tabelle und leere die Spaltenanzeige vor dem Laden
+    this.activeTable = tableName;
+    this.tableColumns = []; // Leere die Spalten
+  
+    // Abrufen der Spalten vom Server
+    this.http.get<{ columns: string[] }>(`http://localhost:3000/get-columns?table=${tableName}`).subscribe(
+      response => {
+        this.tableColumns = response.columns;
+      },
+      error => console.error('Fehler beim Abrufen der Spalten:', error)
+    );
+  }
+  selectedColumns: string[] = [];
+
+  toggleColumnSelection(column: string, tableName: string, event: any) {
+    const columnIdentifier = `${tableName}.${column}`;
+    if (event.target.checked) {
+      this.selectedColumns.push(columnIdentifier);
+    } else {
+      this.selectedColumns = this.selectedColumns.filter(c => c !== columnIdentifier);
+    }
+    console.log('Selected Columns:', this.selectedColumns);
+  }
+  
+
+  generateColumnGroups() {
+    let groupId = 0; // Fortlaufende ID für Gruppen
+  
+    const columnGroups = this.tables
+      .filter(table => table === this.activeTable || this.selectedColumns.length > 0)
+      .map(table => {
+        const tableColumns = this.selectedColumns.filter(column => column.startsWith(`${table}.`));
+        let columnId = 0; // Reset der Spalten-ID für jede Gruppe
+  
+        const groupColumns = tableColumns.map(column => {
+          columnId += 1; // Erhöhe die Spalten-ID lokal für die Gruppe
+          return {
+            id: columnId, // Fortlaufende ID für die Spalten innerhalb der Gruppe
+            name: column.replace(`${table}.`, ''), // Entfernt den Tabellennamen
+            multiLinugal: false,
+            enqPropDataTypeSid: 1,
+            selectClause: `${table}.${column.replace(`${table}.`, '')}`,
+            alias: column.replace(`${table}.`, ''),
+          };
+        });
+  
+        // Erzeuge die Gruppe nur, wenn sie Spalten enthält
+        if (groupColumns.length > 0) {
+          groupId += 1; // Erhöhe die Gruppen-ID
+          return {
+            id: groupId, // Fortlaufende ID für die Gruppe
+            name: `Group for ${table}`,
+            columns: groupColumns,
+          };
+        }
+        return null;
+      })
+      .filter(group => group !== null) as { id: number; name: string; columns: any[] }[]; // Entferne leere Gruppen
+  
+    return columnGroups;
+  }
+  
+  
+  // Daten zusammenstellen und speichern
+  saveJsonConfig() {
+    const columnGroups = this.generateColumnGroups();
+
+    const jsonData = {
+      name: this.configName || 'default-config', 
+      itemsPerPage: 100,
+      tableWidth: 1200,
+      preventSearchWithoutRestriction: false,
+      showInStartMenu: false,
+      selectSingleEntity: true,
+      searchOnType: true,
+      hideHeadersOnNoRestriction: false,
+      automaticRun: true,
+      implementationId: 1,
+      querySid: null,
+      filterXDJoinGroupId: null,
+      filterChooseRoleSid: null,
+      filterRoleSid: null,
+      roleSid: null,
+      interfaceSid: null,
+      table: this.selectedBaseTable,
+      whereClause: this.selectedColumns,
+      joinGroups: this.joinRows.map((row, index) => ({
+        id: index + 1, 
+        joinClause: row.condition
+      })),
+      columnGroups: columnGroups, // hier stimmt selectedColumns
+      searchColumns: this.selectedColumns,
+      resultColumns: this.selectedColumns,
+      orderByColumns: this.selectedColumns      
+    };
+
+    // Daten an den Server senden
+    this.http.post('http://localhost:3000/save-json', jsonData).subscribe(
+      response => {
+        console.log('JSON-Konfiguration erfolgreich gespeichert:', response);
+        alert('JSON-Konfiguration erfolgreich gespeichert!');
+      },
+      error => {
+        console.error('Fehler beim Speichern der JSON-Konfiguration:', error);
+        alert('Fehler beim Speichern der JSON-Konfiguration.');
+      }
+    );
 }
+}
+
+
+
+
+
