@@ -154,13 +154,14 @@
     <!-- Dropdown for Ausgangstabelle -->
     <div>
       <label for="baseTable">Ausgangstabelle:</label>
-      <select id="baseTable" [(ngModel)]="selectedBaseTable">
+      <select id="baseTable" [(ngModel)]="selectedBaseTable" (change)="updateBaseTable(selectedBaseTable)">
         <option value="" disabled>Auswählen...</option>
         <option *ngFor="let table of tables" [value]="table">
           {{ table }}
         </option>
       </select>
-    </div>
+    </div>    
+    
   
     <!-- Join Conditions -->
     <h3>Join-Bedingungen</h3>
@@ -183,11 +184,12 @@
         <label for="table-{{ i }}">Tabelle:</label>
         <select id="table-{{ i }}" [(ngModel)]="row.table" (change)="generateJoinCondition(i)">
           <option value="" disabled>Auswählen...</option>
-          <option *ngFor="let table of tables" [value]="table">
+          <option *ngFor="let table of joinableTables" [value]="table">
             {{ table }}
           </option>
         </select>
       </div>
+      
   
       <!-- Field for JOIN-Bedingung -->
       <div>

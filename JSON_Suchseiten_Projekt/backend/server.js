@@ -135,4 +135,27 @@ app.get('/get-columns', async (req, res) => {
     }
 });
 
-  
+app.get('/get-joinable-tables', async (req, res) => {
+    const { baseTable } = req.query;
+    if (!baseTable || !currentDbConfig) {
+        return res.status(400).json({ error: 'Base table or database configuration missing' });
+    }
+
+    try {
+        const pool = await sql.connect(currentDbConfig);
+        const result = await pool.request().query(`
+            SELECT DISTINCT fk.TABLE_NAME AS JoinableTable
+            FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc
+            JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS pk ON rc.UNIQUE_CONSTRAINT_NAME = pk.CONSTRAINT_NAME
+            JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS fk ON rc.CONSTRAINT_NAME = fk.CONSTRAINT_NAME
+            WHERE pk.TABLE_NAME = '${baseTable}'
+        `);
+
+        res.json({ joinableTables: result.recordset.map(row => row.JoinableTable) });
+    } catch (error) {
+        console.error("Error fetching joinable tables:", error);
+        res.status(500).json({ error: 'Failed to fetch joinable tables.' });
+    } finally {
+        sql.close();
+    }
+});

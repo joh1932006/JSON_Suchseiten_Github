@@ -4,7 +4,6 @@ import { APIRequestsComponent } from './apirequests/apirequests.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-root',
@@ -42,6 +41,8 @@ export class AppComponent {
   selectedBaseTable: string = '';
   showDbConfigModal: boolean = false;
   showEditDbConfigModal: boolean = false;
+  joinableTables: string[] = [];
+
 
   // Daten für eine neue Datenbank
   newDatabase = {
@@ -125,6 +126,23 @@ export class AppComponent {
     );
   }
 
+  fetchJoinableTables(baseTable: string) {
+    if (!baseTable) {
+        console.error('No base table provided');
+        return;
+    }
+
+    this.http.get<{ joinableTables: string[] }>(`http://localhost:3000/get-joinable-tables?baseTable=${baseTable}`).subscribe(
+        response => {
+            this.joinableTables = response.joinableTables; // Speichere die möglichen Tabellen für Joins
+            console.log('Joinable tables fetched:', this.joinableTables);
+        },
+        error => console.error('Error fetching joinable tables:', error)
+    );
+}
+
+
+
   // Konfiguration der ausgewählten Datenbank aktualisieren
   updateDatabaseConfig() {
     const selectedDbConfig = this.databases.find(db => db.name === this.selectedDatabase)?.config;
@@ -138,6 +156,13 @@ export class AppComponent {
       );
     }
   }
+
+  updateBaseTable(selectedBaseTable: string) {
+    this.selectedBaseTable = selectedBaseTable;
+    this.fetchJoinableTables(selectedBaseTable); // Aktualisiere die möglichen Join-Tabellen
+}
+
+
 
   // Datenbank bearbeiten
   editDatabase() {
