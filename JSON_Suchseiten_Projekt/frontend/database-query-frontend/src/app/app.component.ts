@@ -237,19 +237,19 @@ export class AppComponent {
   
 
   generateColumnGroups() {
-    let groupId = 0; // Fortlaufende ID für Gruppen
+    let groupId = 0; 
   
     const columnGroups = this.tables
       .filter(table => table === this.activeTable || this.selectedColumns.length > 0)
       .map(table => {
         const tableColumns = this.selectedColumns.filter(column => column.startsWith(`${table}.`));
-        let columnId = 0; // Reset der Spalten-ID für jede Gruppe
+        let columnId = 0; 
   
         const groupColumns = tableColumns.map(column => {
-          columnId += 1; // Erhöhe die Spalten-ID lokal für die Gruppe
+          columnId += 1; 
           return {
-            id: columnId, // Fortlaufende ID für die Spalten innerhalb der Gruppe
-            name: column.replace(`${table}.`, ''), // Entfernt den Tabellennamen
+            id: columnId, 
+            name: column.replace(`${table}.`, ''), 
             multiLinugal: false,
             enqPropDataTypeSid: 1,
             selectClause: `${table}.${column.replace(`${table}.`, '')}`,
@@ -257,18 +257,17 @@ export class AppComponent {
           };
         });
   
-        // Erzeuge die Gruppe nur, wenn sie Spalten enthält
         if (groupColumns.length > 0) {
-          groupId += 1; // Erhöhe die Gruppen-ID
+          groupId += 1;
           return {
-            id: groupId, // Fortlaufende ID für die Gruppe
+            id: groupId, 
             name: `Group for ${table}`,
             columns: groupColumns,
           };
         }
         return null;
       })
-      .filter(group => group !== null) as { id: number; name: string; columns: any[] }[]; // Entferne leere Gruppen
+      .filter(group => group !== null) as { id: number; name: string; columns: any[] }[]; 
   
     return columnGroups;
   }
