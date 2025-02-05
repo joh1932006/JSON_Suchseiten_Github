@@ -1,11 +1,43 @@
 
-
-
-
 <div class="container">
     <h2>Vorhandene JSON-Konfigurationen</h2>
+    <button class="btn add-btn" (click)="onNewConfig()">Neue Konfiguration</button>
+  
+    <div class="table-container" *ngIf="jsonConfigs.length > 0">
+        <table>
+            <thead>
+              <tr>
+                <th>Dateiname</th>
+                <!-- Hier "class='action'" hinzufügen -->
+                <th class="action">Aktionen</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let configFile of jsonConfigs">
+                <td class="clickable" (click)="onConfigClick(configFile)">
+                  {{ configFile }}
+                </td>
+                <!-- Buttons in .actions -->
+                <td class="actions">
+                  <button class="btn edit-btn" (click)="onConfigClick(configFile)">Bearbeiten</button>
+                  <button class="btn delete-btn" (click)="onDeleteConfig(configFile)">Löschen</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          
+    </div>
+  
+    <p *ngIf="jsonConfigs.length === 0" class="no-db-message">
+      Keine JSON-Konfigurationen gefunden.
+    </p>
+  </div>
+  
+  
+    
 
-    <!-- Login-Popup 
+
+  <!-- Login-Popup 
     <div *ngIf="!loggedInUser" class="login-popup">
         <div class="login-content">
             <h3>Login</h3>
@@ -18,33 +50,3 @@
     <div *ngIf="loggedInUser" class="user-info">
         <span>Angemeldet als: {{ loggedInUser }}</span>
     </div> -->
-      
-  
-    <!-- Button, um eine neue Konfiguration anzulegen -->
-    <button class="btn add-btn" (click)="onNewConfig()">Neue Konfiguration</button>
-    
-    <!-- Tabelle mit den Dateinamen -->
-    <div class="table-container" *ngIf="jsonConfigs.length > 0">
-      <table>
-        <thead>
-          <tr>
-            <th>Dateiname</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr 
-            *ngFor="let configFile of jsonConfigs" 
-            class="clickable" 
-            (click)="onConfigClick(configFile)"
-          >
-            <td>{{ configFile }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  
-    <p *ngIf="jsonConfigs.length === 0" class="no-db-message">
-      Keine JSON-Konfigurationen gefunden.
-    </p>
-  </div>
-  

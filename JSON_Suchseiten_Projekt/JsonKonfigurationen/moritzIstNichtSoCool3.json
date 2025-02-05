@@ -1,0 +1,72 @@
+{
+    "name": "moritzIstNichtSoCool3",
+    "itemsPerPage": 100,
+    "tableWidth": 1200,
+    "preventSearchWithoutRestriction": false,
+    "showInStartMenu": false,
+    "selectSingleEntity": true,
+    "searchOnType": true,
+    "hideHeadersOnNoRestriction": false,
+    "automaticRun": true,
+    "implementationId": 1,
+    "querySid": null,
+    "filterXDJoinGroupId": null,
+    "filterChooseRoleSid": null,
+    "filterRoleSid": null,
+    "roleSid": null,
+    "interfaceSid": null,
+    "table": "ActionTokenType",
+    "whereClause": [
+        "ActionTokenType.aName",
+        "ActionToken.FK_ActionTokenType_SID"
+    ],
+    "joinGroups": [
+        {
+            "id": 1,
+            "joinClause": "INNER JOIN Region ON DWReportType.SID = Region.SID"
+        }
+    ],
+    "columnGroups": [
+        {
+            "id": 1,
+            "name": "Group for ActionToken",
+            "columns": [
+                {
+                    "id": 1,
+                    "name": "FK_ActionTokenType_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "ActionToken.FK_ActionTokenType_SID",
+                    "alias": "FK_ActionTokenType_SID"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Group for ActionTokenType",
+            "columns": [
+                {
+                    "id": 1,
+                    "name": "aName",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "ActionTokenType.aName",
+                    "alias": "aName"
+                }
+            ]
+        }
+    ],
+    "searchColumns": [
+        "ActionTokenType.aName",
+        "ActionToken.FK_ActionTokenType_SID"
+    ],
+    "resultColumns": [
+        "ActionTokenType.aName",
+        "ActionToken.FK_ActionTokenType_SID"
+    ],
+    "orderByColumns": [
+        "ActionTokenType.aName",
+        "ActionToken.FK_ActionTokenType_SID"
+    ],
+    "fileName": "moritzIstNichtSoCool3.json"
+}

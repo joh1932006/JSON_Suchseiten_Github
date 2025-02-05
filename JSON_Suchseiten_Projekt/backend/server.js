@@ -276,6 +276,29 @@ app.post('/api/save-config', (req, res) => {
       res.json({ message: 'Datei erfolgreich gespeichert', fileName });
     });
   });
+
+  app.delete('/api/delete-config', (req, res) => {
+    const fileName = req.query.fileName;
+    if (!fileName) {
+      return res.status(400).send('Dateiname nicht gefunden');
+    }
+  
+    const filePath = path.join(configsFolder, fileName);
+  
+    // In app.delete('/api/delete-config', ...)
+fs.unlink(filePath, (err) => {
+    if (err) {
+      console.error(`Fehler beim Löschen der Datei "${fileName}":`, err);
+      return res.status(500).send('Fehler beim Löschen der Datei');
+    }
+    console.log(`Datei "${fileName}" erfolgreich gelöscht.`);
+  
+    // Sende eine JSON-Antwort statt eines reinen Strings:
+    res.status(200).json({ message: `Datei "${fileName}" erfolgreich gelöscht.` });
+  });
+  
+  });
+  
   
 
 /****************************************************

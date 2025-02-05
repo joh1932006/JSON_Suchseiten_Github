@@ -1,5 +1,5 @@
 {
-    "name": "afd",
+    "name": "johannesIstCool",
     "itemsPerPage": 100,
     "tableWidth": 1200,
     "preventSearchWithoutRestriction": false,
@@ -15,12 +15,12 @@
     "filterRoleSid": null,
     "roleSid": null,
     "interfaceSid": null,
-    "table": "AnswerGrpBRat",
+    "table": "Activity",
     "whereClause": [
-        "AnswerGrpBRat.FK_Language_SID",
-        "AnswerGrpBRat.FK_EnqPropPriority_SID",
-        "AnswerGrpBRatPos.aDescription",
-        "AnswerGrpBRatPos.aName"
+        "Activity.SID",
+        "Activity.aName",
+        "AutoProcStep.openLastGenerated",
+        "AutoProcStep.FK_QueryUserDest_SID"
     ],
     "joinGroups": [
         {
@@ -31,65 +31,66 @@
     "columnGroups": [
         {
             "id": 1,
-            "name": "Group for AnswerGrpBRat",
+            "name": "Group for Activity",
             "columns": [
                 {
                     "id": 1,
-                    "name": "FK_Language_SID",
+                    "name": "SID",
                     "multiLinugal": false,
                     "enqPropDataTypeSid": 1,
-                    "selectClause": "AnswerGrpBRat.FK_Language_SID",
-                    "alias": "FK_Language_SID"
-                },
-                {
-                    "id": 2,
-                    "name": "FK_EnqPropPriority_SID",
-                    "multiLinugal": false,
-                    "enqPropDataTypeSid": 1,
-                    "selectClause": "AnswerGrpBRat.FK_EnqPropPriority_SID",
-                    "alias": "FK_EnqPropPriority_SID"
-                }
-            ]
-        },
-        {
-            "id": 2,
-            "name": "Group for AnswerGrpBRatPos",
-            "columns": [
-                {
-                    "id": 1,
-                    "name": "aDescription",
-                    "multiLinugal": false,
-                    "enqPropDataTypeSid": 1,
-                    "selectClause": "AnswerGrpBRatPos.aDescription",
-                    "alias": "aDescription"
+                    "selectClause": "Activity.SID",
+                    "alias": "SID"
                 },
                 {
                     "id": 2,
                     "name": "aName",
                     "multiLinugal": false,
                     "enqPropDataTypeSid": 1,
-                    "selectClause": "AnswerGrpBRatPos.aName",
+                    "selectClause": "Activity.aName",
                     "alias": "aName"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Group for AutoProcStep",
+            "columns": [
+                {
+                    "id": 1,
+                    "name": "openLastGenerated",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "AutoProcStep.openLastGenerated",
+                    "alias": "openLastGenerated"
+                },
+                {
+                    "id": 2,
+                    "name": "FK_QueryUserDest_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "AutoProcStep.FK_QueryUserDest_SID",
+                    "alias": "FK_QueryUserDest_SID"
                 }
             ]
         }
     ],
     "searchColumns": [
-        "AnswerGrpBRat.FK_Language_SID",
-        "AnswerGrpBRat.FK_EnqPropPriority_SID",
-        "AnswerGrpBRatPos.aDescription",
-        "AnswerGrpBRatPos.aName"
+        "Activity.SID",
+        "Activity.aName",
+        "AutoProcStep.openLastGenerated",
+        "AutoProcStep.FK_QueryUserDest_SID"
     ],
     "resultColumns": [
-        "AnswerGrpBRat.FK_Language_SID",
-        "AnswerGrpBRat.FK_EnqPropPriority_SID",
-        "AnswerGrpBRatPos.aDescription",
-        "AnswerGrpBRatPos.aName"
+        "Activity.SID",
+        "Activity.aName",
+        "AutoProcStep.openLastGenerated",
+        "AutoProcStep.FK_QueryUserDest_SID"
     ],
     "orderByColumns": [
-        "AnswerGrpBRat.FK_Language_SID",
-        "AnswerGrpBRat.FK_EnqPropPriority_SID",
-        "AnswerGrpBRatPos.aDescription",
-        "AnswerGrpBRatPos.aName"
-    ]
+        "Activity.SID",
+        "Activity.aName",
+        "AutoProcStep.openLastGenerated",
+        "AutoProcStep.FK_QueryUserDest_SID"
+    ],
+    "fileName": "johannesIstCool.json"
 }
