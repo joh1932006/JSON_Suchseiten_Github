@@ -15,51 +15,34 @@
     "filterRoleSid": null,
     "roleSid": null,
     "interfaceSid": null,
-    "table": "aGroup",
-    "whereClause": [],
+    "table": "AnswerGrp",
+    "whereClause": [
+        "AnswerGrp.SID",
+        "AnswerGrp.aName",
+        "EnqPropResult.FK_EnqPropResultTab_SID",
+        "EnqPropResult.createDate"
+    ],
     "joinGroups": [
         {
             "id": 1,
-            "joinClause": "INNER JOIN FiOpenPosition ON aGroup.SID = FiOpenPosition.SID"
+            "joinClause": "INNER JOIN StoreGrpMain ON PoolUsage.SID = StoreGrpMain.SID"
         },
         {
             "id": 2,
-            "joinClause": "INNER JOIN ArticlePartner ON aGroup.SID = ArticlePartner.SID"
+            "joinClause": "INNER JOIN ArticleGroup ON ArticleGroup.SID = ArticleGroup.SID"
         }
     ],
     "columnGroups": [
         {
             "id": 1,
-            "name": "",
-            "columns": [
-                {
-                    "id": 1,
-                    "name": "man",
-                    "multiLinugal": false,
-                    "enqPropDataTypeSid": 1,
-                    "selectClause": "ArticlePartner.man",
-                    "alias": "man"
-                },
-                {
-                    "id": 2,
-                    "name": "FK_Article_SID",
-                    "multiLinugal": false,
-                    "enqPropDataTypeSid": 1,
-                    "selectClause": "ArticlePartner.FK_Article_SID",
-                    "alias": "FK_Article_SID"
-                }
-            ]
-        },
-        {
-            "id": 2,
-            "name": "",
+            "name": "Group for AnswerGrp",
             "columns": [
                 {
                     "id": 1,
                     "name": "SID",
                     "multiLinugal": false,
                     "enqPropDataTypeSid": 1,
-                    "selectClause": "aGroup.SID",
+                    "selectClause": "AnswerGrp.SID",
                     "alias": "SID"
                 },
                 {
@@ -67,35 +50,51 @@
                     "name": "aName",
                     "multiLinugal": false,
                     "enqPropDataTypeSid": 1,
-                    "selectClause": "aGroup.aName",
+                    "selectClause": "AnswerGrp.aName",
                     "alias": "aName"
                 }
             ]
         },
         {
-            "id": 3,
-            "name": "",
+            "id": 2,
+            "name": "Group for EnqPropResult",
             "columns": [
                 {
                     "id": 1,
-                    "name": "finished",
+                    "name": "FK_EnqPropResultTab_SID",
                     "multiLinugal": false,
                     "enqPropDataTypeSid": 1,
-                    "selectClause": "FiOpenPosition.finished",
-                    "alias": "finished"
+                    "selectClause": "EnqPropResult.FK_EnqPropResultTab_SID",
+                    "alias": "FK_EnqPropResultTab_SID"
                 },
                 {
                     "id": 2,
-                    "name": "FK_FiBookingPosCreate_SID",
+                    "name": "createDate",
                     "multiLinugal": false,
                     "enqPropDataTypeSid": 1,
-                    "selectClause": "FiOpenPosition.FK_FiBookingPosCreate_SID",
-                    "alias": "FK_FiBookingPosCreate_SID"
+                    "selectClause": "EnqPropResult.createDate",
+                    "alias": "createDate"
                 }
             ]
         }
     ],
-    "searchColumns": [],
-    "resultColumns": [],
-    "orderByColumns": []
+    "searchColumns": [
+        "AnswerGrp.SID",
+        "AnswerGrp.aName",
+        "EnqPropResult.FK_EnqPropResultTab_SID",
+        "EnqPropResult.createDate"
+    ],
+    "resultColumns": [
+        "AnswerGrp.SID",
+        "AnswerGrp.aName",
+        "EnqPropResult.FK_EnqPropResultTab_SID",
+        "EnqPropResult.createDate"
+    ],
+    "orderByColumns": [
+        "AnswerGrp.SID",
+        "AnswerGrp.aName",
+        "EnqPropResult.FK_EnqPropResultTab_SID",
+        "EnqPropResult.createDate"
+    ],
+    "fileName": "loser.json"
 }

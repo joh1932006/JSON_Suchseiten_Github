@@ -1,0 +1,66 @@
+{
+    "name": "johannesok",
+    "itemsPerPage": 100,
+    "tableWidth": 1200,
+    "preventSearchWithoutRestriction": false,
+    "showInStartMenu": false,
+    "selectSingleEntity": true,
+    "searchOnType": true,
+    "hideHeadersOnNoRestriction": false,
+    "automaticRun": true,
+    "implementationId": 1,
+    "querySid": null,
+    "filterXDJoinGroupId": null,
+    "filterChooseRoleSid": null,
+    "filterRoleSid": null,
+    "roleSid": null,
+    "interfaceSid": null,
+    "table": "AnswerGrpBRat",
+    "whereClause": [
+        "AnswerGrpBRat.SID",
+        "AnswerGrpBRat.aName"
+    ],
+    "joinGroups": [
+        {
+            "id": 1,
+            "joinClause": ""
+        }
+    ],
+    "columnGroups": [
+        {
+            "id": 1,
+            "name": "Group for AnswerGrpBRat",
+            "columns": [
+                {
+                    "id": 1,
+                    "name": "SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "AnswerGrpBRat.SID",
+                    "alias": "SID"
+                },
+                {
+                    "id": 2,
+                    "name": "aName",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "AnswerGrpBRat.aName",
+                    "alias": "aName"
+                }
+            ]
+        }
+    ],
+    "searchColumns": [
+        "AnswerGrpBRat.SID",
+        "AnswerGrpBRat.aName"
+    ],
+    "resultColumns": [
+        "AnswerGrpBRat.SID",
+        "AnswerGrpBRat.aName"
+    ],
+    "orderByColumns": [
+        "AnswerGrpBRat.SID",
+        "AnswerGrpBRat.aName"
+    ],
+    "fileName": "johannesok.json"
+}

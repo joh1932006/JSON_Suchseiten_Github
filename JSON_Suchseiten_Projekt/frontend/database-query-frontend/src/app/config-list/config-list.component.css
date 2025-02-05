@@ -1,0 +1,125 @@
+/* Du kannst Teile aus deinem globalen Stylesheet übernehmen, z.B.: */
+
+.container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+  
+  /* Buttons */
+  .btn {
+    background-color: #39475D;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    margin: 8px 0;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+  }
+  
+  .btn:hover {
+    background-color: #506381;
+  }
+  
+  /* "Neue Konfiguration" => add-btn */
+  .add-btn {
+    background-color: #3182CE; 
+  }
+  .add-btn:hover {
+    background-color: #2B6CB0;
+  }
+  
+  /* Tabellen-Container */
+  .table-container {
+    background-color: #232A3A;
+    border: 1px solid #2F3848;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  th {
+    background-color: #2F3848; 
+    color: #FFFFFF;
+    text-align: left;
+    padding: 12px;
+    font-weight: normal;
+  }
+  
+  td {
+    background-color: #232A3A; 
+    color: #FFFFFF;
+    padding: 12px;
+    border-bottom: 1px solid #2F3848;
+  }
+  
+  /* Hover-Effekt */
+  tbody tr:hover td {
+    background-color: #2D3545;
+  }
+  
+  /* Klickbare Zellen */
+  .clickable {
+    color: #75A1FF;
+    cursor: pointer;
+  }
+  .clickable:hover {
+    color: #99BDFF;
+  }
+  
+  /* Nachricht, wenn kein Eintrag */
+  .no-db-message {
+    color: #AAAAAA;
+    font-style: italic;
+  }
+
+  /* -------------------------------------- */
+  /* LOGIN-POPUP (falls du eins hast)       */
+  /* -------------------------------------- */
+  .login-popup {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -20%);
+    background-color: #2A2A2A;
+    padding: 30px;
+    border: 1px solid #333;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    border-radius: 6px;
+  }
+  
+  .login-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .login-content input {
+    padding: 10px;
+    font-size: 15px;
+    border: 1px solid #555;
+    background-color: #3A3A3A;
+    color: #ECECEC;
+    border-radius: 4px;
+  }
+  
+  .login-content button {
+    padding: 10px;
+    font-size: 15px;
+    background-color: #3182CE;
+    color: #ECECEC;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  

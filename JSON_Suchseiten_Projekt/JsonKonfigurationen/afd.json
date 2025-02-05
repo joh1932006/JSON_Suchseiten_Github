@@ -1,0 +1,95 @@
+{
+    "name": "afd",
+    "itemsPerPage": 100,
+    "tableWidth": 1200,
+    "preventSearchWithoutRestriction": false,
+    "showInStartMenu": false,
+    "selectSingleEntity": true,
+    "searchOnType": true,
+    "hideHeadersOnNoRestriction": false,
+    "automaticRun": true,
+    "implementationId": 1,
+    "querySid": null,
+    "filterXDJoinGroupId": null,
+    "filterChooseRoleSid": null,
+    "filterRoleSid": null,
+    "roleSid": null,
+    "interfaceSid": null,
+    "table": "AnswerGrpBRat",
+    "whereClause": [
+        "AnswerGrpBRat.FK_Language_SID",
+        "AnswerGrpBRat.FK_EnqPropPriority_SID",
+        "AnswerGrpBRatPos.aDescription",
+        "AnswerGrpBRatPos.aName"
+    ],
+    "joinGroups": [
+        {
+            "id": 1,
+            "joinClause": "INNER JOIN StoreType ON PoolUsage.SID = StoreType.SID"
+        }
+    ],
+    "columnGroups": [
+        {
+            "id": 1,
+            "name": "Group for AnswerGrpBRat",
+            "columns": [
+                {
+                    "id": 1,
+                    "name": "FK_Language_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "AnswerGrpBRat.FK_Language_SID",
+                    "alias": "FK_Language_SID"
+                },
+                {
+                    "id": 2,
+                    "name": "FK_EnqPropPriority_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "AnswerGrpBRat.FK_EnqPropPriority_SID",
+                    "alias": "FK_EnqPropPriority_SID"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Group for AnswerGrpBRatPos",
+            "columns": [
+                {
+                    "id": 1,
+                    "name": "aDescription",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "AnswerGrpBRatPos.aDescription",
+                    "alias": "aDescription"
+                },
+                {
+                    "id": 2,
+                    "name": "aName",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "AnswerGrpBRatPos.aName",
+                    "alias": "aName"
+                }
+            ]
+        }
+    ],
+    "searchColumns": [
+        "AnswerGrpBRat.FK_Language_SID",
+        "AnswerGrpBRat.FK_EnqPropPriority_SID",
+        "AnswerGrpBRatPos.aDescription",
+        "AnswerGrpBRatPos.aName"
+    ],
+    "resultColumns": [
+        "AnswerGrpBRat.FK_Language_SID",
+        "AnswerGrpBRat.FK_EnqPropPriority_SID",
+        "AnswerGrpBRatPos.aDescription",
+        "AnswerGrpBRatPos.aName"
+    ],
+    "orderByColumns": [
+        "AnswerGrpBRat.FK_Language_SID",
+        "AnswerGrpBRat.FK_EnqPropPriority_SID",
+        "AnswerGrpBRatPos.aDescription",
+        "AnswerGrpBRatPos.aName"
+    ]
+}

@@ -1,0 +1,416 @@
+/* -------------------------------------- */
+/* GLOBAL / BODY                          */
+/* -------------------------------------- */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1E2532; /* Dunkles Navy-Blau */
+    font-family: Arial, sans-serif;
+    color: #FFFFFF;
+    box-sizing: border-box;
+  }
+  
+  
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    font-weight: normal;
+  }
+  
+  /* -------------------------------------- */
+  /* HAUPT-CONTAINER (schmaler)             */
+  /* -------------------------------------- */
+  .container {
+    max-width: 700px;           /* weniger breit */
+    margin: 40px auto; 
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+  
+  /* Überschriften etwas größer */
+  h2, h3 {
+    margin-bottom: 16px;
+    color: #FFFFFF;
+  }
+  
+  label {
+    font-weight: bold;
+    color: #FFFFFF;
+    margin-bottom: 4px;
+    display: inline-block;
+  }
+  
+  /* -------------------------------------- */
+  /* FORMULAR-ELEMENTE (Inputs/Selects)     */
+  /* -------------------------------------- */
+  input, select {
+    background-color: #293244; 
+    color: #FFFFFF;
+    border: 1px solid #39475D;
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+  }
+  
+  input:focus, select:focus {
+    outline: none;
+    border-color: #506381;
+  }
+  
+  /* -------------------------------------- */
+  /* BUTTONS                                */
+  /* -------------------------------------- */
+  .btn {
+    background-color: #39475D;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    margin: 8px 0;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+  }
+  
+  .btn:hover {
+    background-color: #506381;
+  }
+  
+  /* Spezielle Button-Farben */
+  .add-btn {
+    background-color: #3182CE; 
+  }
+  
+  .add-btn:hover {
+    background-color: #2B6CB0;
+  }
+  
+  .remove-row {
+    background-color: #E53E3E; 
+    color: #ECECEC;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+  
+  .remove-row:hover {
+    background-color: #C53030;
+  }
+  
+  /* -------------------------------------- */
+  /* TABELLE-KONTAINER (Dunkler Bereich)    */
+  /* -------------------------------------- */
+  .table-container {
+    /* NEU: Größer machen, an das zweite Screenshot-Layout angepasst */
+    background-color: #232A3A;
+    border: 1px solid #2F3848;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    /* Damit wir es nachher neben der Spaltenliste platzieren können:
+       Machen wir hier keine feste Breite, die kommt später über .tables-columns-container */
+  }
+  
+  /* Tabellen-Überschrift */
+  .table-container h2 {
+    margin-bottom: 20px;
+    font-size: 20px;
+  }
+  
+  /* Falls du <table> im .table-container verwendest */
+  table {
+    width: 100%; /* Neu: Volle Breite (statt 60%) */
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  th {
+    background-color: #2F3848; 
+    color: #FFFFFF;
+    text-align: left;
+    padding: 12px;
+    font-weight: normal;
+  }
+  
+  td {
+    background-color: #232A3A; 
+    color: #FFFFFF;
+    padding: 12px;
+    border-bottom: 1px solid #2F3848;
+  }
+  
+  tbody tr:hover td {
+    background-color: #2D3545;
+  }
+  
+  /* Klickbare Zellen */
+  .clickable {
+    color: #75A1FF;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .clickable:hover {
+    color: #99BDFF;
+  }
+  
+  .selected-row td {
+    background-color: #0A375E;
+  }
+  
+  /* -------------------------------------- */
+  /* JOIN-BEDINGUNGEN (Grid-Aufteilung)     */
+  /* -------------------------------------- */
+  .join-section {
+    margin-bottom: 30px;
+  }
+  
+  .join-section h3 {
+    margin-bottom: 16px;
+  }
+  
+  .join-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  /* -------------------------------------- */
+  /* TABELLEN + SPALTEN NEBENEINANDER      */
+  /* -------------------------------------- */
+  .tables-columns-container {
+    display: flex;       /* flex layout, um Tabelle & Spalten nebeneinander */
+    gap: 20px;           /* Platz zwischen den beiden Bereichen */
+    margin-bottom: 30px; /* Abstand nach unten */
+  }
+  
+  /* Linke Spalte (Tabellenliste) – 
+     Wir geben ihr eine Breite, damit die Spaltenliste daneben Platz hat */
+  .tables-columns-container .table-container {
+    flex: 0 0 300px;     /* Feste Breite von 300px, so wie im 2. Screenshot */
+    margin: 0;           /* Überschreibt evtl. margin-bottom */
+  }
+  
+  /* -------------------------------------- */
+  /* SPALTENLISTE (anstelle von POPUP)      */
+  /* -------------------------------------- */
+  .columns-display {
+    /* Wir entfernen position:absolute 
+       und machen daraus die rechte Spalte */
+    flex: 1;
+    background-color: #232A3A;
+    border: 1px solid #2F3848;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: none;
+    position: static; /* standard flow */
+    top: auto;        /* entfernt */
+    right: auto;      /* entfernt */
+    width: auto;      /* Dynamische Breite */
+  }
+  
+  /* Überschrift in der Spaltenauswahl */
+  .columns-display h3 {
+    margin-top: 0;
+    margin-bottom: 14px;
+    font-size: 16px;
+  }
+  
+  /* Spalten-Liste in zwei Spalten */
+  .columns-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    column-count: 2;   /* Zwei Spalten */
+    column-gap: 30px;  /* Abstand zwischen Spalten */
+  }
+  
+  /* Einzelner Spalten-Eintrag */
+  .columns-item {
+    display: block;
+    margin-bottom: 6px;
+    break-inside: avoid;  /* Kein Zerreißen in der Spalte */
+    cursor: pointer;
+    font-size: 13px;
+  }
+  
+  .columns-item label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #ECECEC;
+  }
+  
+  /* Kleinere Checkbox */
+  .columns-item input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: #75A1FF;
+    cursor: pointer;
+  }
+  
+  /* Leichter Hover-Effekt */
+  .columns-item:hover {
+    background-color: #2D3545;
+    border-radius: 4px;
+    padding: 2px;
+  }
+  
+  /* -------------------------------------- */
+  /* JSON-KONFIG BUTTON                     */
+  /* -------------------------------------- */
+  .json-config-save-container {
+    margin-top: 30px;
+    text-align: center;
+  }
+  
+  .save-btn {
+    background-color: #4CAF50;
+    color: #ECECEC;
+    border-radius: 5px;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .save-btn:hover {
+    background-color: #3E8E41;
+  }
+  
+  /* -------------------------------------- */
+  /* OPTIONALE TEXTE, DB-AUSWAHL            */
+  /* -------------------------------------- */
+  .selected-db {
+    font-size: 16px;
+    color: #CCCCCC;
+    margin: 10px 0;
+  }
+  
+  .no-db-message {
+    color: #AAAAAA;
+    font-style: italic;
+  }
+  
+  /* -------------------------------------- */
+  /* KONFIG-NAME INPUT (falls genutzt)      */
+  /* -------------------------------------- */
+  .config-name-input {
+    width: 280px; /* Schmaler */
+    background-color: #293244;
+    color: #FFFFFF;
+    border: 1px solid #39475D;
+    padding: 8px 10px;
+    margin: 10px auto;
+    display: block;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+    font-size: 14px;
+  }
+  
+  .config-name-input:focus {
+    border-color: #506381;
+  }
+  
+  
+  
+  /* -------------------------------------- */
+  /* MODAL (Add/Edit Database)              */
+  /* -------------------------------------- */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+  
+  .modal-content {
+    background-color: #2A2A2A;
+    padding: 30px;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    position: relative;
+    color: #ECECEC;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .modal-content .close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 18px;
+    cursor: pointer;
+    color: #999;
+  }
+  
+  .modal-content .close:hover {
+    color: #ECECEC;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .checkbox-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .modal-content button {
+    margin-top: 20px;
+  }
+  
+  /* -------------------------------------- */
+  /* USER-INFO (oben rechts)                */
+  /* -------------------------------------- */
+  .user-info {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 14px;
+    color: #ECECEC;
+  }
+  
+
+  .home-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #FFFFFF;
+    font-size: 24px;      
+    margin-right: 20px;
+    transition: color 0.2s;
+  }
+  
+  .home-btn:hover {
+    color: #3182CE;      
+  }
+  
