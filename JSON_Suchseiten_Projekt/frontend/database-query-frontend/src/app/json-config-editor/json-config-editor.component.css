@@ -211,25 +211,21 @@
     margin: 0;           /* Überschreibt evtl. margin-bottom */
   }
   
-  /* -------------------------------------- */
-  /* SPALTENLISTE (anstelle von POPUP)      */
-  /* -------------------------------------- */
+
+  /* SPALTENLISTE */
   .columns-display {
-    /* Wir entfernen position:absolute 
-       und machen daraus die rechte Spalte */
     flex: 1;
     background-color: #232A3A;
     border: 1px solid #2F3848;
     border-radius: 8px;
     padding: 20px;
     box-shadow: none;
-    position: static; /* standard flow */
-    top: auto;        /* entfernt */
-    right: auto;      /* entfernt */
-    width: auto;      /* Dynamische Breite */
+    position: static; 
+    top: auto;        
+    right: auto;      
+    width: auto;      
   }
   
-  /* Überschrift in der Spaltenauswahl */
   .columns-display h3 {
     margin-top: 0;
     margin-bottom: 14px;
@@ -241,7 +237,7 @@
     list-style-type: none;
     padding: 0;
     margin: 0;
-    column-count: 2;   /* Zwei Spalten */
+    column-count: 2;   
     column-gap: 30px;  /* Abstand zwischen Spalten */
   }
   
@@ -249,7 +245,7 @@
   .columns-item {
     display: block;
     margin-bottom: 6px;
-    break-inside: avoid;  /* Kein Zerreißen in der Spalte */
+    break-inside: avoid;  
     cursor: pointer;
     font-size: 13px;
   }
@@ -257,24 +253,23 @@
   .columns-item label {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 6px; 
+    margin: 0;        
+    padding: 0;       
+    white-space: nowrap; 
     color: #ECECEC;
   }
   
-  /* Kleinere Checkbox */
   .columns-item input[type="checkbox"] {
     width: 14px;
     height: 14px;
     accent-color: #75A1FF;
     cursor: pointer;
+    margin: 0; 
   }
   
-  /* Leichter Hover-Effekt */
-  .columns-item:hover {
-    background-color: #2D3545;
-    border-radius: 4px;
-    padding: 2px;
-  }
+  
+  
   
   /* -------------------------------------- */
   /* JSON-KONFIG BUTTON                     */
@@ -412,5 +407,33 @@
   
   .home-btn:hover {
     color: #3182CE;      
+  }
+  
+ /*Tabelle um Attribute weiter zu konfigurieren*/ 
+ 
+.columns-config-table {
+    table-layout: fixed;   
+    width: 100%;            
+  }
+  
+  .columns-config-table th, 
+  .columns-config-table td {
+    /* Damit der Text bei Bedarf umbricht */
+    word-wrap: break-word;  
+    text-align: left;
+  }
+  
+
+  
+  /* 1. Spalte (Select-Clause) etwa etwas breiter */
+  .columns-config-table th:nth-child(1),
+  .columns-config-table td:nth-child(1) {
+    width: 140px;
+  }
+  
+  /* 2. Spalte (Alias) etwas enger */
+  .columns-config-table th:nth-child(2),
+  .columns-config-table td:nth-child(2) {
+    width: 120px;
   }
   

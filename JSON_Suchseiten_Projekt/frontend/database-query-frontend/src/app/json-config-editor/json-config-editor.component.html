@@ -298,9 +298,67 @@
     </div>
   </div>
   
+
+
+  <!-- Spalten-Konfiguration: dynamische Tabelle für alle ausgewählten Spalten -->
+<div class="table-container">
+    <h2>Spalten-Konfiguration</h2>
+  
+    <table class="columns-config-table">
+      <thead>
+        <tr>
+          <th>Select-Clause</th>
+          <th>Spaltenname</th>
+          <th>Alias</th>
+          <th>Datentyp</th>
+          <th>Suchfeld</th>
+          <th>GroupBy</th>
+          <th>OrderBy</th>
+          <th>Nachkommastellen</th>
+          <th>Breite</th>
+          <th>Bedingung</th>
+        </tr>
+      </thead>
+  
+      <tbody>
+        <!-- Erzeugt pro ausgewählter Spalte (z.B. "BankCon.IBAN") eine neue Zeile -->
+        <tr *ngFor="let col of selectedColumns">
+          <!-- Volle Spaltenangabe, z.B. "BankCon.IBAN" -->
+          <td>{{ col }}</td>
+  
+          <!-- Nur der Teil vor dem Punkt, z.B. "BankCon" -->
+          <td>{{ getTableName(col) }}</td>
+  
+          <!-- Nur der Teil nach dem Punkt, z.B. "IBAN" -->
+          <td>{{ getColumnName(col) }}</td>
+  
+          <!-- Beispielhafter Standardwert "Text - Zeile" -->
+          <td>Text - Zeile</td>
+  
+          <!-- Checkboxen oder weitere Felder nach Bedarf -->
+          <td><input type="checkbox" /></td>
+          <td><input type="checkbox" /></td>
+          <td><input type="checkbox" /></td>
+  
+          <!-- Nachkommastellen -->
+          <td><input type="number" style="width: 60px;" /></td>
+  
+          <!-- Breite -->
+          <td><input type="number" style="width: 60px;" /></td>
+  
+          <!-- Bedingung, z.B. Textfeld -->
+          <td><input type="text" style="width: 100px;" /></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+
+
   <div class="json-config-save-container">
     <button (click)="saveJsonConfig()" class="btn save-btn">
-      JSON-Konfiguration speichern
+      Suchseite speichern
     </button>
   </div>
+  
   

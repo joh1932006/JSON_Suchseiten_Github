@@ -20,6 +20,27 @@ export class JsonConfigEditorComponent implements OnInit {
     private router: Router 
   ) {}
 
+
+  
+  /**
+ * Gibt alles vor dem ersten Punkt zurück.
+ * "BankCon.IBAN" -> "BankCon"
+ */
+getTableName(fullColumn: string): string {
+  const parts = fullColumn.split('.');
+  return parts[0] || fullColumn;
+}
+
+/**
+ * Gibt alles nach dem ersten Punkt zurück.
+ * "BankCon.IBAN" -> "IBAN"
+ */
+getColumnName(fullColumn: string): string {
+  return fullColumn.replace('.', '_');
+}
+
+
+
   // Neue Methode
   goHome() {
     // Navigiert zur Startseite (Route path: '')
