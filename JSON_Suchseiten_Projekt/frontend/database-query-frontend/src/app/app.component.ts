@@ -15,6 +15,14 @@ import { FormsModule } from '@angular/forms';
 export class AppComponent {
   title = 'mein-projekt';
 
+  foreignKeys: { 
+    foreign_key_name: string; 
+    parent_table: string; 
+    parent_column: string; 
+    referenced_table: string; 
+    referenced_column: string; 
+  }[] = [];
+  
 
   configName: string = ''; // Beispielwert
 
@@ -116,16 +124,16 @@ export class AppComponent {
       console.error('No database selected');
       return;
     }
-
+  
     this.http.get<{ tables: string[] }>('http://localhost:3000/get-tables').subscribe(
       response => {
-        this.tables = response.tables;
-        console.log('Tables fetched:', this.tables);
+        // Tabellen alphabetisch sortieren
+        this.tables = response.tables.sort((a, b) => a.localeCompare(b));
+        console.log('Tables fetched and sorted:', this.tables);
       },
       error => console.error('Error fetching tables:', error)
     );
   }
-
   fetchJoinableTables(baseTable: string) {
     if (!baseTable) {
         console.error('No base table provided');
@@ -161,8 +169,6 @@ export class AppComponent {
     this.selectedBaseTable = selectedBaseTable;
     this.fetchJoinableTables(selectedBaseTable); // Aktualisiere die möglichen Join-Tabellen
 }
-
-
 
   // Datenbank bearbeiten
   editDatabase() {
@@ -218,13 +224,33 @@ export class AppComponent {
   removeJoinRow(index: number) {
     this.joinRows.splice(index, 1);
   }
-
+  
+  fetchForeignKeys(tableName: string) {
+    this.http.get<{ foreignKeys: any[] }>(`http://localhost:3000/get-foreign-keys?table=${tableName}`).subscribe(
+      response => {
+        console.log('Foreign keys fetched:', response.foreignKeys);
+        // Speichere die Fremdschlüsselinformationen
+        this.foreignKeys = response.foreignKeys;
+      },
+      error => console.error('Error fetching foreign keys:', error)
+    );
+  }
+  
+// inner join selectedTable on selectedTable.sid = basetable.FK_selectedtable_Sid
   generateJoinCondition(index: number) {
     const joinRow = this.joinRows[index];
-    if (this.selectedBaseTable && joinRow.table && joinRow.joinType) {
-      joinRow.condition = `${joinRow.joinType} ${joinRow.table} ON ${this.selectedBaseTable}.SID = ${joinRow.table}.SID`;
+    const foreignKey = this.foreignKeys.find(
+      fk => fk.referenced_table === joinRow.table
+    );
+  
+    if (foreignKey) {
+      joinRow.condition = `${joinRow.joinType} ${joinRow.table} ON ${joinRow.table}.${foreignKey.referenced_column} = ${this.selectedBaseTable}.${foreignKey.parent_column}`;
+    } else {
+      console.error('No foreign key found for the selected table');
     }
   }
+
+  
 
   activeTable: string = '';
   tableColumns: string[] = [];
