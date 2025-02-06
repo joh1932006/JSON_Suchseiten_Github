@@ -285,18 +285,14 @@ app.post('/api/save-config', (req, res) => {
   
     const filePath = path.join(configsFolder, fileName);
   
-    // In app.delete('/api/delete-config', ...)
-fs.unlink(filePath, (err) => {
-    if (err) {
-      console.error(`Fehler beim Löschen der Datei "${fileName}":`, err);
-      return res.status(500).send('Fehler beim Löschen der Datei');
-    }
-    console.log(`Datei "${fileName}" erfolgreich gelöscht.`);
-  
-    // Sende eine JSON-Antwort statt eines reinen Strings:
-    res.status(200).json({ message: `Datei "${fileName}" erfolgreich gelöscht.` });
-  });
-  
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error(`Fehler beim Löschen der Datei "${fileName}":`, err);
+        return res.status(500).send('Fehler beim Löschen der Datei');
+      }
+      console.log(`Datei "${fileName}" erfolgreich gelöscht.`);
+      res.status(200).send(`Datei "${fileName}" erfolgreich gelöscht.`);
+    });
   });
   
   
