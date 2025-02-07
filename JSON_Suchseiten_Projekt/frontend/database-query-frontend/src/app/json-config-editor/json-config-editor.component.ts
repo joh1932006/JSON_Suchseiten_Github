@@ -290,11 +290,25 @@ export class JsonConfigEditorComponent implements OnInit {
     this.tableColumns = [];
     this.http.get<{ columns: string[] }>(`http://localhost:3000/get-columns?table=${tableName}`).subscribe(
       response => {
-        this.tableColumns = response.columns;
+        this.tableColumns = response.columns.sort((a, b) => {
+          const lowerA = a.toLowerCase();
+          const lowerB = b.toLowerCase();
+          // Wenn a "sid" ist und b nicht, soll a vor b
+          if (lowerA === 'sid' && lowerB !== 'sid') {
+            return -1;
+          }
+          // Wenn b "sid" ist und a nicht, soll b vor a
+          if (lowerB === 'sid' && lowerA !== 'sid') {
+            return 1;
+          }
+          // Andernfalls alphabetisch sortieren
+          return a.localeCompare(b);
+        });
       },
       error => console.error('Fehler beim Abrufen der Spalten:', error)
     );
   }
+  
 
   /**
    * Wird aufgerufen, wenn eine Spalte in der Liste ausgewählt oder abgewählt wird.
