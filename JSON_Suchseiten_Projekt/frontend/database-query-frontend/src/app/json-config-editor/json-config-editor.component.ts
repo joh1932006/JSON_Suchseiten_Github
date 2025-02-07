@@ -1,9 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';           // <--- Wichtig für Param-Auswertung
+import { ActivatedRoute, Router } from '@angular/router';           // Wichtig für Param-Auswertung
 import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
+// Neues Interface für die Spaltenkonfiguration
+interface ColumnConfig {
+  fullColumn: string;            // z. B. "BankCon.IBAN"
+  search: boolean;               // Gibt an, ob die Checkbox "Suchfeld" aktiviert wurde
+  groupBy: boolean;              // (optional)
+  orderBy: 'none' | 'ASC' | 'DESC'; // Drei Zustände: keine Sortierung, ASC oder DESC
+  // Weitere optionale Felder (z. B. Nachkommastellen, Breite, Bedingung) können ergänzt werden
+}
 
 @Component({
   selector: 'app-json-config-editor',
@@ -13,45 +22,50 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./json-config-editor.component.css']
 })
 export class JsonConfigEditorComponent implements OnInit {
-  
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
     private router: Router 
   ) {}
 
-
+  // ---------------------------
+  // Hilfsmethoden
+  // ---------------------------
   
   /**
- * Gibt alles vor dem ersten Punkt zurück.
- * "BankCon.IBAN" -> "BankCon"
- */
-getTableName(fullColumn: string): string {
-  const parts = fullColumn.split('.');
-  return parts[0] || fullColumn;
-}
+   * Gibt den Tabellennamen zurück (alles vor dem ersten Punkt).
+   * Beispiel: "BankCon.IBAN" → "BankCon"
+   */
+  getTableName(fullColumn: string): string {
+    const parts = fullColumn.split('.');
+    return parts[0] || fullColumn;
+  }
 
-/**
- * Gibt alles nach dem ersten Punkt zurück.
- * "BankCon.IBAN" -> "IBAN"
- */
-getColumnName(fullColumn: string): string {
-  return fullColumn.replace('.', '_');
-}
+  /**
+   * Gibt den Spaltennamen zurück (alles nach dem ersten Punkt).
+   * Beispiel: "BankCon.IBAN" → "IBAN"
+   */
+  getColumnName(fullColumn: string): string {
+    const parts = fullColumn.split('.');
+    return parts[1] || fullColumn;
+  }
 
-
-
-  // Neue Methode
+  /**
+   * Navigiert zurück zur Startseite.
+   */
   goHome() {
-    // Navigiert zur Startseite (Route path: '')
     this.router.navigate(['']);
   }
 
-  fileName: string | null = null;
+  /**
+   * Prüft, ob die übergebene Spalte bereits in den ausgewählten ColumnConfigs enthalten ist.
+   */
+  isColumnSelected(column: string): boolean {
+    const fullCol = this.activeTable + '.' + column;
+    return this.selectedColumnConfigs.some(c => c.fullColumn === fullCol);
+  }
 
-  // ----------------------------------
-  // Vorhandene Variablen
-  // ----------------------------------
+  fileName: string | null = null;
   title = 'mein-projekt';
 
   foreignKeys: {
@@ -59,10 +73,10 @@ getColumnName(fullColumn: string): string {
     parent_table: string; 
     parent_column: string; 
     referenced_table: string; 
-    referenced_column: string; 
+    referenced_column: string;
   }[] = [];
 
-  configName: string = ''; // Beispielwert
+  configName: string = '';
 
   databases: { name: string; config: any }[] = [
     {
@@ -101,50 +115,32 @@ getColumnName(fullColumn: string): string {
   };
 
   tables: string[] = [];
-  
-
   joinRows: { table: string; joinType: string; condition: string }[] = [];
 
-  // ----------------------------------
-  // LEBENSZYKLUS: OnInit
-  // ----------------------------------
+  // Statt eines einfachen string-Arrays führen wir jetzt ein Array von ColumnConfig-Objekten
+  selectedColumnConfigs: ColumnConfig[] = [];
+
+  // ---------------------------
+  // Initialisierung
+  // ---------------------------
   ngOnInit() {
-    // 1) Prüfen, ob Route param "filename" = 'new' oder ein echter Dateiname
     this.fileName = this.route.snapshot.paramMap.get('filename');
     console.log('JsonConfigEditorComponent initialized. fileName:', this.fileName);
 
-    // 2) Unterscheiden, ob "new" oder "datei.json"
     if (this.fileName === 'new') {
-      // Neue Konfiguration
       console.log('-> Neue Konfiguration: Formular leer lassen.');
-      // Optional: Du könntest hier default-Werte setzen.
-      // this.configName = 'neueConfig';
     } else if (this.fileName) {
-      // Existierende Konfiguration laden
       this.loadExistingConfig(this.fileName);
     }
   }
 
-  /**
-   * Liest eine bestehende JSON-Konfiguration vom Server (Datei).
-   * @param fileName z.B. "myConfig.json"
-   */
   loadExistingConfig(fileName: string) {
-    // Hier solltest du im Backend einen passenden Endpoint haben,
-    // z. B. /api/read-config?fileName=xxx
     this.http.get<any>(`http://localhost:3000/api/read-config?fileName=${fileName}`)
       .subscribe({
         next: (data) => {
           console.log('Geladene Config:', data);
-          // Formular mit geladener Config befüllen:
-          // z. B. "name" in configName
           this.configName = data.name || '';
-          // Falls du mehr Eigenschaften speicherst, hier übernehmen.
-          // ...
-          // z. B.:
-          // this.tables = data.tables || [];
-          // this.selectedDatabase = data.selectedDatabase || '';
-          // ...
+          // Weitere Eigenschaften (z. B. Tabellen, Spalten) können hier übernommen werden.
         },
         error: (err) => {
           console.error('Fehler beim Laden der JSON-Konfiguration:', err);
@@ -152,11 +148,9 @@ getColumnName(fullColumn: string): string {
       });
   }
 
-  // ----------------------------------
-  // LOGIN, DB-Verwaltung, usw.
-  // (dein bestehender Code)
-  // ----------------------------------
-  
+  // ---------------------------
+  // DB-Management, etc.
+  // ---------------------------
   openDbConfigModal() {
     this.resetNewDatabaseForm();
     this.showDbConfigModal = true;
@@ -280,13 +274,12 @@ getColumnName(fullColumn: string): string {
       console.error('No foreign key found for the selected table');
     }
   }
-  
-  // ----------------------------------
-  // SPALTEN & AUSWAHL
-  // ----------------------------------
+
+  // ---------------------------
+  // Spalten und Tabellen
+  // ---------------------------
   activeTable: string = '';
   tableColumns: string[] = [];
-  selectedColumns: string[] = [];
 
   loadColumns(tableName: string) {
     if (!tableName) {
@@ -303,58 +296,131 @@ getColumnName(fullColumn: string): string {
     );
   }
 
+  /**
+   * Wird aufgerufen, wenn eine Spalte in der Liste ausgewählt oder abgewählt wird.
+   * Es wird ein Objekt (ColumnConfig) angelegt oder entfernt.
+   */
   toggleColumnSelection(column: string, tableName: string, event: any) {
-    const columnIdentifier = `${tableName}.${column}`;
+    const fullColumn = `${tableName}.${column}`;
     if (event.target.checked) {
-      this.selectedColumns.push(columnIdentifier);
-    } else {
-      this.selectedColumns = this.selectedColumns.filter(c => c !== columnIdentifier);
-    }
-    console.log('Selected Columns:', this.selectedColumns);
-  }
-
-  // ----------------------------------
-  // SPEZIELLE LOGIK FÜR JSON-KONFIG
-  // ----------------------------------
-  generateColumnGroups() {
-    let groupId = 0;
-    const columnGroups = this.tables
-      .filter(table => table === this.activeTable || this.selectedColumns.length > 0)
-      .map(table => {
-        const tableColumns = this.selectedColumns.filter(column => column.startsWith(`${table}.`));
-        let columnId = 0;
-        const groupColumns = tableColumns.map(column => {
-          columnId += 1;
-          return {
-            id: columnId,
-            name: column.replace(`${table}.`, ''),
-            multiLinugal: false,
-            enqPropDataTypeSid: 1,
-            selectClause: `${table}.${column.replace(`${table}.`, '')}`,
-            alias: column.replace(`${table}.`, '')
-          };
+      if (!this.selectedColumnConfigs.find(c => c.fullColumn === fullColumn)) {
+        this.selectedColumnConfigs.push({
+          fullColumn,
+          search: false,    // Standardmäßig nicht als Suchspalte markiert
+          groupBy: false,
+          orderBy: 'none'   // Standardmäßig: keine OrderBy-Konfiguration
         });
-        if (groupColumns.length > 0) {
-          groupId += 1;
-          return {
-            id: groupId,
-            name: `Group for ${table}`,
-            columns: groupColumns
-          };
-        }
-        return null;
-      })
-      .filter(group => group !== null) as { id: number; name: string; columns: any[] }[];
-
-    return columnGroups;
+      }
+    } else {
+      this.selectedColumnConfigs = this.selectedColumnConfigs.filter(c => c.fullColumn !== fullColumn);
+    }
+    console.log('Selected Column Configs:', this.selectedColumnConfigs);
   }
 
   /**
-   * Speichert die aktuelle Konfiguration.
-   * Unterscheidet ggf. zwischen "new" und "bestehendem" Dateinamen.
+   * Zyklischer Wechsel des OrderBy-Zustands:
+   * 'none' -> 'ASC' -> 'DESC' -> 'none'
+   */
+  cycleOrderBy(config: ColumnConfig): void {
+    if (config.orderBy === 'none') {
+      config.orderBy = 'ASC';
+    } else if (config.orderBy === 'ASC') {
+      config.orderBy = 'DESC';
+    } else {
+      config.orderBy = 'none';
+    }
+  }
+
+  /**
+   * Gruppiert die ausgewählten Spalten nach Tabelle und erzeugt ein Mapping von fullColumn → globale Spalten-ID.
+   * Diese IDs werden dann in columnGroups sowie in den searchColumns verwendet.
+   */
+  generateColumnGroups() {
+    let groupId = 0;
+    let globalColumnId = 0;
+    const fullColumnToId: { [key: string]: number } = {};
+
+    // Gruppieren nach Tabellenname
+    const grouped = this.selectedColumnConfigs.reduce((acc, curr) => {
+      const table = this.getTableName(curr.fullColumn);
+      if (!acc[table]) {
+        acc[table] = [];
+      }
+      acc[table].push(curr);
+      return acc;
+    }, {} as { [table: string]: ColumnConfig[] });
+
+    const columnGroups = Object.keys(grouped).map(tableName => {
+      groupId++;
+      const groupColumns = grouped[tableName].map(config => {
+        globalColumnId++;
+        fullColumnToId[config.fullColumn] = globalColumnId;
+        return {
+          id: globalColumnId,
+          name: this.getColumnName(config.fullColumn),
+          multiLinugal: false,
+          enqPropDataTypeSid: 1,
+          selectClause: config.fullColumn,
+          alias: this.getColumnName(config.fullColumn)
+        };
+      });
+      return {
+        id: groupId,
+        name: `Group for ${tableName}`,
+        columns: groupColumns
+      };
+    });
+    return { columnGroups, fullColumnToId };
+  }
+  
+  /**
+   * Speichert die aktuelle Konfiguration als JSON.
+   * Dabei werden u. a. die searchColumns (für Spalten mit gesetzter Suchfeld-Checkbox) generiert.
    */
   saveJsonConfig() {
-    const columnGroups = this.generateColumnGroups();
+    const { columnGroups, fullColumnToId } = this.generateColumnGroups();
+  
+    // Erzeugen des searchColumns-Arrays: Nur Spalten, bei denen search === true
+    let searchColumns: any[] = [];
+    let searchId = 0;
+    this.selectedColumnConfigs.forEach(config => {
+      if (config.search) {
+        searchId++;
+        const colId = fullColumnToId[config.fullColumn];
+        searchColumns.push({
+          id: searchId,
+          columnId: [colId],
+          orderNumber: searchId,
+          operatorSid: 15
+        });
+      }
+    });
+  
+    // Beispielhafte Erzeugung von resultColumns:
+    let resultColumns: any[] = [];
+    columnGroups.forEach(group => {
+      group.columns.forEach(col => {
+        resultColumns.push({
+          columnId: col.id,
+          hidden: false,
+          identity: false,
+          orderNumber: col.id
+        });
+      });
+    });
+  
+    // Erzeugen der orderByColumns anhand des neuen orderBy-Zustands
+    let orderByColumns: any[] = [];
+    this.selectedColumnConfigs.forEach(config => {
+      if (config.orderBy !== 'none') {
+        const colId = fullColumnToId[config.fullColumn];
+        orderByColumns.push({
+          columnId: colId,
+          ascending: config.orderBy === 'ASC'
+        });
+      }
+    });
+  
     const jsonData = {
       name: this.configName || 'default-config',
       itemsPerPage: 100,
@@ -373,26 +439,23 @@ getColumnName(fullColumn: string): string {
       roleSid: null,
       interfaceSid: null,
       table: this.selectedBaseTable,
-      whereClause: this.selectedColumns,
+      whereClause: '', // Hier ggf. anpassen
       joinGroups: this.joinRows.map((row, index) => ({
         id: index + 1,
         joinClause: row.condition
       })),
       columnGroups: columnGroups,
-      searchColumns: this.selectedColumns,
-      resultColumns: this.selectedColumns,
-      orderByColumns: this.selectedColumns
+      searchColumns: searchColumns,
+      resultColumns: resultColumns,
+      orderByColumns: orderByColumns
     };
-
-    // Falls du den Dateinamen im Backend brauchst:
+  
     const fileNameToSave = (this.fileName === 'new' || !this.fileName)
-      ? `${jsonData.name}.json`                // z. B. "default-config.json"
-      : this.fileName;                         // z. B. "myExistingConfig.json"
-
-    // An dein Speichern-Endpunkt:
+      ? `${jsonData.name}.json`
+      : this.fileName;
+  
     this.http.post('http://localhost:3000/save-json', {
-      ...jsonData,
-      fileName: fileNameToSave
+      ...jsonData
     }).subscribe(
       response => {
         console.log('JSON-Konfiguration erfolgreich gespeichert:', response);
@@ -403,5 +466,5 @@ getColumnName(fullColumn: string): string {
         alert('Fehler beim Speichern der JSON-Konfiguration.');
       }
     );
-  }
+  }  
 }

@@ -1,0 +1,141 @@
+{
+    "name": "default-config",
+    "itemsPerPage": 100,
+    "tableWidth": 1200,
+    "preventSearchWithoutRestriction": false,
+    "showInStartMenu": false,
+    "selectSingleEntity": true,
+    "searchOnType": true,
+    "hideHeadersOnNoRestriction": false,
+    "automaticRun": true,
+    "implementationId": 1,
+    "querySid": null,
+    "filterXDJoinGroupId": null,
+    "filterChooseRoleSid": null,
+    "filterRoleSid": null,
+    "roleSid": null,
+    "interfaceSid": null,
+    "table": "AnswerGrpBatch",
+    "whereClause": "",
+    "joinGroups": [
+        {
+            "id": 1,
+            "joinClause": ""
+        }
+    ],
+    "columnGroups": [
+        {
+            "id": 1,
+            "name": "Group for AnswerGrpBatch",
+            "columns": [
+                {
+                    "id": 1,
+                    "name": "FK_EventCheckNotify_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "AnswerGrpBatch.FK_EventCheckNotify_SID",
+                    "alias": "FK_EventCheckNotify_SID"
+                },
+                {
+                    "id": 2,
+                    "name": "aDescription",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "AnswerGrpBatch.aDescription",
+                    "alias": "aDescription"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Group for AnswerGrp",
+            "columns": [
+                {
+                    "id": 3,
+                    "name": "lastReplClient_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "AnswerGrp.lastReplClient_SID",
+                    "alias": "lastReplClient_SID"
+                },
+                {
+                    "id": 4,
+                    "name": "lastReplServer_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "AnswerGrp.lastReplServer_SID",
+                    "alias": "lastReplServer_SID"
+                },
+                {
+                    "id": 5,
+                    "name": "FK_ITSystem_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "AnswerGrp.FK_ITSystem_SID",
+                    "alias": "FK_ITSystem_SID"
+                },
+                {
+                    "id": 6,
+                    "name": "FK_Language_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "AnswerGrp.FK_Language_SID",
+                    "alias": "FK_Language_SID"
+                }
+            ]
+        }
+    ],
+    "searchColumns": [],
+    "resultColumns": [
+        {
+            "columnId": 1,
+            "hidden": false,
+            "identity": false,
+            "orderNumber": 1
+        },
+        {
+            "columnId": 2,
+            "hidden": false,
+            "identity": false,
+            "orderNumber": 2
+        },
+        {
+            "columnId": 3,
+            "hidden": false,
+            "identity": false,
+            "orderNumber": 3
+        },
+        {
+            "columnId": 4,
+            "hidden": false,
+            "identity": false,
+            "orderNumber": 4
+        },
+        {
+            "columnId": 5,
+            "hidden": false,
+            "identity": false,
+            "orderNumber": 5
+        },
+        {
+            "columnId": 6,
+            "hidden": false,
+            "identity": false,
+            "orderNumber": 6
+        }
+    ],
+    "orderByColumns": [
+        {
+            "columnId": 1,
+            "ascending": true
+        },
+        {
+            "columnId": 2,
+            "ascending": true
+        },
+        {
+            "columnId": 6,
+            "ascending": false
+        }
+    ]
+}

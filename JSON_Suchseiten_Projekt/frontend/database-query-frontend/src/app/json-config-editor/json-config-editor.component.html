@@ -1,364 +1,260 @@
-<!-- Home-Button Container -->
+<!-- json-config-editor.component.html -->
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+<!-- Home-Button -->
 <div class="home-button-container">
-    <button class="btn home-btn" (click)="goHome()"><i class="fa fa-home"></i></button>
-  </div>
+  <button class="btn home-btn" (click)="goHome()"><i class="fa fa-home"></i></button>
+</div>
 
-
-<!-- Einfaches Feld für den Config-Namen -->
+<!-- Feld für den Konfigurationsnamen -->
 <div>
-    <input
-      id="configName"
-      type="text"
-      [(ngModel)]="configName"
-      placeholder="Konfigurationsname"
-      class="config-name-input"
-    />
+  <input
+    id="configName"
+    type="text"
+    [(ngModel)]="configName"
+    placeholder="Konfigurationsname"
+    class="config-name-input"
+  />
+</div>
+
+<div class="container">
+  <h2>Database Manager</h2>
+  <!-- Dropdown zur Auswahl der Datenbank -->
+  <div class="dropdown-container">
+    <label for="databaseSelect">Select a Database:</label>
+    <select
+      id="databaseSelect"
+      (change)="updateDatabaseConfig()"
+      [(ngModel)]="selectedDatabase"
+      [disabled]="!databases.length"
+    >
+      <option *ngFor="let database of databases" [value]="database.name">
+        {{ database.name }}
+      </option>
+    </select>
+    <button (click)="openDbConfigModal()" class="btn add-btn">+</button>
+    <button (click)="editDatabase()" [disabled]="!selectedDatabase" class="btn edit-btn">Edit</button>
+    <button (click)="deleteDatabase()" [disabled]="!selectedDatabase" class="btn delete-btn">Delete</button>
   </div>
-  
-  <div class="container">
-    <h2>Database Manager</h2>
-  
-    
-  
-    <!-- Dropdown zur Auswahl der Datenbank -->
-    <div class="dropdown-container">
-      <label for="databaseSelect">Select a Database:</label>
-      <select
-        id="databaseSelect"
-        (change)="updateDatabaseConfig()"
-        [(ngModel)]="selectedDatabase"
-        [disabled]="!databases.length"
-      >
-        <option *ngFor="let database of databases" [value]="database.name">
-          {{ database.name }}
-        </option>
-      </select>
-  
-      <button (click)="openDbConfigModal()" class="btn add-btn">+</button>
-      <button
-        (click)="editDatabase()"
-        [disabled]="!selectedDatabase"
-        class="btn edit-btn"
-      >
-        Edit
-      </button>
-      <button
-        (click)="deleteDatabase()"
-        [disabled]="!selectedDatabase"
-        class="btn delete-btn"
-      >
-        Delete
-      </button>
-    </div>
-  
-    <p *ngIf="selectedDatabase" class="selected-db">
-      Currently selected database: <strong>{{ selectedDatabase }}</strong>
-    </p>
-  
-    <p *ngIf="!databases.length" class="no-db-message">
-      No databases available. Add a new one!
-    </p>
-  
-    <!-- Modal zum Hinzufügen einer neuen Datenbank -->
-    <div *ngIf="showDbConfigModal" class="modal">
-      <div class="modal-content">
-        <span (click)="closeDbConfigModal()" class="close">&times;</span>
-        <h3>Add New Database</h3>
-  
-        <div class="form-group">
-          <label>Database Name: </label>
-          <input [(ngModel)]="newDatabase.name" placeholder="Database Name" />
-        </div>
-  
-        <div class="form-group">
-          <label>User: </label>
-          <input [(ngModel)]="newDatabase.user" placeholder="User" />
-        </div>
-  
-        <div class="form-group">
-          <label>Password: </label>
-          <input
-            [(ngModel)]="newDatabase.password"
-            type="password"
-            placeholder="Password"
-          />
-        </div>
-  
-        <div class="form-group">
-          <label>Server: </label>
-          <input [(ngModel)]="newDatabase.server" placeholder="Server IP" />
-        </div>
-  
-        <div class="form-group">
-          <label>Database: </label>
-          <input [(ngModel)]="newDatabase.database" placeholder="Database Name" />
-        </div>
-  
-        <div class="form-group">
-          <label>Port: </label>
-          <input
-            [(ngModel)]="newDatabase.port"
-            type="number"
-            placeholder="Port"
-            value="1433"
-          />
-        </div>
-  
-        <div class="checkbox-container form-group">
-          <label>
-            <input type="checkbox" [(ngModel)]="newDatabase.options.encrypt" />
-            Encrypt
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              [(ngModel)]="newDatabase.options.trustServerCertificate"
-            />
-            Trust Server Certificate
-          </label>
-        </div>
-  
-        <button (click)="addDatabase()" class="btn confirm-btn">
-          Add Database
-        </button>
+
+  <p *ngIf="selectedDatabase" class="selected-db">
+    Currently selected database: <strong>{{ selectedDatabase }}</strong>
+  </p>
+  <p *ngIf="!databases.length" class="no-db-message">
+    No databases available. Add a new one!
+  </p>
+
+  <!-- Modal zum Hinzufügen einer neuen Datenbank -->
+  <div *ngIf="showDbConfigModal" class="modal">
+    <div class="modal-content">
+      <span (click)="closeDbConfigModal()" class="close">&times;</span>
+      <h3>Add New Database</h3>
+      <div class="form-group">
+        <label>Database Name: </label>
+        <input [(ngModel)]="newDatabase.name" placeholder="Database Name" />
       </div>
-    </div>
-  
-    <!-- Modal zum Bearbeiten der ausgewählten Datenbank -->
-    <div *ngIf="showEditDbConfigModal" class="modal">
-      <div class="modal-content">
-        <span (click)="closeEditDbConfigModal()" class="close">&times;</span>
-        <h3>Edit Database Configuration</h3>
-  
-        <div class="form-group">
-          <label>Database Name:</label>
-          <input
-            [(ngModel)]="newDatabase.name"
-            placeholder="Database Name"
-            disabled
-          />
-        </div>
-  
-        <div class="form-group">
-          <label>User:</label>
-          <input [(ngModel)]="newDatabase.user" placeholder="User" />
-        </div>
-  
-        <div class="form-group">
-          <label>Password:</label>
-          <input
-            [(ngModel)]="newDatabase.password"
-            type="password"
-            placeholder="Password"
-          />
-        </div>
-  
-        <div class="form-group">
-          <label>Server:</label>
-          <input [(ngModel)]="newDatabase.server" placeholder="Server IP" />
-        </div>
-  
-        <div class="form-group">
-          <label>Database:</label>
-          <input [(ngModel)]="newDatabase.database" placeholder="Database Name" />
-        </div>
-  
-        <div class="form-group">
-          <label>Port:</label>
-          <input [(ngModel)]="newDatabase.port" type="number" placeholder="Port" />
-        </div>
-  
-        <div class="checkbox-container">
-          <label>
-            <input type="checkbox" [(ngModel)]="newDatabase.options.encrypt" />
-            Encrypt
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              [(ngModel)]="newDatabase.options.trustServerCertificate"
-            />
-            Trust Server Certificate
-          </label>
-        </div>
-  
-        <button (click)="saveDatabaseConfig()" class="btn confirm-btn">
-          Save Changes
-        </button>
+      <div class="form-group">
+        <label>User: </label>
+        <input [(ngModel)]="newDatabase.user" placeholder="User" />
       </div>
+      <div class="form-group">
+        <label>Password: </label>
+        <input [(ngModel)]="newDatabase.password" type="password" placeholder="Password" />
+      </div>
+      <div class="form-group">
+        <label>Server: </label>
+        <input [(ngModel)]="newDatabase.server" placeholder="Server IP" />
+      </div>
+      <div class="form-group">
+        <label>Database: </label>
+        <input [(ngModel)]="newDatabase.database" placeholder="Database Name" />
+      </div>
+      <div class="form-group">
+        <label>Port: </label>
+        <input [(ngModel)]="newDatabase.port" type="number" placeholder="Port" value="1433" />
+      </div>
+      <div class="checkbox-container form-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="newDatabase.options.encrypt" />
+          Encrypt
+        </label>
+        <label>
+          <input type="checkbox" [(ngModel)]="newDatabase.options.trustServerCertificate" />
+          Trust Server Certificate
+        </label>
+      </div>
+      <button (click)="addDatabase()" class="btn confirm-btn">Add Database</button>
     </div>
   </div>
-  
-  <!-- JOIN-Erstellung -->
-  <div class="table-container">
-    <h2>JOIN-Erstellung</h2>
-  
+
+  <!-- Modal zum Bearbeiten der ausgewählten Datenbank -->
+  <div *ngIf="showEditDbConfigModal" class="modal">
+    <div class="modal-content">
+      <span (click)="closeEditDbConfigModal()" class="close">&times;</span>
+      <h3>Edit Database Configuration</h3>
+      <div class="form-group">
+        <label>Database Name:</label>
+        <input [(ngModel)]="newDatabase.name" placeholder="Database Name" disabled />
+      </div>
+      <div class="form-group">
+        <label>User:</label>
+        <input [(ngModel)]="newDatabase.user" placeholder="User" />
+      </div>
+      <div class="form-group">
+        <label>Password:</label>
+        <input [(ngModel)]="newDatabase.password" type="password" placeholder="Password" />
+      </div>
+      <div class="form-group">
+        <label>Server:</label>
+        <input [(ngModel)]="newDatabase.server" placeholder="Server IP" />
+      </div>
+      <div class="form-group">
+        <label>Database:</label>
+        <input [(ngModel)]="newDatabase.database" placeholder="Database Name" />
+      </div>
+      <div class="form-group">
+        <label>Port:</label>
+        <input [(ngModel)]="newDatabase.port" type="number" placeholder="Port" />
+      </div>
+      <div class="checkbox-container">
+        <label>
+          <input type="checkbox" [(ngModel)]="newDatabase.options.encrypt" />
+          Encrypt
+        </label>
+        <label>
+          <input type="checkbox" [(ngModel)]="newDatabase.options.trustServerCertificate" />
+          Trust Server Certificate
+        </label>
+      </div>
+      <button (click)="saveDatabaseConfig()" class="btn confirm-btn">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- JOIN-Erstellung -->
+<div class="table-container">
+  <h2>JOIN-Erstellung</h2>
+  <div>
+    <label for="baseTable">Ausgangstabelle:</label>
+    <select id="baseTable" [(ngModel)]="selectedBaseTable" (change)="updateBaseTable(selectedBaseTable)">
+      <option value="" disabled>Auswählen...</option>
+      <option *ngFor="let table of tables" [value]="table">
+        {{ table }}
+      </option>
+    </select>
+  </div>
+  <h3>Join-Bedingungen</h3>
+  <div *ngFor="let row of joinRows; let i = index" class="join-row">
     <div>
-      <label for="baseTable">Ausgangstabelle:</label>
-      <select
-        id="baseTable"
-        [(ngModel)]="selectedBaseTable"
-        (change)="updateBaseTable(selectedBaseTable)"
-      >
+      <label for="joinType-{{ i }}">Join-Typ:</label>
+      <select id="joinType-{{ i }}" [(ngModel)]="row.joinType" (change)="generateJoinCondition(i)">
+        <option value="INNER JOIN">INNER JOIN</option>
+        <option value="LEFT OUTER JOIN">LEFT OUTER JOIN</option>
+        <option value="RIGHT OUTER JOIN">RIGHT OUTER JOIN</option>
+        <option value="SELF JOIN">SELF JOIN</option>
+        <option value="CROSS JOIN">CROSS JOIN</option>
+      </select>
+    </div>
+    <div>
+      <label for="table-{{ i }}">Tabelle:</label>
+      <select id="table-{{ i }}" [(ngModel)]="row.table" (change)="generateJoinCondition(i)">
         <option value="" disabled>Auswählen...</option>
-        <option *ngFor="let table of tables" [value]="table">
+        <option *ngFor="let table of joinableTables" [value]="table">
           {{ table }}
         </option>
       </select>
     </div>
-  
-    <!-- Join-Bedingungen -->
-    <h3>Join-Bedingungen</h3>
-    <div *ngFor="let row of joinRows; let i = index" class="join-row">
-      <div>
-        <label for="joinType-{{ i }}">Join-Typ:</label>
-        <select
-          id="joinType-{{ i }}"
-          [(ngModel)]="row.joinType"
-          (change)="generateJoinCondition(i)"
-        >
-          <option value="INNER JOIN">INNER JOIN</option>
-          <option value="LEFT OUTER JOIN">LEFT OUTER JOIN</option>
-          <option value="RIGHT OUTER JOIN">RIGHT OUTER JOIN</option>
-          <option value="SELF JOIN">SELF JOIN</option>
-          <option value="CROSS JOIN">CROSS JOIN</option>
-        </select>
-      </div>
-  
-      <div>
-        <label for="table-{{ i }}">Tabelle:</label>
-        <select
-          id="table-{{ i }}"
-          [(ngModel)]="row.table"
-          (change)="generateJoinCondition(i)"
-        >
-          <option value="" disabled>Auswählen...</option>
-          <option *ngFor="let table of joinableTables" [value]="table">
-            {{ table }}
-          </option>
-        </select>
-      </div>
-  
-      <div>
-        <label for="condition-{{ i }}">JOIN-Bedingung:</label>
-        <input id="condition-{{ i }}" type="text" [(ngModel)]="row.condition" />
-      </div>
-  
-      <button class="remove-row" (click)="removeJoinRow(i)">X</button>
+    <div>
+      <label for="condition-{{ i }}">JOIN-Bedingung:</label>
+      <input id="condition-{{ i }}" type="text" [(ngModel)]="row.condition" />
     </div>
-  
-    <button class="add-table" (click)="addJoinRow()">
-      + Tabelle hinzufügen
-    </button>
+    <button class="remove-row" (click)="removeJoinRow(i)">X</button>
   </div>
-  
-  <!-- Tabellen und Spalten nebeneinander -->
-  <div class="tables-columns-container">
-    <div class="table-container">
-      <h2>Tabellen</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Tabellen</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td (click)="loadColumns(selectedBaseTable)" class="clickable">
-              {{ selectedBaseTable || 'Ausgangstabelle nicht ausgewählt' }}
-            </td>
-          </tr>
-          <tr *ngFor="let joinRow of joinRows">
-            <td (click)="loadColumns(joinRow.table)" class="clickable">
-              {{ joinRow.table || 'Nicht ausgewählt' }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  
-    <div class="columns-display" *ngIf="activeTable">
-      <h3>Spalten von {{ activeTable }}</h3>
-      <ul class="columns-list">
-        <div *ngFor="let column of tableColumns" class="columns-item">
-          <label>
-            <input
-              type="checkbox"
-              [value]="column"
-              (change)="toggleColumnSelection(column, activeTable, $event)"
-              [checked]="selectedColumns.includes(activeTable + '.' + column)"
-            />
-            {{ column }}
-          </label>
-        </div>
-      </ul>
-    </div>
-  </div>
-  
+  <button class="add-table" (click)="addJoinRow()">+ Tabelle hinzufügen</button>
+</div>
 
-
-  <!-- Spalten-Konfiguration: dynamische Tabelle für alle ausgewählten Spalten -->
-<div class="table-container">
-    <h2>Spalten-Konfiguration</h2>
-  
-    <table class="columns-config-table">
+<!-- Anzeige von Tabellen und Spalten -->
+<div class="tables-columns-container">
+  <div class="table-container">
+    <h2>Tabellen</h2>
+    <table>
       <thead>
         <tr>
-          <th>Select-Clause</th>
-          <th>Spaltenname</th>
-          <th>Alias</th>
-          <th>Datentyp</th>
-          <th>Suchfeld</th>
-          <th>GroupBy</th>
-          <th>OrderBy</th>
-          <th>Nachkommastellen</th>
-          <th>Breite</th>
-          <th>Bedingung</th>
+          <th>Tabellen</th>
         </tr>
       </thead>
-  
       <tbody>
-        <!-- Erzeugt pro ausgewählter Spalte (z.B. "BankCon.IBAN") eine neue Zeile -->
-        <tr *ngFor="let col of selectedColumns">
-          <!-- Volle Spaltenangabe, z.B. "BankCon.IBAN" -->
-          <td>{{ col }}</td>
-  
-          <!-- Nur der Teil vor dem Punkt, z.B. "BankCon" -->
-          <td>{{ getTableName(col) }}</td>
-  
-          <!-- Nur der Teil nach dem Punkt, z.B. "IBAN" -->
-          <td>{{ getColumnName(col) }}</td>
-  
-          <!-- Beispielhafter Standardwert "Text - Zeile" -->
-          <td>Text - Zeile</td>
-  
-          <!-- Checkboxen oder weitere Felder nach Bedarf -->
-          <td><input type="checkbox" /></td>
-          <td><input type="checkbox" /></td>
-          <td><input type="checkbox" /></td>
-  
-          <!-- Nachkommastellen -->
-          <td><input type="number" style="width: 60px;" /></td>
-  
-          <!-- Breite -->
-          <td><input type="number" style="width: 60px;" /></td>
-  
-          <!-- Bedingung, z.B. Textfeld -->
-          <td><input type="text" style="width: 100px;" /></td>
+        <tr>
+          <td (click)="loadColumns(selectedBaseTable)" class="clickable">
+            {{ selectedBaseTable || 'Ausgangstabelle nicht ausgewählt' }}
+          </td>
+        </tr>
+        <tr *ngFor="let joinRow of joinRows">
+          <td (click)="loadColumns(joinRow.table)" class="clickable">
+            {{ joinRow.table || 'Nicht ausgewählt' }}
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
-  
 
-
-  <div class="json-config-save-container">
-    <button (click)="saveJsonConfig()" class="btn save-btn">
-      Suchseite speichern
-    </button>
+  <div class="columns-display" *ngIf="activeTable">
+    <h3>Spalten von {{ activeTable }}</h3>
+    <ul class="columns-list">
+      <div *ngFor="let column of tableColumns" class="columns-item">
+        <label>
+          <input type="checkbox" 
+                 [value]="column" 
+                 (change)="toggleColumnSelection(column, activeTable, $event)"
+                 [checked]="isColumnSelected(column)" />
+          {{ column }}
+        </label>
+      </div>
+    </ul>
   </div>
-  
-  
+</div>
+
+<!-- Spalten-Konfiguration -->
+<div class="table-container">
+  <h2>Spalten-Konfiguration</h2>
+  <table class="columns-config-table">
+    <thead>
+      <tr>
+        <th>Select-Clause</th>
+        <th>Spaltenname</th>
+        <th>Alias</th>
+        <th>Datentyp</th>
+        <th>Suchfeld</th>
+        <th>GroupBy</th>
+        <th>OrderBy</th>
+        <th>Nachkommastellen</th>
+        <th>Breite</th>
+        <th>Bedingung</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let col of selectedColumnConfigs">
+        <td>{{ col.fullColumn }}</td>
+        <td>{{ getTableName(col.fullColumn) }}</td>
+        <td>{{ getColumnName(col.fullColumn) }}</td>
+        <td>Text - Zeile</td>
+        <td><input type="checkbox" [(ngModel)]="col.search" /></td>
+        <td><input type="checkbox" [(ngModel)]="col.groupBy" /></td>
+        <td (click)="cycleOrderBy(col)" style="cursor: pointer; text-align: center;">
+        {{ col.orderBy === 'none' ? '-----' : col.orderBy }}
+        </td>
+
+        <td><input type="number" style="width: 60px;" /></td>
+        <td><input type="number" style="width: 60px;" /></td>
+        <td><input type="text" style="width: 100px;" /></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- Button zum Speichern der JSON-Konfiguration -->
+<div class="json-config-save-container">
+  <button (click)="saveJsonConfig()" class="btn save-btn">Suchseite speichern</button>
+</div>

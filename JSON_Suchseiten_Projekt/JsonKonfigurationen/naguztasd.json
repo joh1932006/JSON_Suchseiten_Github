@@ -1,0 +1,149 @@
+{
+    "name": "naguztasd",
+    "itemsPerPage": 100,
+    "tableWidth": 1200,
+    "preventSearchWithoutRestriction": false,
+    "showInStartMenu": false,
+    "selectSingleEntity": true,
+    "searchOnType": true,
+    "hideHeadersOnNoRestriction": false,
+    "automaticRun": true,
+    "implementationId": 1,
+    "querySid": null,
+    "filterXDJoinGroupId": null,
+    "filterChooseRoleSid": null,
+    "filterRoleSid": null,
+    "roleSid": null,
+    "interfaceSid": null,
+    "table": "CRMPartner",
+    "whereClause": "",
+    "joinGroups": [
+        {
+            "id": 1,
+            "joinClause": ""
+        }
+    ],
+    "columnGroups": [
+        {
+            "id": 1,
+            "name": "Group for CRMPartner",
+            "columns": [
+                {
+                    "id": 1,
+                    "name": "SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "CRMPartner.SID",
+                    "alias": "SID"
+                },
+                {
+                    "id": 2,
+                    "name": "aName",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "CRMPartner.aName",
+                    "alias": "aName"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Group for aGroup",
+            "columns": [
+                {
+                    "id": 3,
+                    "name": "FK_ITSystem_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "aGroup.FK_ITSystem_SID",
+                    "alias": "FK_ITSystem_SID"
+                },
+                {
+                    "id": 4,
+                    "name": "lastReplClient_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "aGroup.lastReplClient_SID",
+                    "alias": "lastReplClient_SID"
+                },
+                {
+                    "id": 5,
+                    "name": "AccessFilterIP",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "aGroup.AccessFilterIP",
+                    "alias": "AccessFilterIP"
+                }
+            ]
+        }
+    ],
+    "searchColumns": [
+        {
+            "id": 1,
+            "columnId": [
+                1
+            ],
+            "orderNumber": 1,
+            "operatorSid": 15
+        },
+        {
+            "id": 2,
+            "columnId": [
+                2
+            ],
+            "orderNumber": 2,
+            "operatorSid": 15
+        },
+        {
+            "id": 3,
+            "columnId": [
+                4
+            ],
+            "orderNumber": 3,
+            "operatorSid": 15
+        }
+    ],
+    "resultColumns": [
+        {
+            "columnId": 1,
+            "hidden": false,
+            "identity": false,
+            "orderNumber": 1
+        },
+        {
+            "columnId": 2,
+            "hidden": false,
+            "identity": false,
+            "orderNumber": 2
+        },
+        {
+            "columnId": 3,
+            "hidden": false,
+            "identity": false,
+            "orderNumber": 3
+        },
+        {
+            "columnId": 4,
+            "hidden": false,
+            "identity": false,
+            "orderNumber": 4
+        },
+        {
+            "columnId": 5,
+            "hidden": false,
+            "identity": false,
+            "orderNumber": 5
+        }
+    ],
+    "orderByColumns": [
+        {
+            "columnId": 1,
+            "ascending": true
+        },
+        {
+            "columnId": 5,
+            "ascending": true
+        }
+    ],
+    "fileName": "naguztasd.json"
+}
