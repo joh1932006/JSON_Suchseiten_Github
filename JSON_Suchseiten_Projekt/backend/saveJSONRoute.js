@@ -4,7 +4,7 @@ const express = require("express");
 const router = express.Router();
 
 
-const folderPath = "C:\\Users\\Johannes\\Documents\\Schule\\5.Klasse\\Diplomarbeit\\JSON_Suchseiten_Github\\JSON_Suchseiten_Projekt\\JsonKonfigurationen";
+const folderPath = "..\\JsonKonfigurationen";
 
 // Route: JSON speichern
 router.post("/save-json", (req, res) => {

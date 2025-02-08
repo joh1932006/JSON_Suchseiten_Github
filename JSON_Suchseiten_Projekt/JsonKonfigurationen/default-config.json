@@ -15,56 +15,82 @@
     "filterRoleSid": null,
     "roleSid": null,
     "interfaceSid": null,
-    "table": "aRole",
+    "table": "Action",
     "whereClause": "",
     "joinGroups": [
         {
             "id": 1,
-            "joinClause": ""
+            "joinClause": "INNER JOIN ActionGrp ac ON ac.SID = act.FK_ActionGrp_SID"
+        },
+        {
+            "id": 2,
+            "joinClause": "INNER JOIN EPProfileUsage ep ON ep.FK_Action_SID = act.SID"
         }
     ],
     "columnGroups": [
         {
             "id": 1,
-            "name": "Group for aRole",
+            "name": "Group for ActionGrp (ac)",
             "columns": [
                 {
                     "id": 1,
                     "name": "SID",
                     "multiLinugal": false,
                     "enqPropDataTypeSid": 1,
-                    "selectClause": "aRole.SID",
+                    "selectClause": "ac.SID",
                     "alias": "SID"
                 },
                 {
                     "id": 2,
-                    "name": "aName",
+                    "name": "dispOnMenu",
                     "multiLinugal": false,
                     "enqPropDataTypeSid": 1,
-                    "selectClause": "aRole.aName",
-                    "alias": "aName"
+                    "selectClause": "ac.dispOnMenu",
+                    "alias": "dispOnMenu"
                 }
             ]
         },
         {
             "id": 2,
-            "name": "Group for Query",
+            "name": "Group for Action (act)",
             "columns": [
                 {
                     "id": 3,
-                    "name": "remark",
+                    "name": "aDescription",
                     "multiLinugal": false,
                     "enqPropDataTypeSid": 1,
-                    "selectClause": "Query.remark",
-                    "alias": "remark"
+                    "selectClause": "act.aDescription",
+                    "alias": "aDescription"
                 },
                 {
                     "id": 4,
-                    "name": "actDate",
+                    "name": "alignLotExtSrcDest",
                     "multiLinugal": false,
                     "enqPropDataTypeSid": 1,
-                    "selectClause": "Query.actDate",
-                    "alias": "actDate"
+                    "selectClause": "act.alignLotExtSrcDest",
+                    "alias": "alignLotExtSrcDest"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "Group for EPProfileUsage (ep)",
+            "columns": [
+                {
+                    "id": 5,
+                    "name": "FK_AssetObjType_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "ep.FK_AssetObjType_SID",
+                    "alias": "FK_AssetObjType_SID"
+                },
+                {
+                    "id": 6,
+                    "name": "FK_ContractType_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "ep.FK_ContractType_SID",
+                    "alias": "FK_ContractType_SID"
                 }
             ]
         }
@@ -83,36 +109,48 @@
         {
             "columnId": 1,
             "hidden": false,
-            "identity": false,
+            "identity": true,
             "orderNumber": 1
         },
         {
             "columnId": 2,
             "hidden": false,
-            "identity": false,
+            "identity": true,
             "orderNumber": 2
         },
         {
             "columnId": 3,
             "hidden": false,
-            "identity": false,
+            "identity": true,
             "orderNumber": 3
         },
         {
             "columnId": 4,
             "hidden": false,
-            "identity": false,
+            "identity": true,
             "orderNumber": 4
+        },
+        {
+            "columnId": 5,
+            "hidden": false,
+            "identity": true,
+            "orderNumber": 5
+        },
+        {
+            "columnId": 6,
+            "hidden": false,
+            "identity": true,
+            "orderNumber": 6
         }
     ],
     "orderByColumns": [
         {
-            "columnId": 1,
+            "columnId": 3,
             "ascending": true
         },
         {
-            "columnId": 4,
-            "ascending": false
+            "columnId": 5,
+            "ascending": true
         }
     ]
 }

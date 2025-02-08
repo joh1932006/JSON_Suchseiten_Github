@@ -8,20 +8,19 @@
   color: #FFFFFF !important;
 }
 
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-/* Macht wirklich sämtliche Texte weiß */
+
 html, body, body * {
-  color: #FFFFFF !important;
+  color: #FFFFFF !important; /* Macht sämtliche Texte weiß */
 }
 
 html, body {
   margin: 0;
-  padding: 20px; /* Globaler Abstand: rundherum 20px, damit der Hintergrund sichtbar ist */
+  padding: 20px; /* Globaler Abstand */
   width: 100%;
   height: 100%;
   background-color: #1E2532; /* Dunkles Navy-Blau */
@@ -30,7 +29,7 @@ html, body {
   box-sizing: border-box;
 }
 
-/* Wrapper für zusätzlichen Freiraum */
+/* Wrapper */
 .wrapper {
   padding-left: 20px;
   padding-right: 20px;
@@ -38,29 +37,32 @@ html, body {
 }
 
 /* -------------------------------------- */
-/* OBERE BEREICHE                         */
+/* HOME-BUTTON (oben links)               */
 /* -------------------------------------- */
-
-/* Home-Button links oben */
 .home-button-container {
   margin-bottom: 10px;
 }
 
-/* Top-Bar mit zentriertem Konfigurationsnamen */
+.home-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #FFFFFF;
+  font-size: 24px;
+  margin-right: 20px;
+  transition: color 0.2s;
+}
+
+.home-btn:hover {
+  color: #3182CE;
+}
+
+/* -------------------------------------- */
+/* TOP-BAR FÜR KONFIGURATIONSNAME         */
+/* -------------------------------------- */
 .top-bar-container {
   display: flex;
   justify-content: center;
-  margin-bottom: 10px;
-}
-
-/* Neuer Container für Database Manager, kompakt */
-.db-manager-container {
-  margin-bottom: 20px;
-}
-
-/* Überschriften anpassen */
-.db-manager-container h2 {
-  font-size: 18px;  
   margin-bottom: 10px;
 }
 
@@ -85,19 +87,22 @@ html, body {
 }
 
 /* -------------------------------------- */
-/* HAUPT-CONTAINER (falls noch genutzt)   */
+/* DB-MANAGER-CONTAINER                   */
 /* -------------------------------------- */
-.container {
-  max-width: 700px;     
-  margin: 20px auto;    /* Weniger als 40px, damit's kompakter ist */
-  padding: 10px;        /* Ebenfalls kleiner */
-  box-sizing: border-box;
+.db-manager-container {
+  margin-bottom: 20px;
+}
+
+.db-manager-container h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
 /* -------------------------------------- */
-/* FORMULAR-ELEMENTE (Inputs/Selects)     */
+/* FORMULAR-ELEMENTE                      */
 /* -------------------------------------- */
-input, select {
+input,
+select {
   background-color: #293244;
   color: #FFFFFF;
   border: 1px solid #39475D;
@@ -109,7 +114,8 @@ input, select {
   margin-bottom: 10px;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
   outline: none;
   border-color: #506381;
 }
@@ -141,18 +147,15 @@ input:focus, select:focus {
   background-color: #2B6CB0;
 }
 
-button.add-table {
-  background-color: #3182CE; 
-  color: #FFFFFF;            
+.add-table {
+  background-color: #3182CE;
+  color: #FFFFFF;
   border: none;
   padding: 4px 16px;
   border-radius: 4px;
   font-size: 14px;
   cursor: pointer;
 }
-
-
-
 
 .remove-row {
   background-color: #E53E3E;
@@ -164,7 +167,7 @@ button.add-table {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: 10px;
+  margin-top: 24px;
   cursor: pointer;
 }
 
@@ -173,7 +176,7 @@ button.add-table {
 }
 
 /* -------------------------------------- */
-/* TABELLE-KONTAINER (Dunkler Bereich)    */
+/* TABLE-CONTAINER (DUNKLER BEREICH)      */
 /* -------------------------------------- */
 .table-container {
   background-color: #232A3A;
@@ -188,6 +191,7 @@ button.add-table {
   font-size: 20px;
 }
 
+/* Tabellen-Style */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -230,26 +234,20 @@ tbody tr:hover td {
 }
 
 /* -------------------------------------- */
-/* JOIN-BEDINGUNGEN (Grid-Aufteilung)     */
+/* JOIN-BEREICH (JOIN-ROW-GRID)           */
 /* -------------------------------------- */
-.join-section {
-  margin-bottom: 30px;
-}
-
-.join-section h3 {
-  margin-bottom: 16px;
-}
-
 .join-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr auto;
-  gap: 16px;
-  align-items: center;
-  margin-bottom: 15px;
+  grid-template-columns: 1fr 1fr 1fr 1fr auto;
+  gap: 10px; /* statt 8px */
+  align-items: start;
+  margin-bottom: 10px;
 }
 
+
+
 /* -------------------------------------- */
-/* TABELLEN + SPALTEN NEBENEINANDER      */
+/* TABELLE + SPALTEN NEBENEINANDER       */
 /* -------------------------------------- */
 .tables-columns-container {
   display: flex;
@@ -270,8 +268,6 @@ tbody tr:hover td {
   padding: 20px;
   box-shadow: none;
   position: static;
-  top: auto;
-  right: auto;
   width: auto;
 }
 
@@ -281,8 +277,7 @@ tbody tr:hover td {
   font-size: 16px;
 }
 
-/* Spaltenliste im Grid-Layout (2 Spalten), 
-   maximal 400px hoch, scrollebar. */
+/* Spaltenliste im Grid-Layout (2 Spalten) */
 .columns-list {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -316,13 +311,12 @@ tbody tr:hover td {
 }
 
 /* -------------------------------------- */
-/* JSON-KONFIG BUTTON                     */
+/* JSON-KONFIG SAVE-BUTTON                */
 /* -------------------------------------- */
 .json-config-save-container {
   margin-top: 30px;
   text-align: center;
 }
-
 .save-btn {
   background-color: #4CAF50;
   color: #ECECEC;
@@ -331,27 +325,30 @@ tbody tr:hover td {
   font-size: 16px;
   cursor: pointer;
 }
-
 .save-btn:hover {
   background-color: #3E8E41;
 }
 
 /* -------------------------------------- */
-/* OPTIONALE TEXTE, DB-AUSWAHL            */
+/* DB-MANAGER Farben etc.                 */
 /* -------------------------------------- */
-.selected-db {
-  font-size: 16px;
-  color: #CCCCCC;
-  margin: 10px 0;
+.db-manager-container,
+.db-manager-container * {
+  color: #FFFFFF !important;
 }
 
-.no-db-message {
-  color: #AAAAAA;
-  font-style: italic;
+.db-manager-container select {
+  width: 250px;
+  max-width: 100%;
+  background-color: #293244;
+  color: #FFFFFF;
+  border: 1px solid #39475D;
+  border-radius: 4px;
+  padding: 8px 10px;
 }
 
 /* -------------------------------------- */
-/* MODAL (Add/Edit Database)              */
+/* MODAL                                  */
 /* -------------------------------------- */
 .modal {
   position: fixed;
@@ -386,7 +383,6 @@ tbody tr:hover td {
   cursor: pointer;
   color: #999;
 }
-
 .modal-content .close:hover {
   color: #ECECEC;
 }
@@ -394,7 +390,6 @@ tbody tr:hover td {
 .form-group {
   margin-bottom: 15px;
 }
-
 .checkbox-container {
   display: flex;
   gap: 10px;
@@ -406,38 +401,13 @@ tbody tr:hover td {
 }
 
 /* -------------------------------------- */
-/* USER-INFO (oben rechts)                */
-/* -------------------------------------- */
-.user-info {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  font-size: 14px;
-  color: #ECECEC;
-}
-
-.home-btn {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  color: #FFFFFF;
-  font-size: 24px;
-  margin-right: 20px;
-  transition: color 0.2s;
-}
-
-.home-btn:hover {
-  color: #3182CE;
-}
-
-/* -------------------------------------- */
-/* TABELLE FÜR KONFIGURATIONEN            */
+/* COLUMNS-CONFIG TABLE                   */
 /* -------------------------------------- */
 .columns-config-table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  font-size: 12px; /* Kleinere Schrift, damit lange Spaltennamen besser passen */
+  font-size: 12px;
   margin-top: 20px;
 }
 
@@ -462,22 +432,12 @@ tbody tr:hover td {
 .columns-config-table tr:nth-child(odd) td {
   background-color: #2D3545;
 }
-/* Macht alle Texte im db-manager-Bereich weiß */
-.db-manager-container,
-.db-manager-container * {
-  color: #FFFFFF !important; /* Erzwingt Weiß für alles im db-manager */
+
+/* -------------------------------------- */
+/* ALIAS-INPUT-FELD                       */
+/* -------------------------------------- */
+
+.alias-label {
+  font-size: 0.9em;
+  margin-left: 5px;
 }
-
-/* Verkleinert das Select-Dropdown */
-.db-manager-container select {
-  width: 250px;      /* Passe den Wert nach Bedarf an */
-  max-width: 100%;   /* Damit es sich nicht über die Containerbreite hinaus ausdehnt */
-  background-color: #293244;
-  color: #FFFFFF;
-  border: 1px solid #39475D;
-  border-radius: 4px;
-  padding: 8px 10px;
-}
-
-
-

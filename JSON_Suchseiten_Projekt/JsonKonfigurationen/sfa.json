@@ -1,0 +1,108 @@
+{
+    "name": "sfa",
+    "itemsPerPage": 100,
+    "tableWidth": 1200,
+    "preventSearchWithoutRestriction": false,
+    "showInStartMenu": false,
+    "selectSingleEntity": true,
+    "searchOnType": true,
+    "hideHeadersOnNoRestriction": false,
+    "automaticRun": true,
+    "implementationId": 1,
+    "querySid": null,
+    "filterXDJoinGroupId": null,
+    "filterChooseRoleSid": null,
+    "filterRoleSid": null,
+    "roleSid": null,
+    "interfaceSid": null,
+    "table": "Action",
+    "whereClause": "",
+    "joinGroups": [
+        {
+            "id": 1,
+            "joinClause": "INNER JOIN ActionPart ac ON ac.SID = act.FK_ActionPartSrc_SID"
+        },
+        {
+            "id": 2,
+            "joinClause": "INNER JOIN F4MDataBase f4 ON f4.SID = act.FK_F4MDataBase_SID"
+        },
+        {
+            "id": 3,
+            "joinClause": "LEFT OUTER JOIN F4MDataBase f42 ON f42.SID = act.FK_F4MDataBase_SID"
+        }
+    ],
+    "columnGroups": [
+        {
+            "id": 1,
+            "name": "Group for F4MDataBase (f4)",
+            "columns": [
+                {
+                    "id": 1,
+                    "name": "FK_CRMPartnerMand_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "f4.FK_CRMPartnerMand_SID",
+                    "alias": "FK_CRMPartnerMand_SID"
+                },
+                {
+                    "id": 2,
+                    "name": "aDescription",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "f4.aDescription",
+                    "alias": "aDescription"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Group for F4MDataBase (f42)",
+            "columns": [
+                {
+                    "id": 3,
+                    "name": "SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "f42.SID",
+                    "alias": "SID"
+                },
+                {
+                    "id": 4,
+                    "name": "FK_User_SID",
+                    "multiLinugal": false,
+                    "enqPropDataTypeSid": 1,
+                    "selectClause": "f42.FK_User_SID",
+                    "alias": "FK_User_SID"
+                }
+            ]
+        }
+    ],
+    "searchColumns": [],
+    "resultColumns": [
+        {
+            "columnId": 1,
+            "hidden": false,
+            "identity": true,
+            "orderNumber": 1
+        },
+        {
+            "columnId": 2,
+            "hidden": false,
+            "identity": true,
+            "orderNumber": 2
+        },
+        {
+            "columnId": 3,
+            "hidden": false,
+            "identity": true,
+            "orderNumber": 3
+        },
+        {
+            "columnId": 4,
+            "hidden": false,
+            "identity": true,
+            "orderNumber": 4
+        }
+    ],
+    "orderByColumns": []
+}

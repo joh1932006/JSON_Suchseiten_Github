@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { APIRequestsComponent } from '../apirequests/apirequests.component';
 
 // Neues Interface für die Spaltenkonfiguration
 interface ColumnConfig {
@@ -14,10 +15,18 @@ interface ColumnConfig {
   // Weitere optionale Felder (z. B. Nachkommastellen, Breite, Bedingung) können ergänzt werden
 }
 
+interface JoinRow {
+  table: string;
+  joinType: string;
+  condition: string;
+  alias?: string; // <-- Neu: Alias-Feld
+}
+
+
 @Component({
   selector: 'app-json-config-editor',
   standalone: true,
-  imports: [HttpClientModule, CommonModule, FormsModule],
+  imports: [HttpClientModule, CommonModule, FormsModule, APIRequestsComponent],
   templateUrl: './json-config-editor.component.html',
   styleUrls: ['./json-config-editor.component.css']
 })
@@ -28,8 +37,11 @@ export class JsonConfigEditorComponent implements OnInit {
     private router: Router 
   ) {}
 
-  
-  
+  joinRows: JoinRow[] = [];
+  baseAlias: string = '';
+  // Neue Property, um den aktuell ausgewählten Alias zu speichern
+ activeAlias: string = '';
+
 
   
   /**
@@ -61,9 +73,35 @@ export class JsonConfigEditorComponent implements OnInit {
    * Prüft, ob die übergebene Spalte bereits in den ausgewählten ColumnConfigs enthalten ist.
    */
   isColumnSelected(column: string): boolean {
-    const fullCol = this.activeTable + '.' + column;
+    const fullCol = `${this.activeTable}.${this.activeAlias}.${column}`;
     return this.selectedColumnConfigs.some(c => c.fullColumn === fullCol);
   }
+
+
+  /**
+ * Extrahiert den Tabellen-Namen aus einem fullColumn-String im Format "Tabelle.Alias.Spaltname".
+ */
+getTableNameFromFullColumn(fullColumn: string): string {
+  const parts = fullColumn.split('.');
+  return parts[0] || fullColumn;
+}
+
+/**
+ * Extrahiert den Alias aus einem fullColumn-String im Format "Tabelle.Alias.Spaltname".
+ */
+getAliasFromFullColumn(fullColumn: string): string {
+  const parts = fullColumn.split('.');
+  return parts[1] || '';
+}
+
+/**
+ * Extrahiert den Spaltentitel aus einem fullColumn-String im Format "Tabelle.Alias.Spaltname".
+ */
+getColumnNameFromFullColumn(fullColumn: string): string {
+  const parts = fullColumn.split('.');
+  return parts[2] || fullColumn;
+}
+
 
   fileName: string | null = null;
   title = 'mein-projekt';
@@ -115,7 +153,6 @@ export class JsonConfigEditorComponent implements OnInit {
   };
 
   tables: string[] = [];
-  joinRows: { table: string; joinType: string; condition: string }[] = [];
 
   // Statt eines einfachen string-Arrays führen wir jetzt ein Array von ColumnConfig-Objekten
   selectedColumnConfigs: ColumnConfig[] = [];
@@ -216,6 +253,7 @@ export class JsonConfigEditorComponent implements OnInit {
     this.selectedBaseTable = selectedBaseTable;
     this.fetchJoinableTables(selectedBaseTable);
     this.fetchForeignKeys(selectedBaseTable); // Methode: Foreign Keys laden
+    this.updateAliases();
   }
   
   fetchForeignKeys(table: string) {
@@ -232,6 +270,55 @@ export class JsonConfigEditorComponent implements OnInit {
         }
       );
   }
+
+  /**
+ * Liefert einen Standard-Alias für einen Tabellennamen.
+ * Hier kann ein vordefiniertes Mapping hinterlegt werden.
+ */
+getAbbreviationForTable(table: string): string {
+  const mapping: { [key: string]: string } = {
+    'trans': 't',
+    'crmadress': 'ca',
+    'action': 'act'
+    // Hier ggf. weitere Einträge
+  };
+  const lowerTable = table.toLowerCase();
+  if (mapping[lowerTable]) {
+    return mapping[lowerTable];
+  }
+  // Falls keine vordefinierte Abkürzung existiert, nimm die ersten zwei Buchstaben
+  return table.substring(0, 2).toLowerCase();
+}
+
+/**
+ * Aktualisiert den Alias der Ausgangstabelle (baseAlias) und der joinRows.
+ * Falls eine Tabelle mehrfach vorkommt, wird für die zweite (usw.) Alias eine Nummer angehängt.
+ */
+updateAliases(): void {
+  // Ausgangstabelle alias
+  if (this.selectedBaseTable) {
+    this.baseAlias = this.getAbbreviationForTable(this.selectedBaseTable);
+  } else {
+    this.baseAlias = '';
+  }
+
+  // Zähler für Join-Tabellen
+  const tableCount: { [table: string]: number } = {};
+  this.joinRows.forEach(row => {
+    if (row.table) {
+      if (!tableCount[row.table]) {
+        tableCount[row.table] = 1;
+      } else {
+        tableCount[row.table]++;
+      }
+      const baseAbbr = this.getAbbreviationForTable(row.table);
+      // Falls Tabelle mehrfach, hänge Zahl an
+      row.alias = tableCount[row.table] === 1 ? baseAbbr : baseAbbr + tableCount[row.table];
+    } else {
+      row.alias = '';
+    }
+  });
+}
   
   
   editDatabase() {
@@ -268,39 +355,45 @@ export class JsonConfigEditorComponent implements OnInit {
       }
     };
   }
+
   addJoinRow() {
     this.joinRows.push({
       table: '',
       joinType: 'INNER JOIN',
-      condition: ''
+      condition: '',
+      alias: ''
     });
+    this.updateAliases();
   }
+  
   removeJoinRow(index: number) {
     this.joinRows.splice(index, 1);
+    this.updateAliases();
   }
+  
   foreignKeyExists(tableName: string) {
     return this.foreignKeys.find(fk => fk.referenced_table === tableName);
   }
   generateJoinCondition(index: number) {
+    this.updateAliases();
     const joinRow = this.joinRows[index];
-    // Suche nach einer FK-Beziehung, die beide Tabellen involviert
     const fk = this.foreignKeys.find(fk =>
       (this.selectedBaseTable === fk.parent_table && joinRow.table === fk.referenced_table) ||
       (this.selectedBaseTable === fk.referenced_table && joinRow.table === fk.parent_table)
     );
     if (fk) {
       if (this.selectedBaseTable === fk.parent_table && joinRow.table === fk.referenced_table) {
-        // Ausgangstabelle hat den Foreign Key; joinende Tabelle ist referenziert
-        joinRow.condition = `${joinRow.joinType} ${joinRow.table} ON ${joinRow.table}.${fk.referenced_column} = ${this.selectedBaseTable}.${fk.parent_column}`;
+        joinRow.condition = `${joinRow.joinType} ${joinRow.table} ${joinRow.alias} ON ${joinRow.alias}.${fk.referenced_column} = ${this.baseAlias}.${fk.parent_column}`;
       } else if (this.selectedBaseTable === fk.referenced_table && joinRow.table === fk.parent_table) {
-        // Ausgangstabelle ist referenziert; joinende Tabelle besitzt den Foreign Key
-        joinRow.condition = `${joinRow.joinType} ${joinRow.table} ON ${joinRow.table}.${fk.parent_column} = ${this.selectedBaseTable}.${fk.referenced_column}`;
+        joinRow.condition = `${joinRow.joinType} ${joinRow.table} ${joinRow.alias} ON ${joinRow.alias}.${fk.parent_column} = ${this.baseAlias}.${fk.referenced_column}`;
       }
     } else {
       console.error('Es wurde keine FK-Beziehung zwischen den ausgewählten Tabellen gefunden');
       joinRow.condition = '';
     }
   }
+  
+  
   
 
   // ---------------------------
@@ -309,50 +402,29 @@ export class JsonConfigEditorComponent implements OnInit {
   activeTable: string = '';
   tableColumns: string[] = [];
 
-  loadColumns(tableName: string) {
-    if (!tableName) {
-      console.error('Keine Tabelle ausgewählt');
-      return;
-    }
+  loadColumns(tableName: string, alias?: string): void {
     this.activeTable = tableName;
-    this.tableColumns = [];
+    // Falls ein Alias übergeben wird, verwende ihn – sonst den Basis-Alias
+    this.activeAlias = alias ? alias : this.baseAlias;
   
-    // 1. Alle Spalten der Tabelle abrufen (ohne zusätzliche Filterung):
+    this.tableColumns = [];
     this.http.get<{ columns: string[] }>(`http://localhost:3000/get-columns?table=${tableName}`)
       .subscribe(
         response => {
           let columns = response.columns;
-          
-          // 2. Sortieren:
-          //  - "sid" (unabhängig von Groß-/Kleinschreibung) kommt immer an erste Stelle
-          //  - Danach alphabetische Sortierung
+          // Beispielhafte Sortierung: 'sid' immer zuerst, danach alphabetisch
           columns = columns.sort((a, b) => {
             const lcA = a.toLowerCase();
             const lcB = b.toLowerCase();
-  
-            // Wenn a == 'sid' und b != 'sid', dann a zuerst
-            if (lcA === 'sid' && lcB !== 'sid') {
-              return -1;
-            }
-            // Wenn b == 'sid' und a != 'sid', dann b zuerst
-            if (lcB === 'sid' && lcA !== 'sid') {
-              return 1;
-            }
-            // Ansonsten normal alphabetisch sortieren
+            if (lcA === 'sid' && lcB !== 'sid') return -1;
+            if (lcB === 'sid' && lcA !== 'sid') return 1;
             return lcA.localeCompare(lcB);
           });
-  
-          console.log('Geladene Spalten (sortiert):', columns);
           this.tableColumns = columns;
         },
-        error => {
-          console.error('Fehler beim Abrufen der Spalten:', error);
-        }
+        error => console.error('Fehler beim Abrufen der Spalten:', error)
       );
   }
-  
-  
-  
   
   
 
@@ -360,22 +432,22 @@ export class JsonConfigEditorComponent implements OnInit {
    * Wird aufgerufen, wenn eine Spalte in der Liste ausgewählt oder abgewählt wird.
    * Es wird ein Objekt (ColumnConfig) angelegt oder entfernt.
    */
-  toggleColumnSelection(column: string, tableName: string, event: any) {
-    const fullColumn = `${tableName}.${column}`;
+  toggleColumnSelection(column: string, tableName: string, event: any): void {
+    const fullColumn = `${tableName}.${this.activeAlias}.${column}`;
     if (event.target.checked) {
       if (!this.selectedColumnConfigs.find(c => c.fullColumn === fullColumn)) {
         this.selectedColumnConfigs.push({
           fullColumn,
-          search: false,    // Standardmäßig nicht als Suchspalte markiert
+          search: false,
           groupBy: false,
-          orderBy: 'none'   // Standardmäßig: keine OrderBy-Konfiguration
+          orderBy: 'none'
         });
       }
     } else {
       this.selectedColumnConfigs = this.selectedColumnConfigs.filter(c => c.fullColumn !== fullColumn);
     }
-    console.log('Selected Column Configs:', this.selectedColumnConfigs);
   }
+  
 
   /**
    * Zyklischer Wechsel des OrderBy-Zustands:
@@ -395,52 +467,58 @@ export class JsonConfigEditorComponent implements OnInit {
    * Gruppiert die ausgewählten Spalten nach Tabelle und erzeugt ein Mapping von fullColumn → globale Spalten-ID.
    * Diese IDs werden dann in columnGroups sowie in den searchColumns verwendet.
    */
-  generateColumnGroups() {
+  generateColumnGroups(): { columnGroups: any[]; fullColumnToId: { [key: string]: number } } {
     let groupId = 0;
     let globalColumnId = 0;
     const fullColumnToId: { [key: string]: number } = {};
-
-    // Gruppieren nach Tabellenname
-    const grouped = this.selectedColumnConfigs.reduce((acc, curr) => {
-      const table = this.getTableName(curr.fullColumn);
-      if (!acc[table]) {
-        acc[table] = [];
+  
+    const grouped = this.selectedColumnConfigs.reduce((acc: { [groupKey: string]: ColumnConfig[] }, curr: ColumnConfig) => {
+      // Erwartetes Format: "Tabelle.Alias.Spaltname"
+      const parts = curr.fullColumn.split('.');
+      const groupKey = parts[0] + '.' + parts[1];
+      if (!acc[groupKey]) {
+        acc[groupKey] = [];
       }
-      acc[table].push(curr);
+      acc[groupKey].push(curr);
       return acc;
-    }, {} as { [table: string]: ColumnConfig[] });
-
-    const columnGroups = Object.keys(grouped).map(tableName => {
+    }, {});
+  
+    const columnGroups = Object.keys(grouped).map((groupKey: string) => {
+      const [tableName, tableAlias] = groupKey.split('.');
       groupId++;
-      const groupColumns = grouped[tableName].map(config => {
+      const groupColumns = grouped[groupKey].map((config: ColumnConfig) => {
         globalColumnId++;
         fullColumnToId[config.fullColumn] = globalColumnId;
+        // Extrahiere den Spaltennamen (dritter Teil)
+        const parts = config.fullColumn.split('.');
+        const colName = parts[2] || config.fullColumn;
         return {
           id: globalColumnId,
-          name: this.getColumnName(config.fullColumn),
+          name: colName,
           multiLinugal: false,
           enqPropDataTypeSid: 1,
-          selectClause: config.fullColumn,
-          alias: this.getColumnName(config.fullColumn)
+          selectClause: `${tableAlias}.${colName}`,
+          alias: colName
         };
       });
       return {
         id: groupId,
-        name: `Group for ${tableName}`,
+        name: `Group for ${tableName} (${tableAlias})`,
         columns: groupColumns
       };
     });
     return { columnGroups, fullColumnToId };
   }
   
+  
   /**
    * Speichert die aktuelle Konfiguration als JSON.
    * Dabei werden u. a. die searchColumns (für Spalten mit gesetzter Suchfeld-Checkbox) generiert.
    */
-  saveJsonConfig() {
+  saveJsonConfig(): void {
     const { columnGroups, fullColumnToId } = this.generateColumnGroups();
   
-    // Erzeugen des searchColumns-Arrays: Nur Spalten, bei denen search === true
+    // Erzeugen des searchColumns-Arrays (nur Spalten, bei denen search === true)
     let searchColumns: any[] = [];
     let searchId = 0;
     this.selectedColumnConfigs.forEach(config => {
@@ -456,20 +534,20 @@ export class JsonConfigEditorComponent implements OnInit {
       }
     });
   
-    // Beispielhafte Erzeugung von resultColumns:
+    // Erzeugen von resultColumns
     let resultColumns: any[] = [];
-    columnGroups.forEach(group => {
-      group.columns.forEach(col => {
+    columnGroups.forEach((group: any) => {
+      group.columns.forEach((col: any) => {
         resultColumns.push({
           columnId: col.id,
           hidden: false,
-          identity: false,
+          identity: true,
           orderNumber: col.id
         });
       });
     });
   
-    // Erzeugen der orderByColumns anhand des neuen orderBy-Zustands
+    // Erzeugen der orderByColumns anhand des OrderBy-Zustands
     let orderByColumns: any[] = [];
     this.selectedColumnConfigs.forEach(config => {
       if (config.orderBy !== 'none') {
@@ -499,7 +577,7 @@ export class JsonConfigEditorComponent implements OnInit {
       roleSid: null,
       interfaceSid: null,
       table: this.selectedBaseTable,
-      whereClause: '', // Hier ggf. anpassen
+      whereClause: '',
       joinGroups: this.joinRows.map((row, index) => ({
         id: index + 1,
         joinClause: row.condition
@@ -514,9 +592,7 @@ export class JsonConfigEditorComponent implements OnInit {
       ? `${jsonData.name}.json`
       : this.fileName;
   
-    this.http.post('http://localhost:3000/save-json', {
-      ...jsonData
-    }).subscribe(
+    this.http.post('http://localhost:3000/save-json', jsonData).subscribe(
       response => {
         console.log('JSON-Konfiguration erfolgreich gespeichert:', response);
         alert(`JSON-Konfiguration unter '${fileNameToSave}' gespeichert!`);

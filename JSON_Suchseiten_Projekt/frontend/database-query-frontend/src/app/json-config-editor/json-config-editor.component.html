@@ -1,12 +1,13 @@
-<!-- json-config-editor.component.html -->
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<!-- Wrapper sorgt für zusätzlichen Innenabstand -->
 <div class="wrapper">
+
   <!-- Home-Button (links oben) -->
   <div class="home-button-container">
-    <button class="btn home-btn" (click)="goHome()"><i class="fa fa-home"></i></button>
+    <button class="btn home-btn" (click)="goHome()">
+      <i class="fa fa-home"></i>
+    </button>
   </div>
 
   <!-- 1) Top-Bar für den Konfigurationsnamen zentriert -->
@@ -23,6 +24,7 @@
   <!-- 2) Kleiner Container für den Database Manager -->
   <div class="db-manager-container">
     <h2>Database Manager</h2>
+
     <div class="dropdown-container">
       <label for="databaseSelect">Select a Database:</label>
       <select
@@ -35,6 +37,7 @@
           {{ database.name }}
         </option>
       </select>
+
       <button (click)="openDbConfigModal()" class="btn add-btn">+</button>
       <button (click)="editDatabase()" [disabled]="!selectedDatabase" class="btn edit-btn">Edit</button>
       <button (click)="deleteDatabase()" [disabled]="!selectedDatabase" class="btn delete-btn">Delete</button>
@@ -52,6 +55,7 @@
       <div class="modal-content">
         <span (click)="closeDbConfigModal()" class="close">&times;</span>
         <h3>Add New Database</h3>
+
         <div class="form-group">
           <label>Database Name: </label>
           <input [(ngModel)]="newDatabase.name" placeholder="Database Name" />
@@ -76,6 +80,7 @@
           <label>Port: </label>
           <input [(ngModel)]="newDatabase.port" type="number" placeholder="Port" value="1433" />
         </div>
+
         <div class="checkbox-container form-group">
           <label>
             <input type="checkbox" [(ngModel)]="newDatabase.options.encrypt" />
@@ -95,6 +100,7 @@
       <div class="modal-content">
         <span (click)="closeEditDbConfigModal()" class="close">&times;</span>
         <h3>Edit Database Configuration</h3>
+
         <div class="form-group">
           <label>Database Name:</label>
           <input [(ngModel)]="newDatabase.name" placeholder="Database Name" disabled />
@@ -119,6 +125,7 @@
           <label>Port:</label>
           <input [(ngModel)]="newDatabase.port" type="number" placeholder="Port" />
         </div>
+
         <div class="checkbox-container">
           <label>
             <input type="checkbox" [(ngModel)]="newDatabase.options.encrypt" />
@@ -134,47 +141,105 @@
     </div>
   </div> <!-- Ende db-manager-container -->
 
+
   <!-- JOIN-Erstellung -->
   <div class="table-container">
     <h2>JOIN-Erstellung</h2>
-    <div>
-      <label for="baseTable">Ausgangstabelle:</label>
-      <select id="baseTable" [(ngModel)]="selectedBaseTable" (change)="updateBaseTable(selectedBaseTable)">
-        <option value="" disabled>Auswählen...</option>
-        <option *ngFor="let table of tables" [value]="table">
-          {{ table }}
-        </option>
-      </select>
-    </div>
-    <h3>Join-Bedingungen</h3>
-    <div *ngFor="let row of joinRows; let i = index" class="join-row">
+
+    <!-- Ausgangstabelle mit Tabelle + Alias als zwei Felder -->
+    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+      <!-- Feld: Tabelle (Select) -->
       <div>
-        <label for="joinType-{{ i }}">Join-Typ:</label>
-        <select id="joinType-{{ i }}" [(ngModel)]="row.joinType" (change)="generateJoinCondition(i)">
-          <option value="INNER JOIN">INNER JOIN</option>
-          <option value="LEFT OUTER JOIN">LEFT OUTER JOIN</option>
-          <option value="RIGHT OUTER JOIN">RIGHT OUTER JOIN</option>
-          <option value="SELF JOIN">SELF JOIN</option>
-          <option value="CROSS JOIN">CROSS JOIN</option>
-        </select>
-      </div>
-      <div>
-        <label for="table-{{ i }}">Tabelle:</label>
-        <select id="table-{{ i }}" [(ngModel)]="row.table" (change)="generateJoinCondition(i)">
+        <label for="baseTable">Ausgangstabelle:</label>
+        <select
+          id="baseTable"
+          [(ngModel)]="selectedBaseTable"
+          (change)="updateBaseTable(selectedBaseTable)"
+        >
           <option value="" disabled>Auswählen...</option>
-          <option *ngFor="let t of joinableTables" [value]="t">
-            {{ t }}
+          <option *ngFor="let table of tables" [value]="table">
+            {{ table }}
           </option>
         </select>
       </div>
+      <!-- Feld: Alias (Input) -->
       <div>
-        <label for="condition-{{ i }}">JOIN-Bedingung:</label>
-        <input id="condition-{{ i }}" type="text" [(ngModel)]="row.condition" />
+        <label for="baseAlias">Alias:</label>
+        <input
+          id="baseAlias"
+          type="text"
+          [(ngModel)]="baseAlias"
+          class="alias-input"
+        />
       </div>
-      <button class="remove-row" (click)="removeJoinRow(i)">X</button>
     </div>
+
+    <h3>Join-Bedingungen</h3>
+<!-- Join-Reihe -->
+<div *ngFor="let row of joinRows; let i = index" class="join-row">
+
+  <!-- Join-Typ -->
+  <div>
+    <label for="joinType-{{ i }}">Join-Typ:</label>
+    <select
+      id="joinType-{{ i }}"
+      [(ngModel)]="row.joinType"
+      (change)="generateJoinCondition(i)"
+    >
+      <option value="INNER JOIN">INNER JOIN</option>
+      <option value="LEFT OUTER JOIN">LEFT OUTER JOIN</option>
+      <option value="RIGHT OUTER JOIN">RIGHT OUTER JOIN</option>
+      <option value="SELF JOIN">SELF JOIN</option>
+      <option value="CROSS JOIN">CROSS JOIN</option>
+    </select>
+  </div>
+
+  <!-- Tabelle -->
+  <div>
+    <label for="table-{{ i }}">Tabelle:</label>
+    <select
+      id="table-{{ i }}"
+      [(ngModel)]="row.table"
+      (change)="generateJoinCondition(i)"
+    >
+      <option value="" disabled>Auswählen...</option>
+      <option *ngFor="let t of joinableTables" [value]="t">
+        {{ t }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Alias -->
+  <div>
+    <label for="alias-{{ i }}">Alias:</label>
+    <input
+      id="alias-{{ i }}"
+      type="text"
+      [(ngModel)]="row.alias"
+      class="alias-input"
+    />
+  </div>
+
+  <!-- JOIN-Bedingung -->
+  <div>
+    <label for="condition-{{ i }}">JOIN-Bedingung:</label>
+    <input
+      id="condition-{{ i }}"
+      type="text"
+      [(ngModel)]="row.condition"
+    />
+  </div>
+
+  <!-- Remove-Button -->
+  <button class="remove-row" (click)="removeJoinRow(i)">X</button>
+
+</div>
+
+
+
     <button class="add-table" (click)="addJoinRow()">+ Tabelle hinzufügen</button>
   </div>
+
 
   <!-- Anzeige von Tabellen und Spalten -->
   <div class="tables-columns-container">
@@ -182,16 +247,44 @@
       <h2>Tabellen</h2>
       <table>
         <tbody>
+          <!-- Ausgangstabelle: 2 Felder: Name + Alias -->
           <tr [class.selected-row]="selectedBaseTable === activeTable">
-            <td (click)="loadColumns(selectedBaseTable)" class="clickable">
+            <td
+              (click)="loadColumns(selectedBaseTable, baseAlias)"
+              class="clickable"
+            >
               {{ selectedBaseTable || 'Ausgangstabelle nicht ausgewählt' }}
             </td>
+            <td>
+              <input
+                type="text"
+                [(ngModel)]="baseAlias"
+                class="alias-input"
+                (click)="$event.stopPropagation()"
+              />
+            </td>
           </tr>
-          <tr *ngFor="let joinRow of joinRows" [class.selected-row]="joinRow.table === activeTable">
-            <td (click)="loadColumns(joinRow.table)" class="clickable">
+
+          <!-- Joins: 2 Felder: Name + Alias -->
+          <tr
+            *ngFor="let joinRow of joinRows"
+            [class.selected-row]="joinRow.table === activeTable"
+          >
+            <td
+              (click)="loadColumns(joinRow.table, joinRow.alias)"
+              class="clickable"
+            >
               {{ joinRow.table || 'Nicht ausgewählt' }}
             </td>
-          </tr>          
+            <td>
+              <input
+                type="text"
+                [(ngModel)]="joinRow.alias"
+                class="alias-input"
+                (click)="$event.stopPropagation()"
+              />
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -201,16 +294,19 @@
       <ul class="columns-list">
         <div *ngFor="let column of tableColumns" class="columns-item">
           <label>
-            <input type="checkbox"
-                   [value]="column"
-                   (change)="toggleColumnSelection(column, activeTable, $event)"
-                   [checked]="isColumnSelected(column)" />
+            <input
+              type="checkbox"
+              [value]="column"
+              (change)="toggleColumnSelection(column, activeTable, $event)"
+              [checked]="isColumnSelected(column)"
+            />
             {{ column }}
           </label>
         </div>
       </ul>
     </div>
   </div>
+
 
   <!-- Spalten-Konfiguration -->
   <div class="table-container">
@@ -219,8 +315,9 @@
       <thead>
         <tr>
           <th>Select-Clause</th>
-          <th>Spaltenname</th>
+          <th>Tabellenname</th>
           <th>Alias</th>
+          <th>Spaltenname</th>
           <th>Datentyp</th>
           <th>Suchfeld</th>
           <th>GroupBy</th>
@@ -233,25 +330,48 @@
       <tbody>
         <tr *ngFor="let col of selectedColumnConfigs">
           <td>{{ col.fullColumn }}</td>
-          <td>{{ getTableName(col.fullColumn) }}</td>
-          <td>{{ getColumnName(col.fullColumn) }}</td>
+          <td>{{ getTableNameFromFullColumn(col.fullColumn) }}</td>
+          <td>{{ getAliasFromFullColumn(col.fullColumn) }}</td>
+          <td>{{ getColumnNameFromFullColumn(col.fullColumn) }}</td>
           <td>Text - Zeile</td>
-          <td><input type="checkbox" [(ngModel)]="col.search" /></td>
-          <td><input type="checkbox" [(ngModel)]="col.groupBy" /></td>
-          <td (click)="cycleOrderBy(col)" class="orderby-toggle"
-              [ngClass]="{'none': col.orderBy === 'none', 'asc': col.orderBy === 'ASC', 'desc': col.orderBy === 'DESC'}">
+          <td>
+            <input type="checkbox" [(ngModel)]="col.search" />
+          </td>
+          <td>
+            <input type="checkbox" [(ngModel)]="col.groupBy" />
+          </td>
+          <td
+            (click)="cycleOrderBy(col)"
+            class="orderby-toggle"
+            [ngClass]="{
+              'none': col.orderBy === 'none',
+              'asc': col.orderBy === 'ASC',
+              'desc': col.orderBy === 'DESC'
+            }"
+          >
             {{ col.orderBy === 'none' ? '-----' : col.orderBy }}
           </td>
-          <td><input type="number" style="width: 60px;" /></td>
-          <td><input type="number" style="width: 60px;" /></td>
-          <td><input type="text" style="width: 100px;" /></td>
+          <td>
+            <input type="number" style="width: 60px;" />
+          </td>
+          <td>
+            <input type="number" style="width: 60px;" />
+          </td>
+          <td>
+            <input type="text" style="width: 100px;" />
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
 
+
   <!-- Button zum Speichern der JSON-Konfiguration -->
   <div class="json-config-save-container">
-    <button (click)="saveJsonConfig()" class="btn save-btn">Suchseite speichern</button>
+    <button (click)="saveJsonConfig()" class="btn save-btn">
+      Suchseite speichern
+    </button>
   </div>
 </div>
+
+<app-apirequests></app-apirequests>
