@@ -155,27 +155,35 @@ app.get('/get-columns', async (req, res) => {
  * 6) Joinable Tables anhand Referenzschlüssel
  ****************************************************/
 app.get('/get-joinable-tables', async (req, res) => {
-    const { baseTable } = req.query;
-    if (!baseTable || !currentDbConfig) {
-        return res.status(400).json({ error: 'Base table or database configuration missing' });
-    }
-    try {
-        const pool = await sql.connect(currentDbConfig);
-        const result = await pool.request().query(`
-            SELECT DISTINCT fk.TABLE_NAME AS JoinableTable
-            FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc
-            JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS pk ON rc.UNIQUE_CONSTRAINT_NAME = pk.CONSTRAINT_NAME
-            JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS fk ON rc.CONSTRAINT_NAME = fk.CONSTRAINT_NAME
-            WHERE pk.TABLE_NAME = '${baseTable}'
-        `);
-        res.json({ joinableTables: result.recordset.map(row => row.JoinableTable) });
-    } catch (error) {
-        console.error("Error fetching joinable tables:", error);
-        res.status(500).json({ error: 'Failed to fetch joinable tables.' });
-    } finally {
-        sql.close();
-    }
+  const { baseTable } = req.query;
+  if (!baseTable || !currentDbConfig) {
+      return res.status(400).json({ error: 'Base table or database configuration missing' });
+  }
+  try {
+      const pool = await sql.connect(currentDbConfig);
+      const query = `
+        SELECT DISTINCT fk.TABLE_NAME AS JoinableTable
+        FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc
+        JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS pk ON rc.UNIQUE_CONSTRAINT_NAME = pk.CONSTRAINT_NAME
+        JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS fk ON rc.CONSTRAINT_NAME = fk.CONSTRAINT_NAME
+        WHERE pk.TABLE_NAME = '${baseTable}'
+        UNION
+        SELECT DISTINCT pk.TABLE_NAME AS JoinableTable
+        FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS rc
+        JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS pk ON rc.UNIQUE_CONSTRAINT_NAME = pk.CONSTRAINT_NAME
+        JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS fk ON rc.CONSTRAINT_NAME = fk.CONSTRAINT_NAME
+        WHERE fk.TABLE_NAME = '${baseTable}'
+      `;
+      const result = await pool.request().query(query);
+      res.json({ joinableTables: result.recordset.map(row => row.JoinableTable) });
+  } catch (error) {
+      console.error("Error fetching joinable tables:", error);
+      res.status(500).json({ error: 'Failed to fetch joinable tables.' });
+  } finally {
+      sql.close();
+  }
 });
+
 
 /****************************************************
  * 7) Fremdschlüssel erfragen
@@ -205,7 +213,7 @@ app.get('/get-foreign-keys', async (req, res) => {
         INNER JOIN sys.columns AS cp ON fkc.parent_object_id = cp.object_id AND fkc.parent_column_id = cp.column_id
         INNER JOIN sys.tables AS tr ON fkc.referenced_object_id = tr.object_id
         INNER JOIN sys.columns AS cr ON fkc.referenced_object_id = cr.object_id AND fkc.referenced_column_id = cr.column_id
-        WHERE tp.name = @tableName
+        WHERE tp.name = @tableName OR tr.name = @tableName
       `);
     res.send({ foreignKeys: result.recordset });
   } catch (error) {
@@ -215,6 +223,7 @@ app.get('/get-foreign-keys', async (req, res) => {
     sql.close();
   }
 });
+
 
 /****************************************************
  * 8) JSON-Dateien im angegebenen Ordner auslesen
@@ -295,7 +304,65 @@ app.post('/api/save-config', (req, res) => {
     });
   });
   
+
+// Fügt folgenden Endpoint zu deinem server.js hinzu:
+app.get('/get-sample-row', async (req, res) => {
+  if (!currentDbConfig) {
+    return res.status(400).json({ error: 'No database configuration set' });
+  }
   
+  const table = req.query.table;
+  if (!table) {
+    return res.status(400).json({ error: 'Table parameter is required' });
+  }
+
+  try {
+    const pool = await sql.connect(currentDbConfig);
+    // Verwende TOP 1, um eine einzelne Zeile abzurufen.
+    const query = `SELECT TOP 1 * FROM [${table}]`;
+    const result = await pool.request().query(query);
+    
+    // Falls kein Datensatz gefunden wurde, gib ein leeres Objekt zurück.
+    const sampleRow = (result.recordset && result.recordset.length > 0) 
+                        ? result.recordset[0] 
+                        : {};
+    res.json(sampleRow);
+  } catch (error) {
+    console.error("Error fetching sample row:", error);
+    res.status(500).json({ error: 'Failed to fetch sample row' });
+  } finally {
+    sql.close();
+  }
+});
+
+app.get('/get-sample-join', async (req, res) => {
+  if (!currentDbConfig) {
+    return res.status(400).json({ error: 'No database configuration set' });
+  }
+  
+  // Hier erwarten wir einen Query-Parameter "joinQuery" – das ist der dynamisch zusammengesetzte Join-Query.
+  const joinQuery = req.query.joinQuery;
+  if (!joinQuery) {
+    return res.status(400).json({ error: 'joinQuery parameter is required' });
+  }
+  
+  // Wir ergänzen TOP 1, falls noch nicht vorhanden, um nur einen Datensatz zu erhalten.
+  const sampleQuery = `SELECT TOP 1 * FROM (${joinQuery}) AS SampleTable`;
+  
+  try {
+    const pool = await sql.connect(currentDbConfig);
+    const result = await pool.request().query(sampleQuery);
+    const sampleRow = (result.recordset && result.recordset.length > 0) ? result.recordset[0] : {};
+    res.json(sampleRow);
+  } catch (error) {
+    console.error("Error fetching sample join row:", error);
+    res.status(500).json({ error: 'Failed to fetch sample join row' });
+  } finally {
+    sql.close();
+  }
+});
+
+
 
 /****************************************************
  * Server starten

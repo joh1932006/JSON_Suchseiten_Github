@@ -28,9 +28,9 @@ export class JsonConfigEditorComponent implements OnInit {
     private router: Router 
   ) {}
 
-  // ---------------------------
-  // Hilfsmethoden
-  // ---------------------------
+  
+  
+
   
   /**
    * Gibt den Tabellennamen zurück (alles vor dem ersten Punkt).
@@ -215,7 +215,25 @@ export class JsonConfigEditorComponent implements OnInit {
   updateBaseTable(selectedBaseTable: string) {
     this.selectedBaseTable = selectedBaseTable;
     this.fetchJoinableTables(selectedBaseTable);
+    this.fetchForeignKeys(selectedBaseTable); // Methode: Foreign Keys laden
   }
+  
+  fetchForeignKeys(table: string) {
+    this.http.get<{ foreignKeys: any[] }>(`http://localhost:3000/get-foreign-keys?table=${table}`)
+      .subscribe(
+        response => {
+          this.foreignKeys = response.foreignKeys;
+          // Hier loggen wir die gesamten FK-Daten:
+          console.log("FK Response:", response);
+          console.log("Foreign keys fetched:", this.foreignKeys);
+        },
+        error => {
+          console.error("Fehler beim Laden der FK-Daten:", error);
+        }
+      );
+  }
+  
+  
   editDatabase() {
     const selectedDbConfig = this.databases.find(db => db.name === this.selectedDatabase);
     if (selectedDbConfig) {
@@ -265,15 +283,25 @@ export class JsonConfigEditorComponent implements OnInit {
   }
   generateJoinCondition(index: number) {
     const joinRow = this.joinRows[index];
-    const foreignKey = this.foreignKeys.find(
-      fk => fk.referenced_table === joinRow.table
+    // Suche nach einer FK-Beziehung, die beide Tabellen involviert
+    const fk = this.foreignKeys.find(fk =>
+      (this.selectedBaseTable === fk.parent_table && joinRow.table === fk.referenced_table) ||
+      (this.selectedBaseTable === fk.referenced_table && joinRow.table === fk.parent_table)
     );
-    if (foreignKey) {
-      joinRow.condition = `${joinRow.joinType} ${joinRow.table} ON ${joinRow.table}.${foreignKey.referenced_column} = ${this.selectedBaseTable}.${foreignKey.parent_column}`;
+    if (fk) {
+      if (this.selectedBaseTable === fk.parent_table && joinRow.table === fk.referenced_table) {
+        // Ausgangstabelle hat den Foreign Key; joinende Tabelle ist referenziert
+        joinRow.condition = `${joinRow.joinType} ${joinRow.table} ON ${joinRow.table}.${fk.referenced_column} = ${this.selectedBaseTable}.${fk.parent_column}`;
+      } else if (this.selectedBaseTable === fk.referenced_table && joinRow.table === fk.parent_table) {
+        // Ausgangstabelle ist referenziert; joinende Tabelle besitzt den Foreign Key
+        joinRow.condition = `${joinRow.joinType} ${joinRow.table} ON ${joinRow.table}.${fk.parent_column} = ${this.selectedBaseTable}.${fk.referenced_column}`;
+      }
     } else {
-      console.error('No foreign key found for the selected table');
+      console.error('Es wurde keine FK-Beziehung zwischen den ausgewählten Tabellen gefunden');
+      joinRow.condition = '';
     }
   }
+  
 
   // ---------------------------
   // Spalten und Tabellen
@@ -288,26 +316,44 @@ export class JsonConfigEditorComponent implements OnInit {
     }
     this.activeTable = tableName;
     this.tableColumns = [];
-    this.http.get<{ columns: string[] }>(`http://localhost:3000/get-columns?table=${tableName}`).subscribe(
-      response => {
-        this.tableColumns = response.columns.sort((a, b) => {
-          const lowerA = a.toLowerCase();
-          const lowerB = b.toLowerCase();
-          // Wenn a "sid" ist und b nicht, soll a vor b
-          if (lowerA === 'sid' && lowerB !== 'sid') {
-            return -1;
-          }
-          // Wenn b "sid" ist und a nicht, soll b vor a
-          if (lowerB === 'sid' && lowerA !== 'sid') {
-            return 1;
-          }
-          // Andernfalls alphabetisch sortieren
-          return a.localeCompare(b);
-        });
-      },
-      error => console.error('Fehler beim Abrufen der Spalten:', error)
-    );
+  
+    // 1. Alle Spalten der Tabelle abrufen (ohne zusätzliche Filterung):
+    this.http.get<{ columns: string[] }>(`http://localhost:3000/get-columns?table=${tableName}`)
+      .subscribe(
+        response => {
+          let columns = response.columns;
+          
+          // 2. Sortieren:
+          //  - "sid" (unabhängig von Groß-/Kleinschreibung) kommt immer an erste Stelle
+          //  - Danach alphabetische Sortierung
+          columns = columns.sort((a, b) => {
+            const lcA = a.toLowerCase();
+            const lcB = b.toLowerCase();
+  
+            // Wenn a == 'sid' und b != 'sid', dann a zuerst
+            if (lcA === 'sid' && lcB !== 'sid') {
+              return -1;
+            }
+            // Wenn b == 'sid' und a != 'sid', dann b zuerst
+            if (lcB === 'sid' && lcA !== 'sid') {
+              return 1;
+            }
+            // Ansonsten normal alphabetisch sortieren
+            return lcA.localeCompare(lcB);
+          });
+  
+          console.log('Geladene Spalten (sortiert):', columns);
+          this.tableColumns = columns;
+        },
+        error => {
+          console.error('Fehler beim Abrufen der Spalten:', error);
+        }
+      );
   }
+  
+  
+  
+  
   
 
   /**

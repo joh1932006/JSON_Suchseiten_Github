@@ -140,6 +140,7 @@ input:focus, select:focus {
 .add-btn:hover {
   background-color: #2B6CB0;
 }
+
 button.add-table {
   background-color: #3182CE; 
   color: #FFFFFF;            
@@ -149,6 +150,7 @@ button.add-table {
   font-size: 14px;
   cursor: pointer;
 }
+
 
 
 
@@ -222,7 +224,9 @@ tbody tr:hover td {
 }
 
 .selected-row td {
-  background-color: #0A375E;
+  background-color: #3B4554 !important;
+  color: #ffffff;
+  font-weight: 300;
 }
 
 /* -------------------------------------- */

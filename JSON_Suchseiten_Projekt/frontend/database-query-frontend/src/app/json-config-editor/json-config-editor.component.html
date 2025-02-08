@@ -181,22 +181,17 @@
     <div class="table-container">
       <h2>Tabellen</h2>
       <table>
-        <thead>
-          <tr>
-            <th>Tabellen</th>
-          </tr>
-        </thead>
         <tbody>
-          <tr>
+          <tr [class.selected-row]="selectedBaseTable === activeTable">
             <td (click)="loadColumns(selectedBaseTable)" class="clickable">
               {{ selectedBaseTable || 'Ausgangstabelle nicht ausgewählt' }}
             </td>
           </tr>
-          <tr *ngFor="let joinRow of joinRows">
+          <tr *ngFor="let joinRow of joinRows" [class.selected-row]="joinRow.table === activeTable">
             <td (click)="loadColumns(joinRow.table)" class="clickable">
               {{ joinRow.table || 'Nicht ausgewählt' }}
             </td>
-          </tr>
+          </tr>          
         </tbody>
       </table>
     </div>
