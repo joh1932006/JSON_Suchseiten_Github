@@ -1,5 +1,5 @@
 {
-    "name": "default-config",
+    "name": "dominik_Kevin",
     "itemsPerPage": 100,
     "tableWidth": 1200,
     "preventSearchWithoutRestriction": false,
@@ -15,18 +15,22 @@
     "filterRoleSid": null,
     "roleSid": null,
     "interfaceSid": null,
-    "table": "ActionType ac",
+    "table": "ActionGrp ac",
     "whereClause": "",
     "joinGroups": [
         {
             "id": 1,
-            "joinClause": "INNER JOIN Language la ON la.SID = ac.FK_Language_SID"
+            "joinClause": "INNER JOIN CRMPartner cr ON cr.SID = ac.FK_CRMPartnerMand_SID"
+        },
+        {
+            "id": 2,
+            "joinClause": "INNER JOIN aUser au ON au.SID = ac.FK_User_SID"
         }
     ],
     "columnGroups": [
         {
             "id": 1,
-            "name": "Group for ActionType (ac)",
+            "name": "Group for ActionGrp (ac)",
             "columns": [
                 {
                     "id": 1,
@@ -38,33 +42,25 @@
                 },
                 {
                     "id": 2,
-                    "name": "aName",
+                    "name": "dispOnMenu",
                     "multiLinugal": false,
                     "enqPropDataTypeSid": 1,
-                    "selectClause": "ac.aName",
-                    "alias": "aName"
-                },
-                {
-                    "id": 3,
-                    "name": "FK_CRMPartnerMand_SID",
-                    "multiLinugal": false,
-                    "enqPropDataTypeSid": 1,
-                    "selectClause": "ac.FK_CRMPartnerMand_SID",
-                    "alias": "FK_CRMPartnerMand_SID"
+                    "selectClause": "ac.dispOnMenu",
+                    "alias": "dispOnMenu"
                 }
             ]
         },
         {
             "id": 2,
-            "name": "Group for Language (la)",
+            "name": "Group for CRMPartner (cr)",
             "columns": [
                 {
-                    "id": 4,
-                    "name": "aShortName",
+                    "id": 3,
+                    "name": "aDescription",
                     "multiLinugal": false,
                     "enqPropDataTypeSid": 1,
-                    "selectClause": "la.aShortName",
-                    "alias": "aShortName",
+                    "selectClause": "cr.aDescription",
+                    "alias": "aDescription",
                     "joinGroupId": 1
                 }
             ]
@@ -77,6 +73,14 @@
                 1
             ],
             "orderNumber": 1,
+            "operatorSid": 15
+        },
+        {
+            "id": 2,
+            "columnId": [
+                2
+            ],
+            "orderNumber": 2,
             "operatorSid": 15
         }
     ],
@@ -98,17 +102,15 @@
             "hidden": false,
             "identity": true,
             "orderNumber": 3
-        },
-        {
-            "columnId": 4,
-            "hidden": false,
-            "identity": true,
-            "orderNumber": 4
         }
     ],
     "orderByColumns": [
         {
-            "columnId": 2,
+            "columnId": 1,
+            "ascending": false
+        },
+        {
+            "columnId": 3,
             "ascending": true
         }
     ]

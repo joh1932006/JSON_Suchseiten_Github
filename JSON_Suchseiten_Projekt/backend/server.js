@@ -228,7 +228,6 @@ app.get('/get-foreign-keys', async (req, res) => {
 /****************************************************
  * 8) JSON-Dateien im angegebenen Ordner auslesen
  ****************************************************/
-// Pfad zum Ordner mit JSON-Dateien (Windows-Pfad mit doppelten Backslashes)
 const configsFolder = "..\\JsonKonfigurationen";
 
 app.get('/api/config-files', (req, res) => {

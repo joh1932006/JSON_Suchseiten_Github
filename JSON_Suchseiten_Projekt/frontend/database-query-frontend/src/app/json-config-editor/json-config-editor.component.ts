@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';           // Wichtig für Param-Auswertung
+import { ActivatedRoute, Router } from '@angular/router';          
 import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -8,18 +8,17 @@ import { APIRequestsComponent } from '../apirequests/apirequests.component';
 
 // Neues Interface für die Spaltenkonfiguration
 interface ColumnConfig {
-  fullColumn: string;            // z. B. "BankCon.IBAN"
-  search: boolean;               // Gibt an, ob die Checkbox "Suchfeld" aktiviert wurde
-  groupBy: boolean;              // (optional)
-  orderBy: 'none' | 'ASC' | 'DESC'; // Drei Zustände: keine Sortierung, ASC oder DESC
-  // Weitere optionale Felder (z. B. Nachkommastellen, Breite, Bedingung) können ergänzt werden
+  fullColumn: string;            
+  search: boolean;               
+  groupBy: boolean;            
+  orderBy: 'none' | 'ASC' | 'DESC'; 
 }
 
 interface JoinRow {
   table: string;
   joinType: string;
   condition: string;
-  alias?: string; // <-- Neu: Alias-Feld
+  alias?: string; 
 }
 
 
@@ -428,9 +427,9 @@ updateAliases(): void {
   
   
 
-  /**
-   * Wird aufgerufen, wenn eine Spalte in der Liste ausgewählt oder abgewählt wird.
-   * Es wird ein Objekt (ColumnConfig) angelegt oder entfernt.
+  /*
+   Wird aufgerufen, wenn eine Spalte in der Liste ausgewählt oder abgewählt wird.
+   Es wird ein Objekt (ColumnConfig) angelegt oder entfernt.
    */
   toggleColumnSelection(column: string, tableName: string, event: any): void {
     const fullColumn = `${tableName}.${this.activeAlias}.${column}`;
@@ -451,7 +450,7 @@ updateAliases(): void {
 
   /**
    * Zyklischer Wechsel des OrderBy-Zustands:
-   * 'none' -> 'ASC' -> 'DESC' -> 'none'
+   * '---' -> 'ASC' -> 'DESC' -> '---'
    */
   cycleOrderBy(config: ColumnConfig): void {
     if (config.orderBy === 'none') {
@@ -463,17 +462,13 @@ updateAliases(): void {
     }
   }
 
-  /**
-   * Gruppiert die ausgewählten Spalten nach Tabelle und erzeugt ein Mapping von fullColumn → globale Spalten-ID.
-   * Diese IDs werden dann in columnGroups sowie in den searchColumns verwendet.
-   */
   generateColumnGroups(): { columnGroups: any[]; fullColumnToId: { [key: string]: number } } {
     let groupId = 0;
     let globalColumnId = 0;
     const fullColumnToId: { [key: string]: number } = {};
   
+    // Gruppierung nach "Tabelle.Alias"
     const grouped = this.selectedColumnConfigs.reduce((acc: { [groupKey: string]: ColumnConfig[] }, curr: ColumnConfig) => {
-      // Erwartetes Format: "Tabelle.Alias.Spaltname"
       const parts = curr.fullColumn.split('.');
       const groupKey = parts[0] + '.' + parts[1];
       if (!acc[groupKey]) {
@@ -489,10 +484,10 @@ updateAliases(): void {
       const groupColumns = grouped[groupKey].map((config: ColumnConfig) => {
         globalColumnId++;
         fullColumnToId[config.fullColumn] = globalColumnId;
-        // Extrahiere den Spaltennamen (dritter Teil)
         const parts = config.fullColumn.split('.');
         const colName = parts[2] || config.fullColumn;
-        return {
+        // Erzeuge das Spaltenobjekt
+        const columnObj: any = {
           id: globalColumnId,
           name: colName,
           multiLinugal: false,
@@ -500,6 +495,15 @@ updateAliases(): void {
           selectClause: `${tableAlias}.${colName}`,
           alias: colName
         };
+        // Falls der Alias nicht der Basis-Tabelle entspricht, handelt es sich um eine Join-Spalte
+        if (tableAlias !== this.baseAlias) {
+          // Index finden in joinRows, bei dem der Alias übereinstimmt
+          const joinIndex = this.joinRows.findIndex(row => row.alias === tableAlias);
+          if (joinIndex !== -1) {
+            columnObj.joinGroupId = joinIndex + 1; // joinGroupId bei den Spalten der Tabellen auf die gejoint wird
+          }
+        }
+        return columnObj;
       });
       return {
         id: groupId,
@@ -510,15 +514,10 @@ updateAliases(): void {
     return { columnGroups, fullColumnToId };
   }
   
-  
-  /**
-   * Speichert die aktuelle Konfiguration als JSON.
-   * Dabei werden u. a. die searchColumns (für Spalten mit gesetzter Suchfeld-Checkbox) generiert.
-   */
+  // save JSON-Konfiguration
   saveJsonConfig(): void {
     const { columnGroups, fullColumnToId } = this.generateColumnGroups();
   
-    // Erzeugen des searchColumns-Arrays (nur Spalten, bei denen search === true)
     let searchColumns: any[] = [];
     let searchId = 0;
     this.selectedColumnConfigs.forEach(config => {
@@ -576,7 +575,7 @@ updateAliases(): void {
       filterRoleSid: null,
       roleSid: null,
       interfaceSid: null,
-      table: this.selectedBaseTable,
+      table: `${this.selectedBaseTable} ${this.baseAlias}`,
       whereClause: '',
       joinGroups: this.joinRows.map((row, index) => ({
         id: index + 1,
