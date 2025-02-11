@@ -238,7 +238,7 @@ tbody tr:hover td {
 /* -------------------------------------- */
 .join-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr auto;
+  grid-template-columns: 1fr 1fr 0.5fr 1fr 1fr auto;
   gap: 10px; /* statt 8px */
   align-items: start;
   margin-bottom: 10px;

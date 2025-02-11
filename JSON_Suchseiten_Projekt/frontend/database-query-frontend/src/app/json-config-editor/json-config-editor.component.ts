@@ -19,6 +19,7 @@ interface JoinRow {
   joinType: string;
   condition: string;
   alias?: string; 
+  optionalCondition?: string; 
 }
 
 
@@ -38,9 +39,8 @@ export class JsonConfigEditorComponent implements OnInit {
 
   joinRows: JoinRow[] = [];
   baseAlias: string = '';
-  // Neue Property, um den aktuell ausgewählten Alias zu speichern
- activeAlias: string = '';
-
+  activeAlias: string = '';
+  userWhereClause: string = '';
 
   
   /**
@@ -576,10 +576,12 @@ updateAliases(): void {
       roleSid: null,
       interfaceSid: null,
       table: `${this.selectedBaseTable} ${this.baseAlias}`,
-      whereClause: '',
+      whereClause: this.userWhereClause || '',
       joinGroups: this.joinRows.map((row, index) => ({
         id: index + 1,
-        joinClause: row.condition
+        joinClause: row.optionalCondition 
+          ? row.condition + ' AND ' + row.optionalCondition
+          : row.condition
       })),
       columnGroups: columnGroups,
       searchColumns: searchColumns,

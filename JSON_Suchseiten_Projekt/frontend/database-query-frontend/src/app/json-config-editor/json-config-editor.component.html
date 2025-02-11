@@ -174,7 +174,21 @@
       </div>
     </div>
 
-    <h3>Join-Bedingungen</h3>
+    <!-- Where-Clause-->
+    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+      <div>
+        <label for="whereClause">Where-Clause:</label>
+        <input
+          id="whereClause"
+          type="text"
+          [(ngModel)]="userWhereClause"
+          class="alias-input"
+          placeholder="OPTIONAL: z.B. status = 'A'"
+        />
+      </div>
+    </div>
+
+    <h2>JOIN-Bedingungen</h2>
 <!-- Join-Reihe -->
 <div *ngFor="let row of joinRows; let i = index" class="join-row">
 
@@ -227,6 +241,16 @@
       id="condition-{{ i }}"
       type="text"
       [(ngModel)]="row.condition"
+    />
+  </div>
+
+  <div>
+    <label for="optCond-{{ i }}">Optionale JOIN Einschränkung:</label>
+    <input
+      id="optCond-{{ i }}"
+      type="text"
+      [(ngModel)]="row.optionalCondition"
+      placeholder="AND ..."
     />
   </div>
 

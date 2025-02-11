@@ -1,5 +1,5 @@
 {
-    "name": "default-config",
+    "name": "tyshi1",
     "itemsPerPage": 100,
     "tableWidth": 1200,
     "preventSearchWithoutRestriction": false,
@@ -15,26 +15,26 @@
     "filterRoleSid": null,
     "roleSid": null,
     "interfaceSid": null,
-    "table": "AnswerGrpBRat an",
-    "whereClause": "test",
+    "table": "Action act",
+    "whereClause": "testclause",
     "joinGroups": [
         {
             "id": 1,
-            "joinClause": "INNER JOIN AnswerGrpBRatPos an ON an.FK_AnswerGrpBRat_SID = an.SID"
+            "joinClause": "INNER JOIN Action act ON act.SID = act.FK_ActionGenPa_SID AND teststuff"
         }
     ],
     "columnGroups": [
         {
             "id": 1,
-            "name": "Group for AnswerGrpBRat (an)",
+            "name": "Group for Action (act)",
             "columns": [
                 {
                     "id": 1,
-                    "name": "aDescription",
+                    "name": "SID",
                     "multiLinugal": false,
                     "enqPropDataTypeSid": 1,
-                    "selectClause": "an.aDescription",
-                    "alias": "aDescription"
+                    "selectClause": "act.SID",
+                    "alias": "SID"
                 }
             ]
         }
