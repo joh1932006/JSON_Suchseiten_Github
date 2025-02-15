@@ -1,0 +1,43 @@
+{
+  "configName": "wird",
+  "selectedDatabase": "Fab4Minds",
+  "selectedBaseTable": "ActionGrp",
+  "joinRows": [
+    {
+      "table": "aUser",
+      "joinType": "INNER JOIN",
+      "condition": "INNER JOIN aUser au ON au.SID = ac.FK_User_SID",
+      "alias": "au",
+      "optionalCondition": "qweqwe"
+    },
+    {
+      "table": "FilterXD",
+      "joinType": "INNER JOIN",
+      "condition": "INNER JOIN FilterXD fi ON fi.SID = ac.FK_FilterXDCRMPBr_SID",
+      "alias": "fi",
+      "optionalCondition": "sdasdas"
+    }
+  ],
+  "selectedColumnConfigs": [
+    {
+      "fullColumn": "ActionGrp.ac.SID",
+      "search": true,
+      "groupBy": false,
+      "orderBy": "none"
+    },
+    {
+      "fullColumn": "aUser.au.confirmationPending",
+      "search": true,
+      "groupBy": false,
+      "orderBy": "ASC"
+    },
+    {
+      "fullColumn": "aUser.au.createDate",
+      "search": false,
+      "groupBy": false,
+      "orderBy": "DESC"
+    }
+  ],
+  "baseAlias": "ac",
+  "userWhereClause": "jaajaa"
+}

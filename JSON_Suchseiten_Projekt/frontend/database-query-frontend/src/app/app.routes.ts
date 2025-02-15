@@ -4,12 +4,18 @@ import { ConfigListComponent } from './config-list/config-list.component';
 import { JsonConfigEditorComponent } from './json-config-editor/json-config-editor.component';
 
 export const routes: Routes = [
-  // Startseite zeigt die Liste aller vorhandenen Konfigurationena
+  // Startseite: Liste aller Konfigurationen
   { path: '', component: ConfigListComponent },
-
-  // Neue Konfiguration -> Editor im "Neuerstellen"-Modus
+  
+  // Neuerstellen einer Konfiguration -> Editor im "Neuerstellen"-Modus
   { path: 'config/new', component: JsonConfigEditorComponent },
+  
+  // Bearbeiten einer bestehenden Konfiguration -> Editor im "Bearbeiten"-Modus
+  { path: 'config/:filename', component: JsonConfigEditorComponent },
 
-  // Bestehende Konfiguration -> Editor im "Bearbeiten"-Modus
-  { path: 'config/:filename', component: JsonConfigEditorComponent }
+  // SQL-Ergebnisse anzeigen (standalone Komponente)
+  { 
+    path: 'sql-results', 
+    loadComponent: () => import('./sql-results/sql-results.component').then(m => m.SqlResultsComponent)
+  }
 ];

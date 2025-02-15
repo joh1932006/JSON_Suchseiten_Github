@@ -1,0 +1,118 @@
+{
+  "name": "wird",
+  "itemsPerPage": 100,
+  "tableWidth": 1200,
+  "preventSearchWithoutRestriction": false,
+  "showInStartMenu": false,
+  "selectSingleEntity": true,
+  "searchOnType": true,
+  "hideHeadersOnNoRestriction": false,
+  "automaticRun": true,
+  "implementationId": 1,
+  "querySid": null,
+  "filterXDJoinGroupId": null,
+  "filterChooseRoleSid": null,
+  "filterRoleSid": null,
+  "roleSid": null,
+  "interfaceSid": null,
+  "table": "ActionGrp ac",
+  "whereClause": "jaajaa",
+  "joinGroups": [
+    {
+      "id": 1,
+      "joinClause": "INNER JOIN aUser au ON au.SID = ac.FK_User_SID AND qweqwe"
+    },
+    {
+      "id": 2,
+      "joinClause": "INNER JOIN FilterXD fi ON fi.SID = ac.FK_FilterXDCRMPBr_SID AND sdasdas"
+    }
+  ],
+  "columnGroups": [
+    {
+      "id": 1,
+      "name": "Group for ActionGrp (ac)",
+      "columns": [
+        {
+          "id": 1,
+          "name": "SID",
+          "multiLinugal": false,
+          "enqPropDataTypeSid": 1,
+          "selectClause": "ac.SID",
+          "alias": "SID"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Group for aUser (au)",
+      "columns": [
+        {
+          "id": 2,
+          "name": "confirmationPending",
+          "multiLinugal": false,
+          "enqPropDataTypeSid": 1,
+          "selectClause": "au.confirmationPending",
+          "alias": "confirmationPending",
+          "joinGroupId": 1
+        },
+        {
+          "id": 3,
+          "name": "createDate",
+          "multiLinugal": false,
+          "enqPropDataTypeSid": 1,
+          "selectClause": "au.createDate",
+          "alias": "createDate",
+          "joinGroupId": 1
+        }
+      ]
+    }
+  ],
+  "searchColumns": [
+    {
+      "id": 1,
+      "columnId": [
+        1
+      ],
+      "orderNumber": 1,
+      "operatorSid": 15
+    },
+    {
+      "id": 2,
+      "columnId": [
+        2
+      ],
+      "orderNumber": 2,
+      "operatorSid": 15
+    }
+  ],
+  "resultColumns": [
+    {
+      "columnId": 1,
+      "hidden": false,
+      "identity": true,
+      "orderNumber": 1
+    },
+    {
+      "columnId": 2,
+      "hidden": false,
+      "identity": true,
+      "orderNumber": 2
+    },
+    {
+      "columnId": 3,
+      "hidden": false,
+      "identity": true,
+      "orderNumber": 3
+    }
+  ],
+  "orderByColumns": [
+    {
+      "columnId": 2,
+      "ascending": true
+    },
+    {
+      "columnId": 3,
+      "ascending": false
+    }
+  ]
+}

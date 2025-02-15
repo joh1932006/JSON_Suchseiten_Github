@@ -600,4 +600,10 @@ loadMetaData(fileName: string) {
     const parts = fullColumn.split('.');
     return parts[2] || fullColumn;
   }
+
+  // Navigation zur SQL-Results Komponente
+  showSqlResults(): void {
+    this.router.navigate(['sql-results']);
+  }
+
 }
