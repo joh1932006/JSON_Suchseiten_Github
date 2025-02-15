@@ -1,0 +1,55 @@
+{
+  "configName": "name",
+  "selectedDatabase": "Fab4Minds",
+  "selectedBaseTable": "ActionPartType",
+  "joinRows": [
+    {
+      "table": "CRMPartner",
+      "joinType": "INNER JOIN",
+      "condition": "INNER JOIN CRMPartner cr ON cr.SID = ac.FK_CRMPartnerMand_SID",
+      "alias": "cr",
+      "optionalCondition": "asdasd"
+    },
+    {
+      "table": "RecordState",
+      "joinType": "INNER JOIN",
+      "condition": "INNER JOIN RecordState re ON re.SID = ac.FK_RecordState_SID",
+      "alias": "re",
+      "optionalCondition": "adasda"
+    }
+  ],
+  "selectedColumnConfigs": [
+    {
+      "fullColumn": "ActionPartType.ac.SID",
+      "search": true,
+      "groupBy": false,
+      "orderBy": "ASC"
+    },
+    {
+      "fullColumn": "ActionPartType.ac.aName",
+      "search": true,
+      "groupBy": true,
+      "orderBy": "none"
+    },
+    {
+      "fullColumn": "CRMPartner.cr.aDescription",
+      "search": false,
+      "groupBy": false,
+      "orderBy": "DESC"
+    },
+    {
+      "fullColumn": "CRMPartner.cr.AccreditID",
+      "search": false,
+      "groupBy": false,
+      "orderBy": "none"
+    },
+    {
+      "fullColumn": "RecordState.re.FK_ITSystem_SID",
+      "search": false,
+      "groupBy": false,
+      "orderBy": "ASC"
+    }
+  ],
+  "baseAlias": "ac",
+  "userWhereClause": "asdasd"
+}

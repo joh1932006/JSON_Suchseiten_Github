@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { APIRequestsComponent } from '../apirequests/apirequests.component';
 
-// Neues Interface für die Spaltenkonfiguration
+// Interface für die Spaltenkonfiguration
 interface ColumnConfig {
   fullColumn: string;            
   search: boolean;               
@@ -14,6 +14,7 @@ interface ColumnConfig {
   orderBy: 'none' | 'ASC' | 'DESC'; 
 }
 
+// Interface für eine Join-Zeile
 interface JoinRow {
   table: string;
   joinType: string;
@@ -21,7 +22,6 @@ interface JoinRow {
   alias?: string; 
   optionalCondition?: string; 
 }
-
 
 @Component({
   selector: 'app-json-config-editor',
@@ -37,74 +37,18 @@ export class JsonConfigEditorComponent implements OnInit {
     private router: Router 
   ) {}
 
+  // JOIN-Daten
   joinRows: JoinRow[] = [];
   baseAlias: string = '';
   activeAlias: string = '';
   userWhereClause: string = '';
 
-  
-  /**
-   * Gibt den Tabellennamen zurück (alles vor dem ersten Punkt).
-   * Beispiel: "BankCon.IBAN" → "BankCon"
-   */
-  getTableName(fullColumn: string): string {
-    const parts = fullColumn.split('.');
-    return parts[0] || fullColumn;
-  }
-
-  /**
-   * Gibt den Spaltennamen zurück (alles nach dem ersten Punkt).
-   * Beispiel: "BankCon.IBAN" → "IBAN"
-   */
-  getColumnName(fullColumn: string): string {
-    const parts = fullColumn.split('.');
-    return parts[1] || fullColumn;
-  }
-
-  /**
-   * Navigiert zurück zur Startseite.
-   */
-  goHome() {
-    this.router.navigate(['']);
-  }
-
-  /**
-   * Prüft, ob die übergebene Spalte bereits in den ausgewählten ColumnConfigs enthalten ist.
-   */
-  isColumnSelected(column: string): boolean {
-    const fullCol = `${this.activeTable}.${this.activeAlias}.${column}`;
-    return this.selectedColumnConfigs.some(c => c.fullColumn === fullCol);
-  }
-
-
-  /**
- * Extrahiert den Tabellen-Namen aus einem fullColumn-String im Format "Tabelle.Alias.Spaltname".
- */
-getTableNameFromFullColumn(fullColumn: string): string {
-  const parts = fullColumn.split('.');
-  return parts[0] || fullColumn;
-}
-
-/**
- * Extrahiert den Alias aus einem fullColumn-String im Format "Tabelle.Alias.Spaltname".
- */
-getAliasFromFullColumn(fullColumn: string): string {
-  const parts = fullColumn.split('.');
-  return parts[1] || '';
-}
-
-/**
- * Extrahiert den Spaltentitel aus einem fullColumn-String im Format "Tabelle.Alias.Spaltname".
- */
-getColumnNameFromFullColumn(fullColumn: string): string {
-  const parts = fullColumn.split('.');
-  return parts[2] || fullColumn;
-}
-
-
+  // Allgemeine Felder
   fileName: string | null = null;
   title = 'mein-projekt';
+  configName: string = '';
 
+  // Fremdschlüssel-Daten (für automatische Join-Erstellung)
   foreignKeys: {
     foreign_key_name: string; 
     parent_table: string; 
@@ -113,8 +57,7 @@ getColumnNameFromFullColumn(fullColumn: string): string {
     referenced_column: string;
   }[] = [];
 
-  configName: string = '';
-
+  // Datenbank-/Tabellen-Daten
   databases: { name: string; config: any }[] = [
     {
       name: 'Fab4Minds',
@@ -131,7 +74,6 @@ getColumnNameFromFullColumn(fullColumn: string): string {
       }
     }
   ];
-
   selectedDatabase: string = '';
   selectedBaseTable: string = '';
   showDbConfigModal: boolean = false;
@@ -153,8 +95,10 @@ getColumnNameFromFullColumn(fullColumn: string): string {
 
   tables: string[] = [];
 
-  // Statt eines einfachen string-Arrays führen wir jetzt ein Array von ColumnConfig-Objekten
+  // Spalten-Konfiguration
   selectedColumnConfigs: ColumnConfig[] = [];
+  activeTable: string = '';
+  tableColumns: string[] = [];
 
   // ---------------------------
   // Initialisierung
@@ -170,19 +114,59 @@ getColumnNameFromFullColumn(fullColumn: string): string {
     }
   }
 
+  // Laden der Konfiguration (API-konformer JSON)
   loadExistingConfig(fileName: string) {
     this.http.get<any>(`http://localhost:3000/api/read-config?fileName=${fileName}`)
       .subscribe({
-        next: (data) => {
-          console.log('Geladene Config:', data);
-          this.configName = data.name || '';
-          // Weitere Eigenschaften (z. B. Tabellen, Spalten) können hier übernommen werden.
+        next: (configData) => {
+          console.log('Config geladen:', configData);
+          // Felder aus dem API‑konformen JSON übernehmen:
+          this.configName = configData.name || '';
+          if (configData.table) {
+            const parts = configData.table.split(' ');
+            this.selectedBaseTable = parts[0];
+            this.baseAlias = parts[1] || '';
+          }
+          this.userWhereClause = configData.whereClause || '';
+
+          // Jetzt die Meta‑Daten laden:
+          this.loadMetaData(fileName);
         },
         error: (err) => {
-          console.error('Fehler beim Laden der JSON-Konfiguration:', err);
+          console.error('Fehler beim Laden der Config:', err);
         }
       });
   }
+
+  // Laden der UI‑Meta-Daten (inkl. Datenbank, Ausgangstabelle und Join-Tabellen)
+loadMetaData(fileName: string) {
+  this.http.get<any>(`http://localhost:3000/api/read-meta?fileName=${fileName}`)
+    .subscribe({
+      next: (metaData) => {
+        console.log('Meta geladen:', metaData);
+        // UI‑spezifische Felder übernehmen:
+        this.selectedDatabase = metaData.selectedDatabase || this.selectedDatabase;
+        this.selectedBaseTable = metaData.selectedBaseTable || this.selectedBaseTable;
+        this.joinRows = metaData.joinRows || [];
+        this.selectedColumnConfigs = metaData.selectedColumnConfigs || [];
+        this.baseAlias = metaData.baseAlias || this.baseAlias;
+        this.userWhereClause = metaData.userWhereClause || this.userWhereClause;
+        this.updateAliases();
+        // Damit die Dropdown-Liste der Tabellen aktuell ist, laden wir die Tabelle-Liste neu:
+        if (this.selectedDatabase) {
+          this.fetchTables();
+        }
+        // Falls eine Ausgangstabelle geladen wurde, rufe fetchJoinableTables auf (sofern benötigt)
+        if (this.selectedBaseTable) {
+          this.fetchJoinableTables(this.selectedBaseTable);
+        }
+      },
+      error: (err) => {
+        console.error('Fehler beim Laden der Meta-Daten:', err);
+      }
+    });
+}
+
 
   // ---------------------------
   // DB-Management, etc.
@@ -251,7 +235,7 @@ getColumnNameFromFullColumn(fullColumn: string): string {
   updateBaseTable(selectedBaseTable: string) {
     this.selectedBaseTable = selectedBaseTable;
     this.fetchJoinableTables(selectedBaseTable);
-    this.fetchForeignKeys(selectedBaseTable); // Methode: Foreign Keys laden
+    this.fetchForeignKeys(selectedBaseTable);
     this.updateAliases();
   }
   
@@ -260,8 +244,6 @@ getColumnNameFromFullColumn(fullColumn: string): string {
       .subscribe(
         response => {
           this.foreignKeys = response.foreignKeys;
-          // Hier loggen wir die gesamten FK-Daten:
-          console.log("FK Response:", response);
           console.log("Foreign keys fetched:", this.foreignKeys);
         },
         error => {
@@ -270,56 +252,6 @@ getColumnNameFromFullColumn(fullColumn: string): string {
       );
   }
 
-  /**
- * Liefert einen Standard-Alias für einen Tabellennamen.
- * Hier kann ein vordefiniertes Mapping hinterlegt werden.
- */
-getAbbreviationForTable(table: string): string {
-  const mapping: { [key: string]: string } = {
-    'trans': 't',
-    'crmadress': 'ca',
-    'action': 'act'
-    // Hier ggf. weitere Einträge
-  };
-  const lowerTable = table.toLowerCase();
-  if (mapping[lowerTable]) {
-    return mapping[lowerTable];
-  }
-  // Falls keine vordefinierte Abkürzung existiert, nimm die ersten zwei Buchstaben
-  return table.substring(0, 2).toLowerCase();
-}
-
-/**
- * Aktualisiert den Alias der Ausgangstabelle (baseAlias) und der joinRows.
- * Falls eine Tabelle mehrfach vorkommt, wird für die zweite (usw.) Alias eine Nummer angehängt.
- */
-updateAliases(): void {
-  // Ausgangstabelle alias
-  if (this.selectedBaseTable) {
-    this.baseAlias = this.getAbbreviationForTable(this.selectedBaseTable);
-  } else {
-    this.baseAlias = '';
-  }
-
-  // Zähler für Join-Tabellen
-  const tableCount: { [table: string]: number } = {};
-  this.joinRows.forEach(row => {
-    if (row.table) {
-      if (!tableCount[row.table]) {
-        tableCount[row.table] = 1;
-      } else {
-        tableCount[row.table]++;
-      }
-      const baseAbbr = this.getAbbreviationForTable(row.table);
-      // Falls Tabelle mehrfach, hänge Zahl an
-      row.alias = tableCount[row.table] === 1 ? baseAbbr : baseAbbr + tableCount[row.table];
-    } else {
-      row.alias = '';
-    }
-  });
-}
-  
-  
   editDatabase() {
     const selectedDbConfig = this.databases.find(db => db.name === this.selectedDatabase);
     if (selectedDbConfig) {
@@ -355,6 +287,9 @@ updateAliases(): void {
     };
   }
 
+  // ---------------------------
+  // JOIN-Methoden
+  // ---------------------------
   addJoinRow() {
     this.joinRows.push({
       table: '',
@@ -364,14 +299,41 @@ updateAliases(): void {
     });
     this.updateAliases();
   }
-  
   removeJoinRow(index: number) {
     this.joinRows.splice(index, 1);
     this.updateAliases();
   }
-  
-  foreignKeyExists(tableName: string) {
-    return this.foreignKeys.find(fk => fk.referenced_table === tableName);
+  getAbbreviationForTable(table: string): string {
+    const mapping: { [key: string]: string } = {
+      'trans': 't',
+      'crmadress': 'ca',
+      'action': 'act'
+      // Weitere Einträge möglich
+    };
+    const lowerTable = table.toLowerCase();
+    if (mapping[lowerTable]) {
+      return mapping[lowerTable];
+    }
+    return table.substring(0, 2).toLowerCase();
+  }
+  updateAliases(): void {
+    // Setze Alias für die Ausgangstabelle:
+    if (this.selectedBaseTable) {
+      this.baseAlias = this.getAbbreviationForTable(this.selectedBaseTable);
+    } else {
+      this.baseAlias = '';
+    }
+    // Aktualisiere Alias für die Join-Zeilen:
+    const tableCount: { [table: string]: number } = {};
+    this.joinRows.forEach(row => {
+      if (row.table) {
+        tableCount[row.table] = (tableCount[row.table] || 0) + 1;
+        const baseAbbr = this.getAbbreviationForTable(row.table);
+        row.alias = tableCount[row.table] === 1 ? baseAbbr : baseAbbr + tableCount[row.table];
+      } else {
+        row.alias = '';
+      }
+    });
   }
   generateJoinCondition(index: number) {
     this.updateAliases();
@@ -391,27 +353,19 @@ updateAliases(): void {
       joinRow.condition = '';
     }
   }
-  
-  
-  
 
   // ---------------------------
-  // Spalten und Tabellen
+  // SPALTEN-Methoden
   // ---------------------------
-  activeTable: string = '';
-  tableColumns: string[] = [];
-
   loadColumns(tableName: string, alias?: string): void {
     this.activeTable = tableName;
-    // Falls ein Alias übergeben wird, verwende ihn – sonst den Basis-Alias
     this.activeAlias = alias ? alias : this.baseAlias;
-  
     this.tableColumns = [];
     this.http.get<{ columns: string[] }>(`http://localhost:3000/get-columns?table=${tableName}`)
       .subscribe(
         response => {
           let columns = response.columns;
-          // Beispielhafte Sortierung: 'sid' immer zuerst, danach alphabetisch
+          // Sortierung: 'sid' wird immer zuerst angezeigt
           columns = columns.sort((a, b) => {
             const lcA = a.toLowerCase();
             const lcB = b.toLowerCase();
@@ -424,13 +378,10 @@ updateAliases(): void {
         error => console.error('Fehler beim Abrufen der Spalten:', error)
       );
   }
-  
-  
-
-  /*
-   Wird aufgerufen, wenn eine Spalte in der Liste ausgewählt oder abgewählt wird.
-   Es wird ein Objekt (ColumnConfig) angelegt oder entfernt.
-   */
+  isColumnSelected(column: string): boolean {
+    const fullCol = `${this.activeTable}.${this.activeAlias}.${column}`;
+    return this.selectedColumnConfigs.some(c => c.fullColumn === fullCol);
+  }
   toggleColumnSelection(column: string, tableName: string, event: any): void {
     const fullColumn = `${tableName}.${this.activeAlias}.${column}`;
     if (event.target.checked) {
@@ -446,12 +397,6 @@ updateAliases(): void {
       this.selectedColumnConfigs = this.selectedColumnConfigs.filter(c => c.fullColumn !== fullColumn);
     }
   }
-  
-
-  /**
-   * Zyklischer Wechsel des OrderBy-Zustands:
-   * '---' -> 'ASC' -> 'DESC' -> '---'
-   */
   cycleOrderBy(config: ColumnConfig): void {
     if (config.orderBy === 'none') {
       config.orderBy = 'ASC';
@@ -461,13 +406,11 @@ updateAliases(): void {
       config.orderBy = 'none';
     }
   }
-
   generateColumnGroups(): { columnGroups: any[]; fullColumnToId: { [key: string]: number } } {
     let groupId = 0;
     let globalColumnId = 0;
     const fullColumnToId: { [key: string]: number } = {};
   
-    // Gruppierung nach "Tabelle.Alias"
     const grouped = this.selectedColumnConfigs.reduce((acc: { [groupKey: string]: ColumnConfig[] }, curr: ColumnConfig) => {
       const parts = curr.fullColumn.split('.');
       const groupKey = parts[0] + '.' + parts[1];
@@ -486,7 +429,6 @@ updateAliases(): void {
         fullColumnToId[config.fullColumn] = globalColumnId;
         const parts = config.fullColumn.split('.');
         const colName = parts[2] || config.fullColumn;
-        // Erzeuge das Spaltenobjekt
         const columnObj: any = {
           id: globalColumnId,
           name: colName,
@@ -495,12 +437,10 @@ updateAliases(): void {
           selectClause: `${tableAlias}.${colName}`,
           alias: colName
         };
-        // Falls der Alias nicht der Basis-Tabelle entspricht, handelt es sich um eine Join-Spalte
         if (tableAlias !== this.baseAlias) {
-          // Index finden in joinRows, bei dem der Alias übereinstimmt
           const joinIndex = this.joinRows.findIndex(row => row.alias === tableAlias);
           if (joinIndex !== -1) {
-            columnObj.joinGroupId = joinIndex + 1; // joinGroupId bei den Spalten der Tabellen auf die gejoint wird
+            columnObj.joinGroupId = joinIndex + 1;
           }
         }
         return columnObj;
@@ -514,7 +454,9 @@ updateAliases(): void {
     return { columnGroups, fullColumnToId };
   }
   
-  // save JSON-Konfiguration
+  // ---------------------------
+  // Speichern der JSON-Konfiguration
+  // ---------------------------
   saveJsonConfig(): void {
     const { columnGroups, fullColumnToId } = this.generateColumnGroups();
   
@@ -533,7 +475,6 @@ updateAliases(): void {
       }
     });
   
-    // Erzeugen von resultColumns
     let resultColumns: any[] = [];
     columnGroups.forEach((group: any) => {
       group.columns.forEach((col: any) => {
@@ -546,7 +487,6 @@ updateAliases(): void {
       });
     });
   
-    // Erzeugen der orderByColumns anhand des OrderBy-Zustands
     let orderByColumns: any[] = [];
     this.selectedColumnConfigs.forEach(config => {
       if (config.orderBy !== 'none') {
@@ -593,15 +533,71 @@ updateAliases(): void {
       ? `${jsonData.name}.json`
       : this.fileName;
   
-    this.http.post('http://localhost:3000/save-json', jsonData).subscribe(
+    // Zuerst die API‑konforme Konfiguration speichern:
+    this.http.post('http://localhost:3000/api/save-json', jsonData).subscribe(
       response => {
-        console.log('JSON-Konfiguration erfolgreich gespeichert:', response);
+        console.log('Config erfolgreich gespeichert:', response);
         alert(`JSON-Konfiguration unter '${fileNameToSave}' gespeichert!`);
+        // Anschließend die UI‑Meta-Daten speichern:
+        this.saveMetaData(fileNameToSave);
       },
       error => {
-        console.error('Fehler beim Speichern der JSON-Konfiguration:', error);
+        console.error('Fehler beim Speichern der Config:', error);
         alert('Fehler beim Speichern der JSON-Konfiguration.');
       }
     );
-  }  
+  }
+  
+  // Speichert den UI‑State (Meta-Daten) in einer separaten Datei
+  saveMetaData(fileName: string): void {
+    const metaData = {
+      configName: this.configName || 'default-config',
+      selectedDatabase: this.selectedDatabase, // Hier wird auch die verwendete DB gespeichert
+      selectedBaseTable: this.selectedBaseTable,
+      joinRows: this.joinRows,
+      selectedColumnConfigs: this.selectedColumnConfigs,
+      baseAlias: this.baseAlias,
+      userWhereClause: this.userWhereClause
+    };
+  
+    this.http.post('http://localhost:3000/api/save-meta', metaData).subscribe(
+      response => {
+        console.log('Meta-Daten erfolgreich gespeichert:', response);
+      },
+      error => {
+        console.error('Fehler beim Speichern der Meta-Daten:', error);
+      }
+    );
+  }
+  
+  // ---------------------------
+  // Navigation
+  // ---------------------------
+  goHome() {
+    this.router.navigate(['']);
+  }
+  
+  // ---------------------------
+  // Hilfsmethoden für Spalten-Konfiguration
+  // ---------------------------
+  getTableName(fullColumn: string): string {
+    const parts = fullColumn.split('.');
+    return parts[0] || fullColumn;
+  }
+  getColumnName(fullColumn: string): string {
+    const parts = fullColumn.split('.');
+    return parts[1] || fullColumn;
+  }
+  getTableNameFromFullColumn(fullColumn: string): string {
+    const parts = fullColumn.split('.');
+    return parts[0] || fullColumn;
+  }
+  getAliasFromFullColumn(fullColumn: string): string {
+    const parts = fullColumn.split('.');
+    return parts[1] || '';
+  }
+  getColumnNameFromFullColumn(fullColumn: string): string {
+    const parts = fullColumn.split('.');
+    return parts[2] || fullColumn;
+  }
 }

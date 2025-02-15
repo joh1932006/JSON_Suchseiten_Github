@@ -1,5 +1,5 @@
 {
-  "name": "default-config",
+  "name": "name",
   "itemsPerPage": 100,
   "tableWidth": 1200,
   "preventSearchWithoutRestriction": false,
@@ -20,7 +20,11 @@
   "joinGroups": [
     {
       "id": 1,
-      "joinClause": "INNER JOIN F4MDataBase f4 ON f4.SID = ac.FK_F4MDataBase_SID AND sadasd"
+      "joinClause": "INNER JOIN CRMPartner cr ON cr.SID = ac.FK_CRMPartnerMand_SID AND asdasd"
+    },
+    {
+      "id": 2,
+      "joinClause": "INNER JOIN RecordState re ON re.SID = ac.FK_RecordState_SID AND adasda"
     }
   ],
   "columnGroups": [
@@ -48,25 +52,40 @@
     },
     {
       "id": 2,
-      "name": "Group for F4MDataBase (f4)",
+      "name": "Group for CRMPartner (cr)",
       "columns": [
         {
           "id": 3,
-          "name": "FK_CRMPartnerMand_SID",
+          "name": "aDescription",
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
-          "selectClause": "f4.FK_CRMPartnerMand_SID",
-          "alias": "FK_CRMPartnerMand_SID",
+          "selectClause": "cr.aDescription",
+          "alias": "aDescription",
           "joinGroupId": 1
         },
         {
           "id": 4,
+          "name": "AccreditID",
+          "multiLinugal": false,
+          "enqPropDataTypeSid": 1,
+          "selectClause": "cr.AccreditID",
+          "alias": "AccreditID",
+          "joinGroupId": 1
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Group for RecordState (re)",
+      "columns": [
+        {
+          "id": 5,
           "name": "FK_ITSystem_SID",
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
-          "selectClause": "f4.FK_ITSystem_SID",
+          "selectClause": "re.FK_ITSystem_SID",
           "alias": "FK_ITSystem_SID",
-          "joinGroupId": 1
+          "joinGroupId": 2
         }
       ]
     }
@@ -113,12 +132,26 @@
       "hidden": false,
       "identity": true,
       "orderNumber": 4
+    },
+    {
+      "columnId": 5,
+      "hidden": false,
+      "identity": true,
+      "orderNumber": 5
     }
   ],
   "orderByColumns": [
     {
+      "columnId": 1,
+      "ascending": true
+    },
+    {
       "columnId": 3,
       "ascending": false
+    },
+    {
+      "columnId": 5,
+      "ascending": true
     }
   ]
 }

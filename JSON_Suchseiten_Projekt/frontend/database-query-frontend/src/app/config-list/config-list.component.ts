@@ -45,6 +45,7 @@ export class ConfigListComponent implements OnInit {
       },
     });
   }
+  
 
   // Öffnet die Bearbeitungsseite für eine ausgewählte Konfiguration
   onConfigClick(fileName: string) {

@@ -1,0 +1,42 @@
+{
+  "configName": "default-config",
+  "selectedDatabase": "Fab4Minds",
+  "selectedBaseTable": "ActionPartType",
+  "joinRows": [
+    {
+      "table": "F4MDataBase",
+      "joinType": "INNER JOIN",
+      "condition": "INNER JOIN F4MDataBase f4 ON f4.SID = ac.FK_F4MDataBase_SID",
+      "alias": "f4",
+      "optionalCondition": "sadasd"
+    }
+  ],
+  "selectedColumnConfigs": [
+    {
+      "fullColumn": "ActionPartType.ac.SID",
+      "search": true,
+      "groupBy": false,
+      "orderBy": "none"
+    },
+    {
+      "fullColumn": "ActionPartType.ac.aName",
+      "search": true,
+      "groupBy": true,
+      "orderBy": "none"
+    },
+    {
+      "fullColumn": "F4MDataBase.f4.FK_CRMPartnerMand_SID",
+      "search": false,
+      "groupBy": false,
+      "orderBy": "DESC"
+    },
+    {
+      "fullColumn": "F4MDataBase.f4.FK_ITSystem_SID",
+      "search": false,
+      "groupBy": false,
+      "orderBy": "none"
+    }
+  ],
+  "baseAlias": "ac",
+  "userWhereClause": "asdasd"
+}
