@@ -16,15 +16,15 @@
   "roleSid": null,
   "interfaceSid": null,
   "table": "ActionGrp ac",
-  "whereClause": "jaajaa",
+  "whereClause": "",
   "joinGroups": [
     {
       "id": 1,
-      "joinClause": "INNER JOIN aUser au ON au.SID = ac.FK_User_SID AND qweqwe"
+      "joinClause": "INNER JOIN aUser au ON au.SID = ac.FK_User_SID"
     },
     {
       "id": 2,
-      "joinClause": "INNER JOIN FilterXD fi ON fi.SID = ac.FK_FilterXDCRMPBr_SID AND sdasdas"
+      "joinClause": "INNER JOIN FilterXD fi ON fi.SID = ac.FK_FilterXDCRMPBr_SID"
     }
   ],
   "columnGroups": [

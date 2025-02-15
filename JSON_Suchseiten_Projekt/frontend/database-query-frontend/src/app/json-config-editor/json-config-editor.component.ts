@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';          
-import { HttpClient } from '@angular/common/http';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { APIRequestsComponent } from '../apirequests/apirequests.component';
@@ -120,7 +119,7 @@ export class JsonConfigEditorComponent implements OnInit {
       .subscribe({
         next: (configData) => {
           console.log('Config geladen:', configData);
-          // Felder aus dem API‑konformen JSON übernehmen:
+          // Felder aus dem API-konformen JSON übernehmen:
           this.configName = configData.name || '';
           if (configData.table) {
             const parts = configData.table.split(' ');
@@ -128,8 +127,7 @@ export class JsonConfigEditorComponent implements OnInit {
             this.baseAlias = parts[1] || '';
           }
           this.userWhereClause = configData.whereClause || '';
-
-          // Jetzt die Meta‑Daten laden:
+          // Jetzt die Meta-Daten laden:
           this.loadMetaData(fileName);
         },
         error: (err) => {
@@ -138,35 +136,33 @@ export class JsonConfigEditorComponent implements OnInit {
       });
   }
 
-  // Laden der UI‑Meta-Daten (inkl. Datenbank, Ausgangstabelle und Join-Tabellen)
-loadMetaData(fileName: string) {
-  this.http.get<any>(`http://localhost:3000/api/read-meta?fileName=${fileName}`)
-    .subscribe({
-      next: (metaData) => {
-        console.log('Meta geladen:', metaData);
-        // UI‑spezifische Felder übernehmen:
-        this.selectedDatabase = metaData.selectedDatabase || this.selectedDatabase;
-        this.selectedBaseTable = metaData.selectedBaseTable || this.selectedBaseTable;
-        this.joinRows = metaData.joinRows || [];
-        this.selectedColumnConfigs = metaData.selectedColumnConfigs || [];
-        this.baseAlias = metaData.baseAlias || this.baseAlias;
-        this.userWhereClause = metaData.userWhereClause || this.userWhereClause;
-        this.updateAliases();
-        // Damit die Dropdown-Liste der Tabellen aktuell ist, laden wir die Tabelle-Liste neu:
-        if (this.selectedDatabase) {
-          this.fetchTables();
+  // Laden der UI-Meta-Daten (inkl. Datenbank, Ausgangstabelle und Join-Tabellen)
+  loadMetaData(fileName: string) {
+    this.http.get<any>(`http://localhost:3000/api/read-meta?fileName=${fileName}`)
+      .subscribe({
+        next: (metaData) => {
+          console.log('Meta geladen:', metaData);
+          // UI-spezifische Felder übernehmen:
+          this.selectedDatabase = metaData.selectedDatabase || this.selectedDatabase;
+          this.selectedBaseTable = metaData.selectedBaseTable || this.selectedBaseTable;
+          this.joinRows = metaData.joinRows || [];
+          this.selectedColumnConfigs = metaData.selectedColumnConfigs || [];
+          this.baseAlias = metaData.baseAlias || this.baseAlias;
+          this.userWhereClause = metaData.userWhereClause || this.userWhereClause;
+          this.updateAliases();
+          // Stelle sicher, dass die Tabelle-Liste geladen wird:
+          if (this.selectedDatabase) {
+            this.fetchTables();
+          }
+          if (this.selectedBaseTable) {
+            this.fetchJoinableTables(this.selectedBaseTable);
+          }
+        },
+        error: (err) => {
+          console.error('Fehler beim Laden der Meta-Daten:', err);
         }
-        // Falls eine Ausgangstabelle geladen wurde, rufe fetchJoinableTables auf (sofern benötigt)
-        if (this.selectedBaseTable) {
-          this.fetchJoinableTables(this.selectedBaseTable);
-        }
-      },
-      error: (err) => {
-        console.error('Fehler beim Laden der Meta-Daten:', err);
-      }
-    });
-}
-
+      });
+  }
 
   // ---------------------------
   // DB-Management, etc.
@@ -454,12 +450,9 @@ loadMetaData(fileName: string) {
     return { columnGroups, fullColumnToId };
   }
   
-  // ---------------------------
-  // Speichern der JSON-Konfiguration
-  // ---------------------------
-  saveJsonConfig(): void {
+  public saveJsonConfig(): void {
     const { columnGroups, fullColumnToId } = this.generateColumnGroups();
-  
+
     let searchColumns: any[] = [];
     let searchId = 0;
     this.selectedColumnConfigs.forEach(config => {
@@ -474,7 +467,7 @@ loadMetaData(fileName: string) {
         });
       }
     });
-  
+
     let resultColumns: any[] = [];
     columnGroups.forEach((group: any) => {
       group.columns.forEach((col: any) => {
@@ -486,7 +479,7 @@ loadMetaData(fileName: string) {
         });
       });
     });
-  
+
     let orderByColumns: any[] = [];
     this.selectedColumnConfigs.forEach(config => {
       if (config.orderBy !== 'none') {
@@ -497,7 +490,7 @@ loadMetaData(fileName: string) {
         });
       }
     });
-  
+
     const jsonData = {
       name: this.configName || 'default-config',
       itemsPerPage: 100,
@@ -528,52 +521,52 @@ loadMetaData(fileName: string) {
       resultColumns: resultColumns,
       orderByColumns: orderByColumns
     };
-  
+
     const fileNameToSave = (this.fileName === 'new' || !this.fileName)
       ? `${jsonData.name}.json`
       : this.fileName;
-  
-    // Zuerst die API‑konforme Konfiguration speichern:
-    this.http.post('http://localhost:3000/api/save-json', jsonData).subscribe(
-      response => {
+
+    // Zuerst die API-konforme Konfiguration speichern:
+    this.http.post('http://localhost:3000/api/save-json', jsonData).subscribe({
+      next: response => {
         console.log('Config erfolgreich gespeichert:', response);
         alert(`JSON-Konfiguration unter '${fileNameToSave}' gespeichert!`);
-        // Anschließend die UI‑Meta-Daten speichern:
-        this.saveMetaData(fileNameToSave);
+        // Anschließend auch die Meta-Daten speichern:
+        const metaData = {
+          configName: this.configName || 'default-config',
+          selectedDatabase: this.selectedDatabase,
+          selectedBaseTable: this.selectedBaseTable,
+          joinRows: this.joinRows,
+          selectedColumnConfigs: this.selectedColumnConfigs,
+          baseAlias: this.baseAlias,
+          userWhereClause: this.userWhereClause
+        };
+        this.http.post('http://localhost:3000/api/save-meta', metaData).subscribe({
+          next: () => {
+            // Erstelle den kompakten JSON-String und navigiere:
+            const compactJsonString = JSON.stringify({ jsonString: JSON.stringify(jsonData) });
+            this.router.navigate(['sql-results'], { state: { compactJson: compactJsonString } });
+          },
+          error: err => {
+            console.error('Fehler beim Speichern der Meta-Daten:', err);
+          }
+        });
       },
-      error => {
-        console.error('Fehler beim Speichern der Config:', error);
+      error: err => {
+        console.error('Fehler beim Speichern der Config:', err);
         alert('Fehler beim Speichern der JSON-Konfiguration.');
       }
-    );
+    });
   }
-  
-  // Speichert den UI‑State (Meta-Daten) in einer separaten Datei
-  saveMetaData(fileName: string): void {
-    const metaData = {
-      configName: this.configName || 'default-config',
-      selectedDatabase: this.selectedDatabase, // Hier wird auch die verwendete DB gespeichert
-      selectedBaseTable: this.selectedBaseTable,
-      joinRows: this.joinRows,
-      selectedColumnConfigs: this.selectedColumnConfigs,
-      baseAlias: this.baseAlias,
-      userWhereClause: this.userWhereClause
-    };
-  
-    this.http.post('http://localhost:3000/api/save-meta', metaData).subscribe(
-      response => {
-        console.log('Meta-Daten erfolgreich gespeichert:', response);
-      },
-      error => {
-        console.error('Fehler beim Speichern der Meta-Daten:', error);
-      }
-    );
+
+  public showSqlResults(): void {
+    this.saveJsonConfig();
   }
   
   // ---------------------------
   // Navigation
   // ---------------------------
-  goHome() {
+  goHome(): void {
     this.router.navigate(['']);
   }
   
@@ -600,10 +593,4 @@ loadMetaData(fileName: string) {
     const parts = fullColumn.split('.');
     return parts[2] || fullColumn;
   }
-
-  // Navigation zur SQL-Results Komponente
-  showSqlResults(): void {
-    this.router.navigate(['sql-results']);
-  }
-
 }

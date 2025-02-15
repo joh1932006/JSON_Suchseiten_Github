@@ -8,14 +8,14 @@
       "joinType": "INNER JOIN",
       "condition": "INNER JOIN aUser au ON au.SID = ac.FK_User_SID",
       "alias": "au",
-      "optionalCondition": "qweqwe"
+      "optionalCondition": ""
     },
     {
       "table": "FilterXD",
       "joinType": "INNER JOIN",
       "condition": "INNER JOIN FilterXD fi ON fi.SID = ac.FK_FilterXDCRMPBr_SID",
       "alias": "fi",
-      "optionalCondition": "sdasdas"
+      "optionalCondition": ""
     }
   ],
   "selectedColumnConfigs": [
@@ -39,5 +39,5 @@
     }
   ],
   "baseAlias": "ac",
-  "userWhereClause": "jaajaa"
+  "userWhereClause": ""
 }
