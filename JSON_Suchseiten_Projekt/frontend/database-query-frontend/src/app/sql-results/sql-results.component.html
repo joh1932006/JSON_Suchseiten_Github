@@ -1,6 +1,28 @@
 <div class="sql-results">
     <h2>SQL Ergebnisse</h2>
     
+    <!-- Suchfelder oben (dynamisch aus searchColumns) -->
+    <div class="search-container">
+      <div *ngFor="let sc of searchColumns" class="search-field">
+        <label [for]="sc.alias">{{ sc.label }}</label>
+        <input
+          [id]="sc.alias"
+          type="text"
+          [(ngModel)]="sc.value"
+          (input)="onSearchChange()"
+          [placeholder]="sc.label"
+        />
+      </div>
+    </div>
+    
+    <!-- Beispiel: Hier könnte man "1-58 von 58" + Buttons hinbauen, 
+         oder das Pagination-Feature beliebig umsetzen. -->
+    <!-- <div class="pagination">
+      1-58 von 58
+      <button class="btn">&lt;</button>
+      <button class="btn">&gt;</button>
+    </div> -->
+    
     <!-- Anzeige des SQL-Statements -->
     <div *ngIf="sqlStatement; else noSql">
       <h3>SQL Statement:</h3>
@@ -13,18 +35,24 @@
     <!-- Fehleranzeige -->
     <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
     
-    <!-- Anzeige der Ergebnisse in einer Tabelle -->
-    <div *ngIf="sqlResults && sqlResults.length > 0; else noResults">
+    <!-- Tabelle mit dynamischen Spalten (resultColumns) -->
+    <div *ngIf="filteredResults && filteredResults.length > 0; else noResults">
       <h3>Ergebnisse:</h3>
       <table class="results-table">
         <thead>
           <tr>
-            <th *ngFor="let key of getKeys(sqlResults[0])">{{ key }}</th>
+            <!-- Head-Spalten = resultColumns[].alias -->
+            <th *ngFor="let col of resultColumns">
+              {{ col.name }}
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of sqlResults">
-            <td *ngFor="let key of getKeys(row)">{{ row[key] }}</td>
+          <tr *ngFor="let row of filteredResults">
+            <!-- Jede Zelle = row[col.alias] -->
+            <td *ngFor="let col of resultColumns">
+              {{ row[col.alias] }}
+            </td>
           </tr>
         </tbody>
       </table>

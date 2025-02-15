@@ -1,42 +1,41 @@
 {
   "configName": "default-config",
   "selectedDatabase": "Fab4Minds",
-  "selectedBaseTable": "ActionPartType",
+  "selectedBaseTable": "ActivityFlowPosUsage",
   "joinRows": [
     {
       "table": "F4MDataBase",
       "joinType": "INNER JOIN",
       "condition": "INNER JOIN F4MDataBase f4 ON f4.SID = ac.FK_F4MDataBase_SID",
-      "alias": "f4",
-      "optionalCondition": "sadasd"
+      "alias": "f4"
     }
   ],
   "selectedColumnConfigs": [
     {
-      "fullColumn": "ActionPartType.ac.SID",
+      "fullColumn": "ActivityFlowPosUsage.ac.SID",
       "search": true,
       "groupBy": false,
       "orderBy": "none"
     },
     {
-      "fullColumn": "ActionPartType.ac.aName",
+      "fullColumn": "ActivityFlowPosUsage.ac.aDescription",
       "search": true,
-      "groupBy": true,
-      "orderBy": "none"
+      "groupBy": false,
+      "orderBy": "ASC"
     },
     {
-      "fullColumn": "F4MDataBase.f4.FK_CRMPartnerMand_SID",
+      "fullColumn": "F4MDataBase.f4.FK_RecordState_SID",
       "search": false,
       "groupBy": false,
       "orderBy": "DESC"
     },
     {
-      "fullColumn": "F4MDataBase.f4.FK_ITSystem_SID",
+      "fullColumn": "F4MDataBase.f4.FK_User_SID",
       "search": false,
       "groupBy": false,
-      "orderBy": "none"
+      "orderBy": "ASC"
     }
   ],
   "baseAlias": "ac",
-  "userWhereClause": "asdasd"
+  "userWhereClause": ""
 }

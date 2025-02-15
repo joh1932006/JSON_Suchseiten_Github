@@ -15,18 +15,18 @@
   "filterRoleSid": null,
   "roleSid": null,
   "interfaceSid": null,
-  "table": "ActionPartType ac",
-  "whereClause": "asdasd",
+  "table": "ActivityFlowPosUsage ac",
+  "whereClause": "",
   "joinGroups": [
     {
       "id": 1,
-      "joinClause": "INNER JOIN F4MDataBase f4 ON f4.SID = ac.FK_F4MDataBase_SID AND sadasd"
+      "joinClause": "INNER JOIN F4MDataBase f4 ON f4.SID = ac.FK_F4MDataBase_SID"
     }
   ],
   "columnGroups": [
     {
       "id": 1,
-      "name": "Group for ActionPartType (ac)",
+      "name": "Group for ActivityFlowPosUsage (ac)",
       "columns": [
         {
           "id": 1,
@@ -38,11 +38,11 @@
         },
         {
           "id": 2,
-          "name": "aName",
+          "name": "aDescription",
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
-          "selectClause": "ac.aName",
-          "alias": "aName"
+          "selectClause": "ac.aDescription",
+          "alias": "aDescription"
         }
       ]
     },
@@ -52,20 +52,20 @@
       "columns": [
         {
           "id": 3,
-          "name": "FK_CRMPartnerMand_SID",
+          "name": "FK_RecordState_SID",
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
-          "selectClause": "f4.FK_CRMPartnerMand_SID",
-          "alias": "FK_CRMPartnerMand_SID",
+          "selectClause": "f4.FK_RecordState_SID",
+          "alias": "FK_RecordState_SID",
           "joinGroupId": 1
         },
         {
           "id": 4,
-          "name": "FK_ITSystem_SID",
+          "name": "FK_User_SID",
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
-          "selectClause": "f4.FK_ITSystem_SID",
-          "alias": "FK_ITSystem_SID",
+          "selectClause": "f4.FK_User_SID",
+          "alias": "FK_User_SID",
           "joinGroupId": 1
         }
       ]
@@ -117,8 +117,16 @@
   ],
   "orderByColumns": [
     {
+      "columnId": 2,
+      "ascending": true
+    },
+    {
       "columnId": 3,
       "ascending": false
+    },
+    {
+      "columnId": 4,
+      "ascending": true
     }
   ]
 }
