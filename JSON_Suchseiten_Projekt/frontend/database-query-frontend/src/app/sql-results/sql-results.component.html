@@ -1,9 +1,9 @@
 <div class="sql-results">
-    <h2>SQL Ergebnisse</h2>
-    
-    <!-- Suchfelder oben (dynamisch aus searchColumns) -->
+  <!-- Zeile oben mit Suchfeldern links + Pagination rechts -->
+  <div class="top-row">
     <div class="search-container">
-      <div *ngFor="let sc of searchColumns" class="search-field">
+      <!-- Dynamisch für jede Suchspalte -->
+      <div class="search-field" *ngFor="let sc of searchColumns">
         <label [for]="sc.alias">{{ sc.label }}</label>
         <input
           [id]="sc.alias"
@@ -14,53 +14,44 @@
         />
       </div>
     </div>
-    
-    <!-- Beispiel: Hier könnte man "1-58 von 58" + Buttons hinbauen, 
-         oder das Pagination-Feature beliebig umsetzen. -->
-    <!-- <div class="pagination">
-      1-58 von 58
+    <div class="pagination">
+      <!-- Beispielwerte, du könntest hier echte Paging-Werte einsetzen -->
+      <span>1-58 von 58</span>
       <button class="btn">&lt;</button>
       <button class="btn">&gt;</button>
-    </div> -->
-    
-    <!-- Anzeige des SQL-Statements -->
-    <div *ngIf="sqlStatement; else noSql">
-      <h3>SQL Statement:</h3>
-      <pre>{{ sqlStatement }}</pre>
     </div>
-    <ng-template #noSql>
-      <p>Kein SQL-Statement vorhanden.</p>
-    </ng-template>
-    
-    <!-- Fehleranzeige -->
-    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
-    
-    <!-- Tabelle mit dynamischen Spalten (resultColumns) -->
-    <div *ngIf="filteredResults && filteredResults.length > 0; else noResults">
-      <h3>Ergebnisse:</h3>
-      <table class="results-table">
-        <thead>
-          <tr>
-            <!-- Head-Spalten = resultColumns[].alias -->
-            <th *ngFor="let col of resultColumns">
-              {{ col.name }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let row of filteredResults">
-            <!-- Jede Zelle = row[col.alias] -->
-            <td *ngFor="let col of resultColumns">
-              {{ row[col.alias] }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <ng-template #noResults>
-      <p>Keine Ergebnisse vorhanden.</p>
-    </ng-template>
-    
-    <button (click)="goBack()" class="btn">Zurück</button>
   </div>
   
+  <!-- Falls es Fehler gibt -->
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Tabelle mit Ergebnissen -->
+  <div *ngIf="filteredResults && filteredResults.length > 0; else noResults">
+    <table class="results-table">
+      <thead>
+        <tr>
+          <!-- Kopfspalten dynamisch -->
+          <th *ngFor="let col of resultColumns">{{ col.name }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Zeilen dynamisch -->
+        <tr *ngFor="let row of filteredResults">
+          <!-- Zellen dynamisch -->
+          <td *ngFor="let col of resultColumns">
+            {{ row[col.alias] }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <ng-template #noResults>
+    <p>Keine Ergebnisse vorhanden.</p>
+  </ng-template>
+  
+  <!-- Zurück-Button unten -->
+  <button (click)="goBack()" class="btn">Zurück</button>
+</div>

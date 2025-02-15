@@ -1,62 +1,116 @@
+/* 
+   Da du bereits ein globales CSS hast, das den Body und Textfarben
+   (z.B. #1E2532 Hintergrund, #FFFFFF Text) setzt, konzentrieren wir uns 
+   hier auf die Komponente und ihre Tabelle, Buttons etc. 
+*/
+
+/* Container der gesamten Komponente */
 .sql-results {
-    margin: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .search-container {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 10px;
-  }
-  
-  .search-field {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .search-field label {
-    font-weight: bold;
-    margin-bottom: 4px;
-  }
-  
-  .results-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    font-size: 16px;
-  }
-  
-  .results-table th,
-  .results-table td {
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-  }
-  
-  .results-table thead th {
-    background-color: #4CAF50;
-    color: white;
-    text-align: left;
-  }
-  
-  .results-table tbody tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  
-  .btn {
-    margin-top: 20px;
-    padding: 6px 12px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .btn:hover {
-    background-color: #45a049;
-  }
-  
-  .error {
-    color: red;
-    margin-top: 10px;
-  }
-  
+  /* Falls du hier zusätzlich einen "Panel"-Hintergrund möchtest,
+     kannst du z.B. noch ein Rahmen und abgerundete Ecken verwenden: */
+  background-color: #232A3A;
+  border: 1px solid #2F3848;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0; /* Abstand nach oben/unten */
+  font-family: Arial, sans-serif; /* Oder was immer du nutzt */
+  color: #FFFFFF;
+}
+
+/* Zeile oben: Suchfelder + Pagination */
+.top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.search-container {
+  display: flex;
+  gap: 20px;
+}
+
+/* Einzelnes Suchfeld (Label + Input darunter) */
+.search-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-field label {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+/* Such-Inputs an das Dark-Theme anpassen */
+.search-field input {
+  background-color: #293244;
+  border: 1px solid #39475D;
+  color: #FFFFFF;
+  padding: 6px 8px;
+  border-radius: 4px;
+  outline: none;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.search-field input:focus {
+  border-color: #506381;
+}
+
+/* Pagination-Anzeige rechts */
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+}
+
+/* Haupt-Tabelle */
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.results-table thead th {
+  background-color: #2F3848;
+  color: #FFFFFF;
+  text-align: left;
+  padding: 12px 15px;
+  font-weight: normal;
+}
+
+.results-table tbody td {
+  background-color: #232A3A;
+  padding: 12px 15px;
+  border: 1px solid #2F3848;
+}
+
+/* Alternierende Zeilenfarbe */
+.results-table tbody tr:nth-child(even) td {
+  background-color: #2D3545;
+}
+
+/* Buttons (Pagination und Zurück) */
+.btn {
+  background-color: #39475D;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.btn:hover {
+  background-color: #506381;
+}
+
+/* Fehleranzeige in Rot */
+.error {
+  color: #E53E3E; /* z.B. Rot, anpassbar */
+  margin-top: 10px;
+  font-weight: bold;
+}
