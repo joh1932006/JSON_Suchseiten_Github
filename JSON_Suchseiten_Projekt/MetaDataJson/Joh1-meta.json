@@ -1,5 +1,5 @@
 {
-  "configName": "wird",
+  "configName": "Joh1",
   "selectedDatabase": "Fab4Minds",
   "selectedBaseTable": "ActionGrp",
   "joinRows": [
@@ -7,35 +7,33 @@
       "table": "aUser",
       "joinType": "INNER JOIN",
       "condition": "INNER JOIN aUser au ON au.SID = ac.FK_User_SID",
-      "alias": "au",
-      "optionalCondition": ""
+      "alias": "au"
     },
     {
-      "table": "FilterXD",
+      "table": "ITSystem",
       "joinType": "INNER JOIN",
-      "condition": "INNER JOIN FilterXD fi ON fi.SID = ac.FK_FilterXDCRMPBr_SID",
-      "alias": "fi",
-      "optionalCondition": ""
+      "condition": "INNER JOIN ITSystem it ON it.SID = ac.FK_ITSystem_SID",
+      "alias": "it"
     }
   ],
   "selectedColumnConfigs": [
     {
-      "fullColumn": "ActionGrp.ac.SID",
+      "fullColumn": "ActionGrp.ac.aDescription",
       "search": true,
       "groupBy": false,
       "orderBy": "none"
     },
     {
-      "fullColumn": "aUser.au.confirmationPending",
-      "search": true,
-      "groupBy": false,
-      "orderBy": "ASC"
-    },
-    {
-      "fullColumn": "aUser.au.createDate",
+      "fullColumn": "ActionGrp.ac.SID",
       "search": false,
       "groupBy": false,
-      "orderBy": "DESC"
+      "orderBy": "none"
+    },
+    {
+      "fullColumn": "aUser.au.confirmationPending",
+      "search": false,
+      "groupBy": false,
+      "orderBy": "none"
     }
   ],
   "baseAlias": "ac",

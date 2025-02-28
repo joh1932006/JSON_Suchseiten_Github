@@ -1,5 +1,5 @@
 {
-  "name": "wird",
+  "name": "Joh1",
   "itemsPerPage": 100,
   "tableWidth": 1200,
   "preventSearchWithoutRestriction": false,
@@ -24,7 +24,7 @@
     },
     {
       "id": 2,
-      "joinClause": "INNER JOIN FilterXD fi ON fi.SID = ac.FK_FilterXDCRMPBr_SID"
+      "joinClause": "INNER JOIN ITSystem it ON it.SID = ac.FK_ITSystem_SID"
     }
   ],
   "columnGroups": [
@@ -34,6 +34,14 @@
       "columns": [
         {
           "id": 1,
+          "name": "aDescription",
+          "multiLinugal": false,
+          "enqPropDataTypeSid": 1,
+          "selectClause": "ac.aDescription",
+          "alias": "aDescription"
+        },
+        {
+          "id": 2,
           "name": "SID",
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
@@ -47,21 +55,12 @@
       "name": "Group for aUser (au)",
       "columns": [
         {
-          "id": 2,
+          "id": 3,
           "name": "confirmationPending",
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
           "selectClause": "au.confirmationPending",
           "alias": "confirmationPending",
-          "joinGroupId": 1
-        },
-        {
-          "id": 3,
-          "name": "createDate",
-          "multiLinugal": false,
-          "enqPropDataTypeSid": 1,
-          "selectClause": "au.createDate",
-          "alias": "createDate",
           "joinGroupId": 1
         }
       ]
@@ -74,14 +73,6 @@
         1
       ],
       "orderNumber": 1,
-      "operatorSid": 15
-    },
-    {
-      "id": 2,
-      "columnId": [
-        2
-      ],
-      "orderNumber": 2,
       "operatorSid": 15
     }
   ],
@@ -105,14 +96,5 @@
       "orderNumber": 3
     }
   ],
-  "orderByColumns": [
-    {
-      "columnId": 2,
-      "ascending": true
-    },
-    {
-      "columnId": 3,
-      "ascending": false
-    }
-  ]
+  "orderByColumns": []
 }

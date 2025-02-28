@@ -15,18 +15,22 @@
   "filterRoleSid": null,
   "roleSid": null,
   "interfaceSid": null,
-  "table": "ActivityFlowPosUsage ac",
+  "table": "ActionGrp ac",
   "whereClause": "",
   "joinGroups": [
     {
       "id": 1,
-      "joinClause": "INNER JOIN F4MDataBase f4 ON f4.SID = ac.FK_F4MDataBase_SID"
+      "joinClause": "INNER JOIN aUser au ON au.SID = ac.FK_User_SID"
+    },
+    {
+      "id": 2,
+      "joinClause": "INNER JOIN ITSystem it ON it.SID = ac.FK_ITSystem_SID"
     }
   ],
   "columnGroups": [
     {
       "id": 1,
-      "name": "Group for ActivityFlowPosUsage (ac)",
+      "name": "Group for ActionGrp (ac)",
       "columns": [
         {
           "id": 1,
@@ -48,24 +52,15 @@
     },
     {
       "id": 2,
-      "name": "Group for F4MDataBase (f4)",
+      "name": "Group for aUser (au)",
       "columns": [
         {
           "id": 3,
-          "name": "FK_RecordState_SID",
+          "name": "confirmationPending",
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
-          "selectClause": "f4.FK_RecordState_SID",
-          "alias": "FK_RecordState_SID",
-          "joinGroupId": 1
-        },
-        {
-          "id": 4,
-          "name": "FK_User_SID",
-          "multiLinugal": false,
-          "enqPropDataTypeSid": 1,
-          "selectClause": "f4.FK_User_SID",
-          "alias": "FK_User_SID",
+          "selectClause": "au.confirmationPending",
+          "alias": "confirmationPending",
           "joinGroupId": 1
         }
       ]
@@ -75,17 +70,9 @@
     {
       "id": 1,
       "columnId": [
-        1
-      ],
-      "orderNumber": 1,
-      "operatorSid": 15
-    },
-    {
-      "id": 2,
-      "columnId": [
         2
       ],
-      "orderNumber": 2,
+      "orderNumber": 1,
       "operatorSid": 15
     }
   ],
@@ -107,26 +94,7 @@
       "hidden": false,
       "identity": true,
       "orderNumber": 3
-    },
-    {
-      "columnId": 4,
-      "hidden": false,
-      "identity": true,
-      "orderNumber": 4
     }
   ],
-  "orderByColumns": [
-    {
-      "columnId": 2,
-      "ascending": true
-    },
-    {
-      "columnId": 3,
-      "ascending": false
-    },
-    {
-      "columnId": 4,
-      "ascending": true
-    }
-  ]
+  "orderByColumns": []
 }

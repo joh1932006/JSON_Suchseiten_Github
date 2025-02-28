@@ -297,6 +297,12 @@ const metaJsonFolder = path.join(__dirname, '../MetaDataJson');
  ****************************************************/
 app.post('/api/save-meta', (req, res) => {
   const metaData = req.body;
+  
+  // Füge, wenn vorhanden, die aktuelle DB-Konfiguration in die Meta-Daten ein.
+  if (currentDbConfig) {
+    metaData.dbConfig = currentDbConfig;
+  }
+  
   let fileName = metaData.configName || 'default-config';
   // Verwende das Schema: <configName>-meta.json
   if (!fileName.endsWith('-meta.json')) {
@@ -312,6 +318,7 @@ app.post('/api/save-meta', (req, res) => {
     res.json({ message: 'Meta-Datei erfolgreich gespeichert', fileName });
   });
 });
+
 
 /****************************************************
  * 12) UI‑Meta-Daten laden (z. B. config-meta.json)
@@ -333,6 +340,11 @@ app.get('/api/read-meta', (req, res) => {
     }
     try {
       const jsonData = JSON.parse(data);
+      // Falls in den Meta-Daten eine DB-Konfiguration vorhanden ist, setze currentDbConfig
+      if (jsonData.dbConfig) {
+        currentDbConfig = jsonData.dbConfig;
+        console.log('DB-Konfiguration aus Meta-Datei wiederhergestellt.');
+      }
       res.json(jsonData);
     } catch (parseError) {
       console.error('Fehler beim Parsen der Meta-Datei:', parseError);
@@ -340,6 +352,7 @@ app.get('/api/read-meta', (req, res) => {
     }
   });
 });
+
 
 /****************************************************
  * 13) Konfiguration löschen
@@ -351,16 +364,30 @@ app.delete('/api/delete-config', (req, res) => {
   }
   
   const filePath = path.join(configsFolder, fileName);
-  
+  // Entferne die Endung ".json" und hänge "-meta.json" an, um den korrekten Meta-Dateinamen zu erhalten
+  const baseName = fileName.replace('.json', '');
+  const metaFileName = `${baseName}-meta.json`;
+  const filePathMeta = path.join(metaJsonFolder, metaFileName);
+
+  // Zuerst die Konfigurationsdatei löschen
   fs.unlink(filePath, (err) => {
     if (err) {
-      console.error(`Fehler beim Löschen der Datei "${fileName}":`, err);
-      return res.status(500).send('Fehler beim Löschen der Datei');
+      console.error(`Fehler beim Löschen der Konfigurationsdatei "${fileName}":`, err);
+      return res.status(500).send('Fehler beim Löschen der Konfigurationsdatei');
     }
-    console.log(`Datei "${fileName}" erfolgreich gelöscht.`);
-    res.status(200).send(`Datei "${fileName}" erfolgreich gelöscht.`);
+    // Anschließend die zugehörige Meta-Datei löschen
+    fs.unlink(filePathMeta, (errMeta) => {
+      // Falls die Meta-Datei nicht existiert (ENOENT), ignorieren wir den Fehler
+      if (errMeta && errMeta.code !== 'ENOENT') {
+        console.error(`Fehler beim Löschen der Meta-Datei für "${fileName}":`, errMeta);
+        return res.status(500).send('Fehler beim Löschen der Meta-Datei');
+      }
+      console.log(`Datei "${fileName}" und zugehörige Meta-Datei erfolgreich gelöscht.`);
+      res.status(200).send(`Datei "${fileName}" und zugehörige Meta-Datei erfolgreich gelöscht.`);
+    });
   });
 });
+
 
 /****************************************************
  * 14) Beispiel: Eine Zeile aus einer Tabelle abrufen

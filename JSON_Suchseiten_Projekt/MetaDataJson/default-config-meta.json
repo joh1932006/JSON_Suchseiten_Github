@@ -1,41 +1,52 @@
 {
   "configName": "default-config",
   "selectedDatabase": "Fab4Minds",
-  "selectedBaseTable": "ActivityFlowPosUsage",
+  "selectedBaseTable": "ActionGrp",
   "joinRows": [
     {
-      "table": "F4MDataBase",
+      "table": "aUser",
       "joinType": "INNER JOIN",
-      "condition": "INNER JOIN F4MDataBase f4 ON f4.SID = ac.FK_F4MDataBase_SID",
-      "alias": "f4"
+      "condition": "INNER JOIN aUser au ON au.SID = ac.FK_User_SID",
+      "alias": "au"
+    },
+    {
+      "table": "ITSystem",
+      "joinType": "INNER JOIN",
+      "condition": "INNER JOIN ITSystem it ON it.SID = ac.FK_ITSystem_SID",
+      "alias": "it"
     }
   ],
   "selectedColumnConfigs": [
     {
-      "fullColumn": "ActivityFlowPosUsage.ac.SID",
+      "fullColumn": "ActionGrp.ac.SID",
+      "search": false,
+      "groupBy": false,
+      "orderBy": "none"
+    },
+    {
+      "fullColumn": "ActionGrp.ac.aDescription",
       "search": true,
       "groupBy": false,
       "orderBy": "none"
     },
     {
-      "fullColumn": "ActivityFlowPosUsage.ac.aDescription",
-      "search": true,
-      "groupBy": false,
-      "orderBy": "ASC"
-    },
-    {
-      "fullColumn": "F4MDataBase.f4.FK_RecordState_SID",
+      "fullColumn": "aUser.au.confirmationPending",
       "search": false,
       "groupBy": false,
-      "orderBy": "DESC"
-    },
-    {
-      "fullColumn": "F4MDataBase.f4.FK_User_SID",
-      "search": false,
-      "groupBy": false,
-      "orderBy": "ASC"
+      "orderBy": "none"
     }
   ],
   "baseAlias": "ac",
-  "userWhereClause": ""
+  "userWhereClause": "",
+  "dbConfig": {
+    "user": "f4mbsappl",
+    "password": "bTemrHU6Tn3pnkPRBuKc",
+    "server": "192.168.44.137",
+    "database": "f4mbs",
+    "port": 1433,
+    "options": {
+      "encrypt": false,
+      "trustServerCertificate": true
+    }
+  }
 }
