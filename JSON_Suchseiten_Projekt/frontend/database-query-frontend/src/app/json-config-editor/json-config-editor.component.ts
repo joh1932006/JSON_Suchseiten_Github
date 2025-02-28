@@ -10,8 +10,11 @@ interface ColumnConfig {
   fullColumn: string;            
   search: boolean;               
   groupBy: boolean;            
-  orderBy: 'none' | 'ASC' | 'DESC'; 
+  orderBy: 'none' | 'ASC' | 'DESC';
+  identifier?: boolean;   // Neues Feld für Identifier
+  versteckt?: boolean;    // Neues Feld für Versteckt (Hidden)
 }
+
 
 // Interface für eine Join-Zeile
 interface JoinRow {
@@ -386,13 +389,36 @@ export class JsonConfigEditorComponent implements OnInit {
           fullColumn,
           search: false,
           groupBy: false,
-          orderBy: 'none'
+          orderBy: 'none',
+          // Wenn dies die erste Spalte ist, automatisch als Identifier setzen:
+          identifier: this.selectedColumnConfigs.length === 0, 
+          versteckt: false
         });
       }
     } else {
       this.selectedColumnConfigs = this.selectedColumnConfigs.filter(c => c.fullColumn !== fullColumn);
+      // Falls nach dem Entfernen keiner als Identifier markiert ist, wähle die erste aus:
+      if (this.selectedColumnConfigs.length > 0 && !this.selectedColumnConfigs.some(c => c.identifier)) {
+        this.selectedColumnConfigs[0].identifier = true;
+      }
     }
   }
+  
+  setIdentifier(selectedConfig: ColumnConfig, event: any): void {
+    // Wenn der Nutzer die Checkbox aktiviert:
+    if (event.target.checked) {
+      // Alle anderen Identifier auf false setzen:
+      this.selectedColumnConfigs.forEach(c => c.identifier = false);
+      selectedConfig.identifier = true;
+    } else {
+      // Falls versucht wird, den aktuell gesetzten Identifier abzuwählen,
+      // verhindern wir dies, damit immer mindestens eine Spalte ausgewählt bleibt.
+      event.target.checked = true;
+      selectedConfig.identifier = true;
+    }
+  }
+  
+
   cycleOrderBy(config: ColumnConfig): void {
     if (config.orderBy === 'none') {
       config.orderBy = 'ASC';
@@ -431,8 +457,11 @@ export class JsonConfigEditorComponent implements OnInit {
           multiLinugal: false,
           enqPropDataTypeSid: 1,
           selectClause: `${tableAlias}.${colName}`,
-          alias: colName
+          alias: colName,
+          hidden: config.versteckt || false,  // übernimmt den Wert aus der Konfiguration
+          identity: config.identifier || false // übernimmt den Identifier-Status
         };
+        
         if (tableAlias !== this.baseAlias) {
           const joinIndex = this.joinRows.findIndex(row => row.alias === tableAlias);
           if (joinIndex !== -1) {
@@ -452,7 +481,7 @@ export class JsonConfigEditorComponent implements OnInit {
   
   public saveJsonConfig(): void {
     const { columnGroups, fullColumnToId } = this.generateColumnGroups();
-
+  
     let searchColumns: any[] = [];
     let searchId = 0;
     this.selectedColumnConfigs.forEach(config => {
@@ -467,19 +496,20 @@ export class JsonConfigEditorComponent implements OnInit {
         });
       }
     });
-
+  
     let resultColumns: any[] = [];
     columnGroups.forEach((group: any) => {
       group.columns.forEach((col: any) => {
         resultColumns.push({
-          columnId: col.id,
-          hidden: false,
-          identity: true,
-          orderNumber: col.id
-        });
+        columnId: col.id,
+        hidden: col.hidden,      // jetzt abhängig von der Checkbox "Versteckt"
+        identity: col.identity,  // abhängig vom gesetzten Identifier
+        orderNumber: col.id
+       });
       });
     });
 
+  
     let orderByColumns: any[] = [];
     this.selectedColumnConfigs.forEach(config => {
       if (config.orderBy !== 'none') {
@@ -490,7 +520,18 @@ export class JsonConfigEditorComponent implements OnInit {
         });
       }
     });
-
+  
+    // *** Neue Variable für groupBy-Spalten hinzufügen ***
+    let groupByColumns: any[] = [];
+    this.selectedColumnConfigs.forEach(config => {
+      if (config.groupBy) {
+        const colId = fullColumnToId[config.fullColumn];
+        groupByColumns.push({
+          columnId: colId          
+        });
+      }
+    });
+  
     const jsonData = {
       name: this.configName || 'default-config',
       itemsPerPage: 100,
@@ -519,7 +560,8 @@ export class JsonConfigEditorComponent implements OnInit {
       columnGroups: columnGroups,
       searchColumns: searchColumns,
       resultColumns: resultColumns,
-      orderByColumns: orderByColumns
+      orderByColumns: orderByColumns,
+      groupByColumns: groupByColumns
     };
 
     const fileNameToSave = (this.fileName === 'new' || !this.fileName)

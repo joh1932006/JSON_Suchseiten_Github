@@ -1,18 +1,18 @@
 {
-  "configName": "default-config",
+  "configName": "joh3",
   "selectedDatabase": "Fab4Minds",
   "selectedBaseTable": "Article",
   "joinRows": [
     {
-      "table": "ArticlePacking",
+      "table": "ArticleGroup",
       "joinType": "INNER JOIN",
-      "condition": "INNER JOIN ArticlePacking ar ON ar.FK_ArticleChild_SID = ar.SID",
+      "condition": "INNER JOIN ArticleGroup ar ON ar.SID = ar.FK_ArticleGroup_SID",
       "alias": "ar"
     },
     {
-      "table": "ArticleLang",
+      "table": "ArticlePartner",
       "joinType": "INNER JOIN",
-      "condition": "INNER JOIN ArticleLang ar ON ar.FK_Article_SID = ar.SID",
+      "condition": "INNER JOIN ArticlePartner ar ON ar.FK_Article_SID = ar.SID",
       "alias": "ar"
     }
   ],
@@ -21,25 +21,39 @@
       "fullColumn": "Article.ar.SID",
       "search": true,
       "groupBy": false,
-      "orderBy": "none",
-      "identifier": true,
-      "versteckt": false
+      "orderBy": "DESC",
+      "identifier": true
     },
     {
-      "fullColumn": "ArticlePacking.ar.aDescription",
+      "fullColumn": "ArticleGroup.ar.aName",
+      "search": false,
+      "groupBy": false,
+      "orderBy": "none",
+      "identifier": false
+    },
+    {
+      "fullColumn": "ArticleGroup.ar.aDescription",
       "search": false,
       "groupBy": false,
       "orderBy": "none",
       "identifier": false,
-      "versteckt": false
+      "versteckt": true
     },
     {
-      "fullColumn": "ArticleLang.ar.aName",
+      "fullColumn": "ArticlePartner.ar.aDescription",
       "search": false,
       "groupBy": false,
       "orderBy": "none",
       "identifier": false,
-      "versteckt": false
+      "versteckt": true
+    },
+    {
+      "fullColumn": "ArticlePartner.ar.aName",
+      "search": false,
+      "groupBy": false,
+      "orderBy": "none",
+      "versteckt": true,
+      "identifier": false
     }
   ],
   "baseAlias": "ar",

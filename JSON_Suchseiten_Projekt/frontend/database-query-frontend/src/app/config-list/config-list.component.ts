@@ -3,11 +3,12 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms'; // FormsModule importieren
+import { APIRequestsComponent } from '../apirequests/apirequests.component';
 
 @Component({
   selector: 'app-config-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, HttpClientModule, FormsModule], // FormsModule hinzufügen
+  imports: [CommonModule, RouterModule, HttpClientModule, FormsModule, APIRequestsComponent], // FormsModule hinzufügen
   templateUrl: './config-list.component.html',
   styleUrls: ['./config-list.component.css'],
 })

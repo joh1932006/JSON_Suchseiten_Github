@@ -1,5 +1,5 @@
 {
-  "name": "default-config",
+  "name": "joh3",
   "itemsPerPage": 100,
   "tableWidth": 1200,
   "preventSearchWithoutRestriction": false,
@@ -20,11 +20,11 @@
   "joinGroups": [
     {
       "id": 1,
-      "joinClause": "INNER JOIN ArticlePacking ar ON ar.FK_ArticleChild_SID = ar.SID"
+      "joinClause": "INNER JOIN ArticleGroup ar ON ar.SID = ar.FK_ArticleGroup_SID"
     },
     {
       "id": 2,
-      "joinClause": "INNER JOIN ArticleLang ar ON ar.FK_Article_SID = ar.SID"
+      "joinClause": "INNER JOIN ArticlePartner ar ON ar.FK_Article_SID = ar.SID"
     }
   ],
   "columnGroups": [
@@ -46,32 +46,52 @@
     },
     {
       "id": 2,
-      "name": "Group for ArticlePacking (ar)",
+      "name": "Group for ArticleGroup (ar)",
       "columns": [
         {
           "id": 2,
-          "name": "aDescription",
-          "multiLinugal": false,
-          "enqPropDataTypeSid": 1,
-          "selectClause": "ar.aDescription",
-          "alias": "aDescription",
-          "hidden": false,
-          "identity": false
-        }
-      ]
-    },
-    {
-      "id": 3,
-      "name": "Group for ArticleLang (ar)",
-      "columns": [
-        {
-          "id": 3,
           "name": "aName",
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
           "selectClause": "ar.aName",
           "alias": "aName",
           "hidden": false,
+          "identity": false
+        },
+        {
+          "id": 3,
+          "name": "aDescription",
+          "multiLinugal": false,
+          "enqPropDataTypeSid": 1,
+          "selectClause": "ar.aDescription",
+          "alias": "aDescription",
+          "hidden": true,
+          "identity": false
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Group for ArticlePartner (ar)",
+      "columns": [
+        {
+          "id": 4,
+          "name": "aDescription",
+          "multiLinugal": false,
+          "enqPropDataTypeSid": 1,
+          "selectClause": "ar.aDescription",
+          "alias": "aDescription",
+          "hidden": true,
+          "identity": false
+        },
+        {
+          "id": 5,
+          "name": "aName",
+          "multiLinugal": false,
+          "enqPropDataTypeSid": 1,
+          "selectClause": "ar.aName",
+          "alias": "aName",
+          "hidden": true,
           "identity": false
         }
       ]
@@ -102,11 +122,28 @@
     },
     {
       "columnId": 3,
-      "hidden": false,
+      "hidden": true,
       "identity": false,
       "orderNumber": 3
+    },
+    {
+      "columnId": 4,
+      "hidden": true,
+      "identity": false,
+      "orderNumber": 4
+    },
+    {
+      "columnId": 5,
+      "hidden": true,
+      "identity": false,
+      "orderNumber": 5
     }
   ],
-  "orderByColumns": [],
+  "orderByColumns": [
+    {
+      "columnId": 1,
+      "ascending": false
+    }
+  ],
   "groupByColumns": []
 }
