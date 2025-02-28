@@ -1,32 +1,32 @@
 {
-  "configName": "default-config",
+  "configName": "joh4",
   "selectedDatabase": "Fab4Minds",
-  "selectedBaseTable": "Article",
+  "selectedBaseTable": "ActivityFlowPos",
   "joinRows": [
     {
-      "table": "ArticlePacking",
+      "table": "AutoProcStep",
       "joinType": "INNER JOIN",
-      "condition": "INNER JOIN ArticlePacking ar ON ar.FK_ArticleChild_SID = ar.SID",
-      "alias": "ar"
+      "condition": "INNER JOIN AutoProcStep au ON au.FK_ActivityFlowPos_SID = ac.SID",
+      "alias": "au"
     },
     {
-      "table": "ArticleLang",
+      "table": "F4MDataBase",
       "joinType": "INNER JOIN",
-      "condition": "INNER JOIN ArticleLang ar ON ar.FK_Article_SID = ar.SID",
-      "alias": "ar"
+      "condition": "INNER JOIN F4MDataBase f4 ON f4.SID = ac.FK_F4MDataBase_SID",
+      "alias": "f4"
     }
   ],
   "selectedColumnConfigs": [
     {
-      "fullColumn": "Article.ar.SID",
+      "fullColumn": "ActivityFlowPos.ac.SID",
       "search": true,
       "groupBy": false,
-      "orderBy": "none",
+      "orderBy": "ASC",
       "identifier": true,
       "versteckt": false
     },
     {
-      "fullColumn": "ArticlePacking.ar.aDescription",
+      "fullColumn": "AutoProcStep.au.aDescription",
       "search": false,
       "groupBy": false,
       "orderBy": "none",
@@ -34,7 +34,7 @@
       "versteckt": false
     },
     {
-      "fullColumn": "ArticleLang.ar.aName",
+      "fullColumn": "F4MDataBase.f4.HostID",
       "search": false,
       "groupBy": false,
       "orderBy": "none",
@@ -42,7 +42,7 @@
       "versteckt": false
     }
   ],
-  "baseAlias": "ar",
+  "baseAlias": "ac",
   "userWhereClause": "",
   "dbConfig": {
     "user": "f4mbsappl",

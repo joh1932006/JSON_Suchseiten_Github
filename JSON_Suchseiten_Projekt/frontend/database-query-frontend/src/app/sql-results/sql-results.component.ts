@@ -24,13 +24,14 @@ export class SqlResultsComponent implements OnInit {
   sqlResults: any[] = [];
   errorMessage: string = '';
   compactJson: string = '';
+  configFileName: string = '';
 
   // Dynamisch ermittelte Suchspalten
   searchColumns: Array<{
     id: number;
-    alias: string; // z.B. "SID"
-    label: string; // Was im Input-Label angezeigt wird
-    value: string; // Eingabewert
+    alias: string;
+    label: string;
+    value: string;
   }> = [];
 
   // Dynamisch ermittelte Ergebnis-Spalten
@@ -39,20 +40,23 @@ export class SqlResultsComponent implements OnInit {
   constructor(private router: Router, private http: HttpClient) {}
 
   ngOnInit(): void {
-    // Lese den kompakt formatierten JSON-String aus dem Router-State
+    // Lese den kompakt formatierten JSON-String und den Dateinamen aus dem Router-State
     const nav = this.router.getCurrentNavigation();
-    if (nav?.extras?.state && nav.extras.state['compactJson']) {
-      this.compactJson = nav.extras.state['compactJson'];
+    if (nav?.extras?.state) {
+      if (nav.extras.state['compactJson']) {
+        this.compactJson = nav.extras.state['compactJson'];
+      }
+      if (nav.extras.state['fileName']) {
+        this.configFileName = nav.extras.state['fileName'];
+      }
     } else {
-      // Fallback: Bei Reloads
+      // Fallback bei Reloads
       this.compactJson = history.state['compactJson'] || '';
+      this.configFileName = history.state['fileName'] || '';
     }
 
     if (this.compactJson) {
-      // 1) Parse das JSON → extrahiere Search-Spalten / Result-Spalten
       this.parseJsonConfig();
-
-      // 2) Ruf den Endpoint "convert-json-to-sql" auf
       this.sendJsonToApi();
     } else {
       this.errorMessage = 'Kein JSON-String vorhanden.';
@@ -61,51 +65,21 @@ export class SqlResultsComponent implements OnInit {
 
   /**
    * Parst den JSON-String und befüllt die Arrays:
-   *  - this.searchColumns  (z.B. ["SID", "confirmationPending"])
-   *  - this.resultColumns  (z.B. ["SID", "confirmationPending", "createDate"])
+   * - this.searchColumns (z.B. ["SID", "confirmationPending"])
+   * - this.resultColumns (z.B. ["SID", "confirmationPending", "createDate"])
    */
   parseJsonConfig(): void {
     try {
-      // In deinem Beispiel hast du: { "jsonString": "..." }
-      // Deshalb erst JSON.parse(this.compactJson), dann nochmal JSON.parse(...) 
-      const outer = JSON.parse(this.compactJson); 
+      // Es wird erwartet, dass compactJson so aufgebaut ist: { "jsonString": "..." }
+      const outer = JSON.parse(this.compactJson);
       const data = JSON.parse(outer.jsonString);
 
-      /*
-        data.columnGroups -> z.B.:
-          [
-            {
-              id: 1,
-              name: 'Group for ActionGrp (ac)',
-              columns: [
-                { id:1, name:'SID', alias:'SID', ...}
-              ]
-            },
-            {
-              id: 2,
-              name: 'Group for aUser (au)',
-              columns: [
-                { id:2, name:'confirmationPending', alias:'confirmationPending', ...},
-                { id:3, name:'createDate', alias:'createDate', ...}
-              ]
-            }
-          ]
+      // Falls kein Dateiname (configFileName) gesetzt wurde, verwende data.name als Basis
+      if (!this.configFileName && data.name) {
+        this.configFileName = data.name + '.json';
+      }
 
-        data.searchColumns -> z.B.:
-          [
-            {id:1, columnId:[1], orderNumber:1, operatorSid:15},
-            {id:2, columnId:[2], orderNumber:2, operatorSid:15}
-          ]
-
-        data.resultColumns -> z.B.:
-          [
-            { columnId:1, hidden:false, identity:true, orderNumber:1 },
-            { columnId:2, hidden:false, identity:true, orderNumber:2 },
-            { columnId:3, hidden:false, identity:true, orderNumber:3 }
-          ]
-      */
-
-      // 1) Baue eine Map: columnId -> {id,alias,name,...}
+      // 1) Erzeuge eine Map: columnId -> IColumnConfig
       let columnMap: Record<number, IColumnConfig> = {};
       for (const group of data.columnGroups || []) {
         for (const col of group.columns || []) {
@@ -117,38 +91,32 @@ export class SqlResultsComponent implements OnInit {
         }
       }
 
-      // 2) Search-Spalten: z.B. data.searchColumns -> columnId:[1], [2]
-      //    Also hol dir die columns aus columnMap und speichere sie in searchColumns
+      // 2) Erzeuge das Array der Suchspalten (searchColumns)
       this.searchColumns = [];
       for (const sCol of data.searchColumns || []) {
-        // Jede searchColumn kann mehrere columnId-Einträge haben, 
-        // in deinem JSON-Beispiel z.B. "columnId": [1] etc.
-        // Wir nehmen nur den ersten Eintrag
+        // Hier wird nur der erste Eintrag in columnId berücksichtigt
         const colId = sCol.columnId?.[0];
         if (colId && columnMap[colId]) {
           const colCfg = columnMap[colId];
           this.searchColumns.push({
             id: colCfg.id,
             alias: colCfg.alias,
-            label: colCfg.name, // Alternativ könnte hier auch colCfg.alias verwendet werden
+            label: colCfg.name, // Alternativ könnte auch colCfg.alias verwendet werden
             value: ''
           });
         }
       }
 
-      // 3) Result-Spalten: Anordnung per orderNumber
-      //    data.resultColumns -> z.B. {columnId:1, orderNumber:1}, ...
-      //    Hol dir die columnMap-Einträge in der angegebenen Reihenfolge
+      // 3) Erzeuge das Array der Ergebnis-Spalten (resultColumns) in der richtigen Reihenfolge
       this.resultColumns = [];
       const sortedResultCols = (data.resultColumns || []).sort(
         (a: any, b: any) => a.orderNumber - b.orderNumber
       );
-
       for (const rCol of sortedResultCols) {
         const colId = rCol.columnId;
         if (colId && columnMap[colId]) {
           const colCfg = columnMap[colId];
-          // Falls rCol.hidden == true, könnte man die Spalte auslassen
+          // Falls rCol.hidden == true, kann man die Spalte auch auslassen
           if (!rCol.hidden) {
             this.resultColumns.push({
               id: colCfg.id,
@@ -159,20 +127,18 @@ export class SqlResultsComponent implements OnInit {
           }
         }
       }
-
-      // Jetzt haben wir in this.searchColumns die Suchspalten
-      // und in this.resultColumns die zu rendernden Ergebnis-Spalten.
-
     } catch (err) {
       console.error('Fehler beim Parsen der JSON-Konfiguration:', err);
       this.errorMessage = 'Fehler beim Parsen der JSON-Konfiguration.';
     }
   }
 
+  /**
+   * Sendet den kompakt formatierten JSON-String an den Endpoint "convert-json-to-sql"
+   * und leitet anschließend die SQL-Ausführung ein.
+   */
   sendJsonToApi(): void {
-    // Sende direkt den kompakt formatierten JSON-String an den Endpoint
     const payload = { jsonString: this.compactJson };
-
     this.http.post<any>('http://localhost:3000/convert-json-to-sql', payload)
       .subscribe({
         next: (response) => {
@@ -187,7 +153,7 @@ export class SqlResultsComponent implements OnInit {
             this.errorMessage = 'Kein SQL-Statement in der Antwort enthalten.';
             return;
           }
-          // Führe das SQL-Statement aus
+          // Führe die SQL-Abfrage aus
           this.executeSqlQuery();
         },
         error: (err) => {
@@ -197,6 +163,9 @@ export class SqlResultsComponent implements OnInit {
       });
   }
 
+  /**
+   * Führt das SQL-Statement aus und befüllt das Array sqlResults.
+   */
   executeSqlQuery(): void {
     const payload = { sqlQuery: this.sqlStatement };
     this.http.post<any>('http://localhost:3000/execute-sql', payload)
@@ -216,26 +185,31 @@ export class SqlResultsComponent implements OnInit {
       });
   }
 
+  /**
+   * Navigiert zurück zum JSON-Konfiguration Editor und öffnet genau die Konfiguration,
+   * von der die SQL-Ergebnisse stammen.
+   */
   goBack(): void {
-    this.router.navigate(['']);
+    // Falls kein Dateiname vorhanden ist, wird 'new' als Default verwendet
+    const targetFile = this.configFileName || 'new';
+    this.router.navigate(['config', targetFile]);
   }
 
-  // Hilfsmethode zum Erhalten der Schlüssel eines Objekts – 
-  // nur noch ggf. relevant, wenn du "sqlResults" raw ausgibst.
+  /**
+   * Hilfsmethode, um die Schlüssel eines Objekts zu erhalten – nützlich, wenn SQL-Ergebnisse raw ausgegeben werden.
+   */
   getKeys(obj: any): string[] {
     return obj ? Object.keys(obj) : [];
   }
 
   /**
-   * Clientseitiges Filtern der SQL-Ergebnisse
-   * auf Basis der searchColumns[].value
+   * Clientseitiges Filtern der SQL-Ergebnisse anhand der searchColumns[].value.
    */
   get filteredResults(): any[] {
     if (!this.sqlResults || this.sqlResults.length === 0) {
       return [];
     }
-
-    // Filter-Logik: Jede searchColumn muss matchen
+    // Jede Suchspalte muss den eingegebenen Wert enthalten
     return this.sqlResults.filter((row) => {
       return this.searchColumns.every((sc) => {
         if (!sc.value) {
@@ -248,11 +222,10 @@ export class SqlResultsComponent implements OnInit {
   }
 
   /**
-   * Falls wir nach jedem Tastendruck filtern wollen
-   * (searchOnType = true), rufen wir diese Methode bei (input) auf.
+   * Wird aufgerufen, wenn sich die Eingaben in den Suchfeldern ändern.
+   * Hier wird nur ein Re-Rendering ausgelöst.
    */
   onSearchChange(): void {
-    // Hier passiert nur das Re-Rendering von `filteredResults`.
-    // Möchte man serverseitig filtern, müsste hier eine entsprechende Logik implementiert werden.
+    // Bei Bedarf kann hier serverseitiges Filtern implementiert werden.
   }
 }

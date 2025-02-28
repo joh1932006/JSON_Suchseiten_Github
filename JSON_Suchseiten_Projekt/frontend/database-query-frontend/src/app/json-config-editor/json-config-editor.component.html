@@ -411,23 +411,18 @@
           </td>
         </tr>
       </tbody>
-            
     </table>
   </div>
 
-
-  <!-- Button zum Speichern der JSON-Konfiguration -->
-  <div class="json-config-save-container">
-    <button (click)="saveJsonConfig()" class="btn save-btn">
-      Suchseite speichern
-    </button>
-    
-  </div>
-  <div class="json-config-save-container">
+<div class="json-config-save-container">
+  <button (click)="saveJsonConfig(false)" class="btn save-btn">
+    Suchseite speichern
+  </button>
   <button (click)="showSqlResults()" class="btn results-btn">
     Ergebnisse anzeigen
   </button>
 </div>
-</div>
 
-<app-apirequests></app-apirequests>
+<div *ngIf="saveMessage" class="save-message">
+  {{ saveMessage }}
+</div>

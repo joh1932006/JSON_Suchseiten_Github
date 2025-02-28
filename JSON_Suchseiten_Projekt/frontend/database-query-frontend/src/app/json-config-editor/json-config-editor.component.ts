@@ -45,6 +45,9 @@ export class JsonConfigEditorComponent implements OnInit {
   activeAlias: string = '';
   userWhereClause: string = '';
 
+  public saveMessage: string = ''; // Neue Property für die Meldung
+
+
   // Allgemeine Felder
   fileName: string | null = null;
   title = 'mein-projekt';
@@ -479,9 +482,9 @@ export class JsonConfigEditorComponent implements OnInit {
     return { columnGroups, fullColumnToId };
   }
   
-  public saveJsonConfig(): void {
+  public saveJsonConfig(navigateAfterSave: boolean = false): void {
     const { columnGroups, fullColumnToId } = this.generateColumnGroups();
-  
+
     let searchColumns: any[] = [];
     let searchId = 0;
     this.selectedColumnConfigs.forEach(config => {
@@ -496,20 +499,19 @@ export class JsonConfigEditorComponent implements OnInit {
         });
       }
     });
-  
+
     let resultColumns: any[] = [];
     columnGroups.forEach((group: any) => {
       group.columns.forEach((col: any) => {
         resultColumns.push({
-        columnId: col.id,
-        hidden: col.hidden,      // jetzt abhängig von der Checkbox "Versteckt"
-        identity: col.identity,  // abhängig vom gesetzten Identifier
-        orderNumber: col.id
-       });
+          columnId: col.id,
+          hidden: col.hidden,      // abhängig von der Checkbox "Versteckt"
+          identity: col.identity,  // abhängig vom gesetzten Identifier
+          orderNumber: col.id
+        });
       });
     });
 
-  
     let orderByColumns: any[] = [];
     this.selectedColumnConfigs.forEach(config => {
       if (config.orderBy !== 'none') {
@@ -520,18 +522,17 @@ export class JsonConfigEditorComponent implements OnInit {
         });
       }
     });
-  
-    // *** Neue Variable für groupBy-Spalten hinzufügen ***
+
     let groupByColumns: any[] = [];
     this.selectedColumnConfigs.forEach(config => {
       if (config.groupBy) {
         const colId = fullColumnToId[config.fullColumn];
         groupByColumns.push({
-          columnId: colId          
+          columnId: colId
         });
       }
     });
-  
+
     const jsonData = {
       name: this.configName || 'default-config',
       itemsPerPage: 100,
@@ -568,12 +569,14 @@ export class JsonConfigEditorComponent implements OnInit {
       ? `${jsonData.name}.json`
       : this.fileName;
 
-    // Zuerst die API-konforme Konfiguration speichern:
+    // Speichern der API-konformen Konfiguration
     this.http.post('http://localhost:3000/api/save-json', jsonData).subscribe({
       next: response => {
         console.log('Config erfolgreich gespeichert:', response);
-        alert(`JSON-Konfiguration unter '${fileNameToSave}' gespeichert!`);
-        // Anschließend auch die Meta-Daten speichern:
+        // Erfolgsmeldung in der Komponente setzen (kein alert)
+        this.saveMessage = `JSON-Konfiguration unter '${fileNameToSave}' gespeichert!`;
+
+        // Speichern der Meta-Daten
         const metaData = {
           configName: this.configName || 'default-config',
           selectedDatabase: this.selectedDatabase,
@@ -585,9 +588,10 @@ export class JsonConfigEditorComponent implements OnInit {
         };
         this.http.post('http://localhost:3000/api/save-meta', metaData).subscribe({
           next: () => {
-            // Erstelle den kompakten JSON-String und navigiere:
-            const compactJsonString = JSON.stringify({ jsonString: JSON.stringify(jsonData) });
-            this.router.navigate(['sql-results'], { state: { compactJson: compactJsonString } });
+            if (navigateAfterSave) {
+              const compactJsonString = JSON.stringify({ jsonString: JSON.stringify(jsonData) });
+              this.router.navigate(['sql-results'], { state: { compactJson: compactJsonString, fileName: this.fileName } });
+            }
           },
           error: err => {
             console.error('Fehler beim Speichern der Meta-Daten:', err);
@@ -596,13 +600,14 @@ export class JsonConfigEditorComponent implements OnInit {
       },
       error: err => {
         console.error('Fehler beim Speichern der Config:', err);
-        alert('Fehler beim Speichern der JSON-Konfiguration.');
+        this.saveMessage = 'Fehler beim Speichern der JSON-Konfiguration.';
       }
     });
   }
+  
 
   public showSqlResults(): void {
-    this.saveJsonConfig();
+    this.saveJsonConfig(true);
   }
   
   // ---------------------------

@@ -441,3 +441,49 @@ tbody tr:hover td {
   font-size: 0.9em;
   margin-left: 5px;
 }
+
+
+/* Container für die Buttons */
+.json-config-save-container {
+  margin: 20px 0;
+  text-align: center;
+}
+
+/* Allgemeines Styling für Buttons */
+.btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  margin: 0 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+/* Speichern-Button (Suchseite speichern) */
+.save-btn {
+  background-color: #4CAF50; /* Grünton */
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #45a049;
+}
+
+/* Ergebnisse anzeigen-Button */
+.results-btn {
+  background-color: #008CBA; /* Blauton */
+  color: white;
+}
+
+.results-btn:hover {
+  background-color: #007bb5;
+}
+
+/* Meldung direkt unter den Buttons */
+.save-message {
+  margin-top: 15px;
+  font-size: 16px;
+  text-align: center;
+  color: #4CAF50;  /* Grüner Text für Erfolgsmeldungen */
+}
