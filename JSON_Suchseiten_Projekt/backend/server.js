@@ -448,6 +448,26 @@ app.get('/get-sample-join', async (req, res) => {
   }
 });
 
+
+/****************************************************
+ * 16) Operator-Tabelle abrufen
+ ****************************************************/
+app.get('/get-operators', async (req, res) => {
+  if (!currentDbConfig) {
+    return res.status(400).json({ error: 'No database configuration set' });
+  }
+  try {
+    const pool = await sql.connect(currentDbConfig);
+    const result = await pool.request().query('SELECT sid, aName FROM Operator');
+    res.json({ operators: result.recordset });
+  } catch (error) {
+    console.error("Error fetching operators:", error);
+    res.status(500).json({ error: 'Failed to fetch operators.' });
+  } finally {
+    sql.close();
+  }
+});
+
 /****************************************************
  * Server starten
  ****************************************************/

@@ -1,45 +1,52 @@
 {
-  "configName": "joh4",
+  "configName": "default-config",
   "selectedDatabase": "Fab4Minds",
-  "selectedBaseTable": "ActivityFlowPos",
+  "selectedBaseTable": "ActionGrp",
   "joinRows": [
     {
-      "table": "AutoProcStep",
+      "table": "aUser",
       "joinType": "INNER JOIN",
-      "condition": "INNER JOIN AutoProcStep au ON au.FK_ActivityFlowPos_SID = ac.SID",
+      "condition": "INNER JOIN aUser au ON au.SID = ac.FK_User_SID",
       "alias": "au"
     },
     {
-      "table": "F4MDataBase",
+      "table": "ITSystem",
       "joinType": "INNER JOIN",
-      "condition": "INNER JOIN F4MDataBase f4 ON f4.SID = ac.FK_F4MDataBase_SID",
-      "alias": "f4"
+      "condition": "INNER JOIN ITSystem it ON it.SID = ac.FK_ITSystem_SID",
+      "alias": "it"
     }
   ],
   "selectedColumnConfigs": [
     {
-      "fullColumn": "ActivityFlowPos.ac.SID",
+      "fullColumn": "ActionGrp.ac.SID",
       "search": true,
       "groupBy": false,
-      "orderBy": "ASC",
+      "orderBy": "none",
       "identifier": true,
-      "versteckt": false
+      "versteckt": false,
+      "searchOrderNumber": 2,
+      "operatorSid": "15",
+      "resultOrderNumber": 2
     },
     {
-      "fullColumn": "AutoProcStep.au.aDescription",
+      "fullColumn": "ActionGrp.ac.aDescription",
+      "search": true,
+      "groupBy": false,
+      "orderBy": "none",
+      "identifier": false,
+      "versteckt": false,
+      "searchOrderNumber": 1,
+      "operatorSid": "15",
+      "resultOrderNumber": 1
+    },
+    {
+      "fullColumn": "aUser.au.confirmationPending",
       "search": false,
       "groupBy": false,
       "orderBy": "none",
       "identifier": false,
-      "versteckt": false
-    },
-    {
-      "fullColumn": "F4MDataBase.f4.HostID",
-      "search": false,
-      "groupBy": false,
-      "orderBy": "none",
-      "identifier": false,
-      "versteckt": false
+      "versteckt": false,
+      "resultOrderNumber": 3
     }
   ],
   "baseAlias": "ac",

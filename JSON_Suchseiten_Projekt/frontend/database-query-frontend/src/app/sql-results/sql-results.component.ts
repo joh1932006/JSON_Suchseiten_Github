@@ -91,9 +91,12 @@ export class SqlResultsComponent implements OnInit {
         }
       }
 
-      // 2) Erzeuge das Array der Suchspalten (searchColumns)
+      // 2) Erzeuge das Array der Suchspalten (searchColumns) in der richtigen Reihenfolge
       this.searchColumns = [];
-      for (const sCol of data.searchColumns || []) {
+      const sortedSearchCols = (data.searchColumns || []).sort(
+        (a: any, b: any) => a.orderNumber - b.orderNumber
+      );
+      for (const sCol of sortedSearchCols) {
         // Hier wird nur der erste Eintrag in columnId berücksichtigt
         const colId = sCol.columnId?.[0];
         if (colId && columnMap[colId]) {
@@ -106,6 +109,7 @@ export class SqlResultsComponent implements OnInit {
           });
         }
       }
+
 
       // 3) Erzeuge das Array der Ergebnis-Spalten (resultColumns) in der richtigen Reihenfolge
       this.resultColumns = [];

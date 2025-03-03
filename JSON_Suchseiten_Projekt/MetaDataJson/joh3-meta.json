@@ -22,14 +22,20 @@
       "search": true,
       "groupBy": false,
       "orderBy": "DESC",
-      "identifier": true
+      "identifier": true,
+      "resultOrderNumber": 1,
+      "searchOrderNumber": 2,
+      "operatorSid": "15"
     },
     {
       "fullColumn": "ArticleGroup.ar.aName",
-      "search": false,
+      "search": true,
       "groupBy": false,
       "orderBy": "none",
-      "identifier": false
+      "identifier": false,
+      "resultOrderNumber": 3,
+      "searchOrderNumber": 1,
+      "operatorSid": "15"
     },
     {
       "fullColumn": "ArticleGroup.ar.aDescription",
@@ -37,7 +43,8 @@
       "groupBy": false,
       "orderBy": "none",
       "identifier": false,
-      "versteckt": true
+      "versteckt": false,
+      "resultOrderNumber": 2
     },
     {
       "fullColumn": "ArticlePartner.ar.aDescription",
@@ -45,15 +52,17 @@
       "groupBy": false,
       "orderBy": "none",
       "identifier": false,
-      "versteckt": true
+      "versteckt": false,
+      "resultOrderNumber": 5
     },
     {
       "fullColumn": "ArticlePartner.ar.aName",
       "search": false,
       "groupBy": false,
       "orderBy": "none",
-      "versteckt": true,
-      "identifier": false
+      "versteckt": false,
+      "identifier": false,
+      "resultOrderNumber": 4
     }
   ],
   "baseAlias": "ar",

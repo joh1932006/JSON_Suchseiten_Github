@@ -1,5 +1,5 @@
 {
-  "name": "joh4",
+  "name": "default-config",
   "itemsPerPage": 100,
   "tableWidth": 1200,
   "preventSearchWithoutRestriction": false,
@@ -15,22 +15,22 @@
   "filterRoleSid": null,
   "roleSid": null,
   "interfaceSid": null,
-  "table": "ActivityFlowPos ac",
+  "table": "ActionGrp ac",
   "whereClause": "",
   "joinGroups": [
     {
       "id": 1,
-      "joinClause": "INNER JOIN AutoProcStep au ON au.FK_ActivityFlowPos_SID = ac.SID"
+      "joinClause": "INNER JOIN aUser au ON au.SID = ac.FK_User_SID"
     },
     {
       "id": 2,
-      "joinClause": "INNER JOIN F4MDataBase f4 ON f4.SID = ac.FK_F4MDataBase_SID"
+      "joinClause": "INNER JOIN ITSystem it ON it.SID = ac.FK_ITSystem_SID"
     }
   ],
   "columnGroups": [
     {
       "id": 1,
-      "name": "Group for ActivityFlowPos (ac)",
+      "name": "Group for ActionGrp (ac)",
       "columns": [
         {
           "id": 1,
@@ -38,43 +38,30 @@
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
           "selectClause": "ac.SID",
-          "alias": "SID",
-          "hidden": false,
-          "identity": true
-        }
-      ]
-    },
-    {
-      "id": 2,
-      "name": "Group for AutoProcStep (au)",
-      "columns": [
+          "alias": "SID"
+        },
         {
           "id": 2,
           "name": "aDescription",
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
-          "selectClause": "au.aDescription",
-          "alias": "aDescription",
-          "hidden": false,
-          "identity": false,
-          "joinGroupId": 1
+          "selectClause": "ac.aDescription",
+          "alias": "aDescription"
         }
       ]
     },
     {
-      "id": 3,
-      "name": "Group for F4MDataBase (f4)",
+      "id": 2,
+      "name": "Group for aUser (au)",
       "columns": [
         {
           "id": 3,
-          "name": "HostID",
+          "name": "confirmationPending",
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
-          "selectClause": "f4.HostID",
-          "alias": "HostID",
-          "hidden": false,
-          "identity": false,
-          "joinGroupId": 2
+          "selectClause": "au.confirmationPending",
+          "alias": "confirmationPending",
+          "joinGroupId": 1
         }
       ]
     }
@@ -85,6 +72,14 @@
       "columnId": [
         1
       ],
+      "orderNumber": 2,
+      "operatorSid": 15
+    },
+    {
+      "id": 2,
+      "columnId": [
+        2
+      ],
       "orderNumber": 1,
       "operatorSid": 15
     }
@@ -94,13 +89,13 @@
       "columnId": 1,
       "hidden": false,
       "identity": true,
-      "orderNumber": 1
+      "orderNumber": 2
     },
     {
       "columnId": 2,
       "hidden": false,
       "identity": false,
-      "orderNumber": 2
+      "orderNumber": 1
     },
     {
       "columnId": 3,
@@ -109,11 +104,6 @@
       "orderNumber": 3
     }
   ],
-  "orderByColumns": [
-    {
-      "columnId": 1,
-      "ascending": true
-    }
-  ],
+  "orderByColumns": [],
   "groupByColumns": []
 }

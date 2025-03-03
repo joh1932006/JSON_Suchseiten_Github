@@ -5,16 +5,18 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { APIRequestsComponent } from '../apirequests/apirequests.component';
 
-// Interface für die Spaltenkonfiguration
+// Interface für die Spaltenkonfiguration (kombiniert beide Versionen)
 interface ColumnConfig {
   fullColumn: string;            
   search: boolean;               
   groupBy: boolean;            
   orderBy: 'none' | 'ASC' | 'DESC';
-  identifier?: boolean;   // Neues Feld für Identifier
-  versteckt?: boolean;    // Neues Feld für Versteckt (Hidden)
+  identifier?: boolean;   
+  versteckt?: boolean;
+  resultOrderNumber?: number;
+  searchOrderNumber?: number;
+  operatorSid?: number;
 }
-
 
 // Interface für eine Join-Zeile
 interface JoinRow {
@@ -39,21 +41,25 @@ export class JsonConfigEditorComponent implements OnInit {
     private router: Router 
   ) {}
 
+  // Zusätzliche Operatoren aus Version 2
+  operators: Array<{ sid: number; aName: string }> = [];
+  autoResultOrderIndex = 1;
+  autoSearchOrderIndex = 1;
+
   // JOIN-Daten
   joinRows: JoinRow[] = [];
   baseAlias: string = '';
   activeAlias: string = '';
   userWhereClause: string = '';
 
-  public saveMessage: string = ''; // Neue Property für die Meldung
-
+  public saveMessage: string = '';
 
   // Allgemeine Felder
   fileName: string | null = null;
   title = 'mein-projekt';
   configName: string = '';
 
-  // Fremdschlüssel-Daten (für automatische Join-Erstellung)
+  // Fremdschlüssel-Daten
   foreignKeys: {
     foreign_key_name: string; 
     parent_table: string; 
@@ -117,6 +123,7 @@ export class JsonConfigEditorComponent implements OnInit {
     } else if (this.fileName) {
       this.loadExistingConfig(this.fileName);
     }
+    this.fetchOperators();
   }
 
   // Laden der Konfiguration (API-konformer JSON)
@@ -125,7 +132,6 @@ export class JsonConfigEditorComponent implements OnInit {
       .subscribe({
         next: (configData) => {
           console.log('Config geladen:', configData);
-          // Felder aus dem API-konformen JSON übernehmen:
           this.configName = configData.name || '';
           if (configData.table) {
             const parts = configData.table.split(' ');
@@ -133,7 +139,6 @@ export class JsonConfigEditorComponent implements OnInit {
             this.baseAlias = parts[1] || '';
           }
           this.userWhereClause = configData.whereClause || '';
-          // Jetzt die Meta-Daten laden:
           this.loadMetaData(fileName);
         },
         error: (err) => {
@@ -142,13 +147,12 @@ export class JsonConfigEditorComponent implements OnInit {
       });
   }
 
-  // Laden der UI-Meta-Daten (inkl. Datenbank, Ausgangstabelle und Join-Tabellen)
+  // Laden der UI-Meta-Daten
   loadMetaData(fileName: string) {
     this.http.get<any>(`http://localhost:3000/api/read-meta?fileName=${fileName}`)
       .subscribe({
         next: (metaData) => {
           console.log('Meta geladen:', metaData);
-          // UI-spezifische Felder übernehmen:
           this.selectedDatabase = metaData.selectedDatabase || this.selectedDatabase;
           this.selectedBaseTable = metaData.selectedBaseTable || this.selectedBaseTable;
           this.joinRows = metaData.joinRows || [];
@@ -156,7 +160,6 @@ export class JsonConfigEditorComponent implements OnInit {
           this.baseAlias = metaData.baseAlias || this.baseAlias;
           this.userWhereClause = metaData.userWhereClause || this.userWhereClause;
           this.updateAliases();
-          // Stelle sicher, dass die Tabelle-Liste geladen wird:
           if (this.selectedDatabase) {
             this.fetchTables();
           }
@@ -171,7 +174,7 @@ export class JsonConfigEditorComponent implements OnInit {
   }
 
   // ---------------------------
-  // DB-Management, etc.
+  // DB-Management
   // ---------------------------
   openDbConfigModal() {
     this.resetNewDatabaseForm();
@@ -222,6 +225,17 @@ export class JsonConfigEditorComponent implements OnInit {
         error => console.error('Error fetching joinable tables:', error)
       );
   }
+  fetchOperators(): void {
+    console.log('fetchOperators() wurde aufgerufen');
+    this.http.get<{ operators: Array<{ sid: number; aName: string }> }>('http://localhost:3000/get-operators')
+      .subscribe({
+        next: response => {
+          console.log('Operatoren geladen:', response);
+          this.operators = response.operators;
+        },
+        error: err => console.error('Fehler beim Abruf der Operatoren:', err)
+      });
+  }
   updateDatabaseConfig() {
     const selectedDbConfig = this.databases.find(db => db.name === this.selectedDatabase)?.config;
     if (selectedDbConfig) {
@@ -234,26 +248,6 @@ export class JsonConfigEditorComponent implements OnInit {
       );
     }
   }
-  updateBaseTable(selectedBaseTable: string) {
-    this.selectedBaseTable = selectedBaseTable;
-    this.fetchJoinableTables(selectedBaseTable);
-    this.fetchForeignKeys(selectedBaseTable);
-    this.updateAliases();
-  }
-  
-  fetchForeignKeys(table: string) {
-    this.http.get<{ foreignKeys: any[] }>(`http://localhost:3000/get-foreign-keys?table=${table}`)
-      .subscribe(
-        response => {
-          this.foreignKeys = response.foreignKeys;
-          console.log("Foreign keys fetched:", this.foreignKeys);
-        },
-        error => {
-          console.error("Fehler beim Laden der FK-Daten:", error);
-        }
-      );
-  }
-
   editDatabase() {
     const selectedDbConfig = this.databases.find(db => db.name === this.selectedDatabase);
     if (selectedDbConfig) {
@@ -290,6 +284,43 @@ export class JsonConfigEditorComponent implements OnInit {
   }
 
   // ---------------------------
+  // Basistabelle ändern & Join-Konfiguration
+  // ---------------------------
+  onBaseTableChange(newTable: string) {
+    const oldTable = this.selectedBaseTable;
+    const oldAlias = this.baseAlias;
+    // Entferne Spalten, die zur alten Basis-Tabelle gehören
+    if (oldTable && oldTable !== newTable) {
+      this.selectedColumnConfigs = this.selectedColumnConfigs.filter(config => {
+        const [cfgTable, cfgAlias] = config.fullColumn.split('.');
+        return !(cfgTable === oldTable && cfgAlias === oldAlias);
+      });
+    }
+    this.selectedBaseTable = newTable;
+    this.updateAliases();
+    this.fetchJoinableTables(newTable);
+    this.http.get<{ foreignKeys: any[] }>(`http://localhost:3000/get-foreign-keys?table=${newTable}`)
+      .subscribe(response => {
+        this.foreignKeys = response.foreignKeys;
+        // Generiere alle Join-Bedingungen neu
+        this.joinRows.forEach((_, i) => this.generateJoinCondition(i));
+        this.activeTable = '';
+        this.activeAlias = '';
+      });
+  }
+  fetchForeignKeys(table: string) {
+    this.http.get<{ foreignKeys: any[] }>(`http://localhost:3000/get-foreign-keys?table=${table}`)
+      .subscribe(
+        response => {
+          this.foreignKeys = response.foreignKeys;
+          console.log("Foreign keys fetched:", this.foreignKeys);
+        },
+        error => {
+          console.error("Fehler beim Laden der FK-Daten:", error);
+        }
+      );
+  }
+  // ---------------------------
   // JOIN-Methoden
   // ---------------------------
   addJoinRow() {
@@ -302,15 +333,46 @@ export class JsonConfigEditorComponent implements OnInit {
     this.updateAliases();
   }
   removeJoinRow(index: number) {
+    // Entferne zugehörige Spalten
+    const row = this.joinRows[index];
+    const tableToRemove = row.table;
+    const aliasToRemove = row.alias;
+    this.selectedColumnConfigs = this.selectedColumnConfigs.filter(config => {
+      const [cfgTable, cfgAlias] = config.fullColumn.split('.');
+      return !(cfgTable === tableToRemove && cfgAlias === aliasToRemove);
+    });
     this.joinRows.splice(index, 1);
     this.updateAliases();
+    this.activeTable = '';
+    this.activeAlias = '';
+  }
+  onJoinTableChange(index: number, newTable: string) {
+    const oldTable = this.joinRows[index].table;
+    const oldAlias = this.joinRows[index].alias;
+    if (oldTable && oldTable !== newTable) {
+      this.selectedColumnConfigs = this.selectedColumnConfigs.filter(config => {
+        const [cfgTable, cfgAlias] = config.fullColumn.split('.');
+        return !(cfgTable === oldTable && cfgAlias === oldAlias);
+      });
+    }
+    this.joinRows[index].table = newTable;
+    this.updateAliases();
+    this.http.get<{ foreignKeys: any[] }>(`http://localhost:3000/get-foreign-keys?table=${newTable}`)
+      .subscribe(response => {
+        this.foreignKeys = [
+          ...this.foreignKeys.filter(fk => fk.parent_table !== newTable && fk.referenced_table !== newTable),
+          ...response.foreignKeys
+        ];
+        this.generateJoinCondition(index);
+        this.activeTable = '';
+        this.activeAlias = '';
+      });
   }
   getAbbreviationForTable(table: string): string {
     const mapping: { [key: string]: string } = {
-      'trans': 't',
-      'crmadress': 'ca',
-      'action': 'act'
-      // Weitere Einträge möglich
+      trans: 't',
+      crmadress: 'ca',
+      action: 'act'
     };
     const lowerTable = table.toLowerCase();
     if (mapping[lowerTable]) {
@@ -318,14 +380,28 @@ export class JsonConfigEditorComponent implements OnInit {
     }
     return table.substring(0, 2).toLowerCase();
   }
+  public onOrderNumberChange(event: any, changedCol: ColumnConfig): void {
+    const oldNumber = changedCol.resultOrderNumber;
+    const newNumber = parseInt(event.target.value, 10);
+    if (!newNumber || newNumber < 1) {
+      event.target.value = oldNumber;
+      return;
+    }
+    const conflictingCol = this.selectedColumnConfigs.find(c => c !== changedCol && c.resultOrderNumber === newNumber);
+    if (conflictingCol) {
+      conflictingCol.resultOrderNumber = oldNumber;
+    } else {
+      changedCol.resultOrderNumber = newNumber;
+    }
+  }
   updateAliases(): void {
-    // Setze Alias für die Ausgangstabelle:
+    // Alias für die Ausgangstabelle setzen
     if (this.selectedBaseTable) {
       this.baseAlias = this.getAbbreviationForTable(this.selectedBaseTable);
     } else {
       this.baseAlias = '';
     }
-    // Aktualisiere Alias für die Join-Zeilen:
+    // Alias für die Join-Zeilen aktualisieren
     const tableCount: { [table: string]: number } = {};
     this.joinRows.forEach(row => {
       if (row.table) {
@@ -367,7 +443,6 @@ export class JsonConfigEditorComponent implements OnInit {
       .subscribe(
         response => {
           let columns = response.columns;
-          // Sortierung: 'sid' wird immer zuerst angezeigt
           columns = columns.sort((a, b) => {
             const lcA = a.toLowerCase();
             const lcB = b.toLowerCase();
@@ -393,14 +468,13 @@ export class JsonConfigEditorComponent implements OnInit {
           search: false,
           groupBy: false,
           orderBy: 'none',
-          // Wenn dies die erste Spalte ist, automatisch als Identifier setzen:
-          identifier: this.selectedColumnConfigs.length === 0, 
+          identifier: this.selectedColumnConfigs.length === 0, // erste Spalte automatisch als Identifier
           versteckt: false
         });
       }
     } else {
       this.selectedColumnConfigs = this.selectedColumnConfigs.filter(c => c.fullColumn !== fullColumn);
-      // Falls nach dem Entfernen keiner als Identifier markiert ist, wähle die erste aus:
+      // Hier: Sicherstellen, dass mindestens eine Spalte als Identifier gesetzt ist
       if (this.selectedColumnConfigs.length > 0 && !this.selectedColumnConfigs.some(c => c.identifier)) {
         this.selectedColumnConfigs[0].identifier = true;
       }
@@ -408,20 +482,21 @@ export class JsonConfigEditorComponent implements OnInit {
   }
   
   setIdentifier(selectedConfig: ColumnConfig, event: any): void {
-    // Wenn der Nutzer die Checkbox aktiviert:
     if (event.target.checked) {
-      // Alle anderen Identifier auf false setzen:
+      // Setze alle anderen Identifier auf false, damit nur einer ausgewählt ist
       this.selectedColumnConfigs.forEach(c => c.identifier = false);
       selectedConfig.identifier = true;
     } else {
-      // Falls versucht wird, den aktuell gesetzten Identifier abzuwählen,
-      // verhindern wir dies, damit immer mindestens eine Spalte ausgewählt bleibt.
-      event.target.checked = true;
-      selectedConfig.identifier = true;
+      // Wenn versucht wird, den einzigen Identifier abzuwählen, verhindere das:
+      const currentIdentifiers = this.selectedColumnConfigs.filter(c => c.identifier);
+      if (currentIdentifiers.length === 1) {
+        // Keine Änderung zulassen – der Checkbox-Zustand bleibt checked
+        event.target.checked = true;
+        selectedConfig.identifier = true;
+      }
     }
   }
   
-
   cycleOrderBy(config: ColumnConfig): void {
     if (config.orderBy === 'none') {
       config.orderBy = 'ASC';
@@ -435,7 +510,6 @@ export class JsonConfigEditorComponent implements OnInit {
     let groupId = 0;
     let globalColumnId = 0;
     const fullColumnToId: { [key: string]: number } = {};
-  
     const grouped = this.selectedColumnConfigs.reduce((acc: { [groupKey: string]: ColumnConfig[] }, curr: ColumnConfig) => {
       const parts = curr.fullColumn.split('.');
       const groupKey = parts[0] + '.' + parts[1];
@@ -445,7 +519,6 @@ export class JsonConfigEditorComponent implements OnInit {
       acc[groupKey].push(curr);
       return acc;
     }, {});
-  
     const columnGroups = Object.keys(grouped).map((groupKey: string) => {
       const [tableName, tableAlias] = groupKey.split('.');
       groupId++;
@@ -460,11 +533,8 @@ export class JsonConfigEditorComponent implements OnInit {
           multiLinugal: false,
           enqPropDataTypeSid: 1,
           selectClause: `${tableAlias}.${colName}`,
-          alias: colName,
-          hidden: config.versteckt || false,  // übernimmt den Wert aus der Konfiguration
-          identity: config.identifier || false // übernimmt den Identifier-Status
+          alias: colName
         };
-        
         if (tableAlias !== this.baseAlias) {
           const joinIndex = this.joinRows.findIndex(row => row.alias === tableAlias);
           if (joinIndex !== -1) {
@@ -481,37 +551,43 @@ export class JsonConfigEditorComponent implements OnInit {
     });
     return { columnGroups, fullColumnToId };
   }
-  
   public saveJsonConfig(navigateAfterSave: boolean = false): void {
+    // Erzeuge zunächst die columnGroups, die nur zur Strukturierung dienen
     const { columnGroups, fullColumnToId } = this.generateColumnGroups();
-
+  
+    // Suche-Spalten (bleiben unverändert)
     let searchColumns: any[] = [];
-    let searchId = 0;
-    this.selectedColumnConfigs.forEach(config => {
-      if (config.search) {
-        searchId++;
-        const colId = fullColumnToId[config.fullColumn];
-        searchColumns.push({
-          id: searchId,
-          columnId: [colId],
-          orderNumber: searchId,
-          operatorSid: 15
-        });
-      }
+this.selectedColumnConfigs.forEach(config => {
+  if (config.search) {
+    const colId = fullColumnToId[config.fullColumn];
+    searchColumns.push({
+      id: searchColumns.length + 1,
+      columnId: [colId],
+      orderNumber: (config.searchOrderNumber && config.searchOrderNumber > 0)
+        ? config.searchOrderNumber
+        : searchColumns.length + 1,
+      operatorSid: config.operatorSid && config.operatorSid > 0
+        ? Number(config.operatorSid)
+        : 15
     });
+  }
+});
 
-    let resultColumns: any[] = [];
-    columnGroups.forEach((group: any) => {
-      group.columns.forEach((col: any) => {
-        resultColumns.push({
-          columnId: col.id,
-          hidden: col.hidden,      // abhängig von der Checkbox "Versteckt"
-          identity: col.identity,  // abhängig vom gesetzten Identifier
-          orderNumber: col.id
-        });
-      });
+  
+    // ResultColumns werden jetzt direkt aus den selectedColumnConfigs generiert
+    let resultColumns: any[] = this.selectedColumnConfigs.map(config => {
+      const colId = fullColumnToId[config.fullColumn];
+      return {
+        columnId: colId,
+        hidden: config.versteckt || false,
+        identity: config.identifier || false,
+        orderNumber: (typeof config.resultOrderNumber === 'number')
+          ? config.resultOrderNumber
+          : colId
+      };
     });
-
+  
+    // OrderBy- und GroupBy-Spalten
     let orderByColumns: any[] = [];
     this.selectedColumnConfigs.forEach(config => {
       if (config.orderBy !== 'none') {
@@ -522,17 +598,15 @@ export class JsonConfigEditorComponent implements OnInit {
         });
       }
     });
-
     let groupByColumns: any[] = [];
     this.selectedColumnConfigs.forEach(config => {
       if (config.groupBy) {
         const colId = fullColumnToId[config.fullColumn];
-        groupByColumns.push({
-          columnId: colId
-        });
+        groupByColumns.push({ columnId: colId });
       }
     });
-
+  
+    // Aufbau des JSON-Objekts – beachte, dass columnGroups und resultColumns nun getrennt sind
     const jsonData = {
       name: this.configName || 'default-config',
       itemsPerPage: 100,
@@ -564,19 +638,15 @@ export class JsonConfigEditorComponent implements OnInit {
       orderByColumns: orderByColumns,
       groupByColumns: groupByColumns
     };
-
+  
     const fileNameToSave = (this.fileName === 'new' || !this.fileName)
       ? `${jsonData.name}.json`
       : this.fileName;
-
-    // Speichern der API-konformen Konfiguration
+  
     this.http.post('http://localhost:3000/api/save-json', jsonData).subscribe({
       next: response => {
         console.log('Config erfolgreich gespeichert:', response);
-        // Erfolgsmeldung in der Komponente setzen (kein alert)
         this.saveMessage = `JSON-Konfiguration unter '${fileNameToSave}' gespeichert!`;
-
-        // Speichern der Meta-Daten
         const metaData = {
           configName: this.configName || 'default-config',
           selectedDatabase: this.selectedDatabase,
@@ -605,18 +675,15 @@ export class JsonConfigEditorComponent implements OnInit {
     });
   }
   
-
   public showSqlResults(): void {
     this.saveJsonConfig(true);
   }
-  
   // ---------------------------
   // Navigation
   // ---------------------------
   goHome(): void {
     this.router.navigate(['']);
   }
-  
   // ---------------------------
   // Hilfsmethoden für Spalten-Konfiguration
   // ---------------------------

@@ -38,7 +38,9 @@
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
           "selectClause": "ac.aDescription",
-          "alias": "aDescription"
+          "alias": "aDescription",
+          "hidden": false,
+          "identity": true
         },
         {
           "id": 2,
@@ -46,7 +48,9 @@
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
           "selectClause": "ac.SID",
-          "alias": "SID"
+          "alias": "SID",
+          "hidden": false,
+          "identity": false
         }
       ]
     },
@@ -61,6 +65,8 @@
           "enqPropDataTypeSid": 1,
           "selectClause": "au.confirmationPending",
           "alias": "confirmationPending",
+          "hidden": false,
+          "identity": false,
           "joinGroupId": 1
         }
       ]
@@ -86,15 +92,16 @@
     {
       "columnId": 2,
       "hidden": false,
-      "identity": true,
+      "identity": false,
       "orderNumber": 2
     },
     {
       "columnId": 3,
       "hidden": false,
-      "identity": true,
+      "identity": false,
       "orderNumber": 3
     }
   ],
-  "orderByColumns": []
+  "orderByColumns": [],
+  "groupByColumns": []
 }

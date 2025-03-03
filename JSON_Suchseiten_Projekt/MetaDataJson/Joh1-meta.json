@@ -21,21 +21,35 @@
       "fullColumn": "ActionGrp.ac.aDescription",
       "search": true,
       "groupBy": false,
-      "orderBy": "none"
+      "orderBy": "none",
+      "identifier": true
     },
     {
       "fullColumn": "ActionGrp.ac.SID",
       "search": false,
       "groupBy": false,
-      "orderBy": "none"
+      "orderBy": "none",
+      "identifier": false
     },
     {
       "fullColumn": "aUser.au.confirmationPending",
       "search": false,
       "groupBy": false,
-      "orderBy": "none"
+      "orderBy": "none",
+      "identifier": false
     }
   ],
   "baseAlias": "ac",
-  "userWhereClause": ""
+  "userWhereClause": "",
+  "dbConfig": {
+    "user": "f4mbsappl",
+    "password": "bTemrHU6Tn3pnkPRBuKc",
+    "server": "192.168.44.137",
+    "database": "f4mbs",
+    "port": 1433,
+    "options": {
+      "encrypt": false,
+      "trustServerCertificate": true
+    }
+  }
 }

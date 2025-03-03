@@ -149,21 +149,18 @@
     <!-- Ausgangstabelle mit Tabelle + Alias als zwei Felder -->
     <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
       <!-- Feld: Tabelle (Select) -->
-      <div>
+      <div style="width:300px">
         <label for="baseTable">Ausgangstabelle:</label>
-        <select
-          id="baseTable"
-          [(ngModel)]="selectedBaseTable"
-          (change)="updateBaseTable(selectedBaseTable)"
-        >
-          <option value="" disabled>Auswählen...</option>
-          <option *ngFor="let table of tables" [value]="table">
-            {{ table }}
-          </option>
-        </select>
+        <select id="baseTable" [ngModel]="selectedBaseTable" (ngModelChange)="onBaseTableChange($event)">
+        <option value="" disabled>Auswählen...</option>
+        <option *ngFor="let table of tables" [value]="table" style="width: 300px;">
+          {{ table }}
+        </option>
+      </select>
+
       </div>
       <!-- Feld: Alias (Input) -->
-      <div>
+      <div style="width: 70px;">
         <label for="baseAlias">Alias:</label>
         <input
           id="baseAlias"
@@ -213,8 +210,8 @@
     <label for="table-{{ i }}">Tabelle:</label>
     <select
       id="table-{{ i }}"
-      [(ngModel)]="row.table"
-      (change)="generateJoinCondition(i)"
+      [ngModel]="row.table"
+      (ngModelChange)="onJoinTableChange(i, $event)"
     >
       <option value="" disabled>Auswählen...</option>
       <option *ngFor="let t of joinableTables" [value]="t">
@@ -254,9 +251,8 @@
     />
   </div>
 
-  <!-- Remove-Button -->
+  <!-- Button zum Entfernen der Join-Zeile -->
   <button class="remove-row" (click)="removeJoinRow(i)">X</button>
-
 </div>
 
 
@@ -344,10 +340,13 @@
           <th>Spaltenname</th>
           <th>Datentyp</th>
           <th>Suchfeld</th>
+          <th>Search OrderNumber</th>
+          <th>OperatorSID</th>
           <th>GroupBy</th>
           <th>OrderBy</th>
           <th>Identifier</th>
           <th>Versteckt</th>
+          <th>Result OrderNumber</th>
           <th>Nachkommastellen</th>
           <th>Breite</th>
           <th>Bedingung</th>
@@ -368,6 +367,22 @@
           <!-- Suchfeld -->
           <td>
             <input type="checkbox" [(ngModel)]="col.search" />
+          </td>
+          <!-- searchOrderNumber-->
+          <td>
+            <input
+              *ngIf="col.search"
+              type="number"
+              style="width: 60px;"
+              [(ngModel)]="col.searchOrderNumber"
+              placeholder="1"
+            />
+          </td>
+          <!--Operator SID-->
+          <td>
+            <select [(ngModel)]="col.operatorSid" *ngIf="col.search">
+              <option *ngFor="let op of operators" [value]="op.sid">{{ op.aName }}</option>
+            </select>              
           </td>
           <!-- GroupBy -->
           <td>
@@ -396,6 +411,16 @@
           <!-- Versteckt -->
           <td>
             <input type="checkbox" [(ngModel)]="col.versteckt" />
+          </td>
+          <!-- orderNumber für ResultColumns-->
+          <td>
+            <input
+              type="number"
+              style="width: 60px;"
+              [(ngModel)]="col.resultOrderNumber"
+              placeholder="1"
+              (change)="onOrderNumberChange($event, col)"
+            />
           </td>
           <!-- Nachkommastellen -->
           <td>

@@ -38,9 +38,7 @@
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
           "selectClause": "ar.SID",
-          "alias": "SID",
-          "hidden": false,
-          "identity": true
+          "alias": "SID"
         }
       ]
     },
@@ -54,9 +52,7 @@
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
           "selectClause": "ar.aName",
-          "alias": "aName",
-          "hidden": false,
-          "identity": false
+          "alias": "aName"
         },
         {
           "id": 3,
@@ -64,9 +60,7 @@
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
           "selectClause": "ar.aDescription",
-          "alias": "aDescription",
-          "hidden": true,
-          "identity": false
+          "alias": "aDescription"
         }
       ]
     },
@@ -80,9 +74,7 @@
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
           "selectClause": "ar.aDescription",
-          "alias": "aDescription",
-          "hidden": true,
-          "identity": false
+          "alias": "aDescription"
         },
         {
           "id": 5,
@@ -90,9 +82,7 @@
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
           "selectClause": "ar.aName",
-          "alias": "aName",
-          "hidden": true,
-          "identity": false
+          "alias": "aName"
         }
       ]
     }
@@ -103,8 +93,16 @@
       "columnId": [
         1
       ],
+      "orderNumber": 2,
+      "operatorSid": "15"
+    },
+    {
+      "id": 2,
+      "columnId": [
+        2
+      ],
       "orderNumber": 1,
-      "operatorSid": 15
+      "operatorSid": "15"
     }
   ],
   "resultColumns": [
@@ -118,25 +116,25 @@
       "columnId": 2,
       "hidden": false,
       "identity": false,
-      "orderNumber": 2
-    },
-    {
-      "columnId": 3,
-      "hidden": true,
-      "identity": false,
       "orderNumber": 3
     },
     {
-      "columnId": 4,
-      "hidden": true,
+      "columnId": 3,
+      "hidden": false,
       "identity": false,
-      "orderNumber": 4
+      "orderNumber": 2
+    },
+    {
+      "columnId": 4,
+      "hidden": false,
+      "identity": false,
+      "orderNumber": 5
     },
     {
       "columnId": 5,
-      "hidden": true,
+      "hidden": false,
       "identity": false,
-      "orderNumber": 5
+      "orderNumber": 4
     }
   ],
   "orderByColumns": [
