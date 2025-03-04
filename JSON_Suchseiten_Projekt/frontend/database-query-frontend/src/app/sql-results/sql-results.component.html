@@ -1,3 +1,15 @@
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+<div class="home-button-container">
+  <button class="home-btn" (click)="goHome()">
+    <i class="fa fa-home"></i>
+  </button>
+</div>
+
+
+
 <div class="sql-results">
   <!-- Zeile oben mit Suchfeldern links + Pagination rechts -->
   <div class="top-row">
@@ -15,14 +27,11 @@
       </div>
     </div>
     <div class="pagination">
-      <!-- Beispielwerte, du könntest hier echte Paging-Werte einsetzen -->
-      <span>1-58 von 58</span>
       <button class="btn"><</button>
       <button class="btn">></button>
     </div>
   </div>
   
-  <!-- Falls es Fehler gibt -->
   <div *ngIf="errorMessage" class="error">
     {{ errorMessage }}
   </div>
@@ -32,8 +41,10 @@
     <table class="results-table">
       <thead>
         <tr>
-          <!-- Kopfspalten dynamisch -->
-          <th *ngFor="let col of resultColumns">{{ col.name }}</th>
+          <!-- Kopfzeilen -->
+          <th *ngFor="let col of resultColumns">
+            {{ col.name }}
+          </th>
         </tr>
       </thead>
       <tbody>

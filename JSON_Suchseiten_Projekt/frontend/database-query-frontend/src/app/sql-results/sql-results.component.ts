@@ -8,9 +8,11 @@ interface IColumnConfig {
   id: number;
   name: string;        // z.B. "confirmationPending"
   alias: string;       // z.B. "confirmationPending"
+  tableName?: string;  // Neu: z.B. "Trans"
   orderNumber?: number;
   hidden?: boolean;
 }
+
 
 @Component({
   selector: 'app-sql-results',
@@ -82,14 +84,25 @@ export class SqlResultsComponent implements OnInit {
       // 1) Erzeuge eine Map: columnId -> IColumnConfig
       let columnMap: Record<number, IColumnConfig> = {};
       for (const group of data.columnGroups || []) {
+        let tableName = "";
+        if (group.name && group.name.startsWith("Group for ")) {
+          const start = "Group for ".length;
+          const end = group.name.indexOf(" (");
+          tableName = group.name.substring(start, end !== -1 ? end : group.name.length);
+        }
+        // In parseJsonConfig(), dort wo Du columnMap[col.id] = { ... } aufbaust:
         for (const col of group.columns || []) {
+          const fullName = tableName ? `${tableName}.${col.name}` : col.name;
           columnMap[col.id] = {
             id: col.id,
-            name: col.name,
+            // name wird jetzt direkt mit dem Tabellennamen verknüpft
+            name: fullName,
             alias: col.alias,
+            tableName: tableName
           };
         }
       }
+
 
       // 2) Erzeuge das Array der Suchspalten (searchColumns) in der richtigen Reihenfolge
       this.searchColumns = [];
@@ -104,9 +117,10 @@ export class SqlResultsComponent implements OnInit {
           this.searchColumns.push({
             id: colCfg.id,
             alias: colCfg.alias,
-            label: colCfg.name, // Alternativ könnte auch colCfg.alias verwendet werden
+            // label wird nun der fertige Name, also z.B. "ArticlePacking.aName"
+            label: colCfg.name,
             value: ''
-          });
+          });          
         }
       }
 
@@ -125,9 +139,11 @@ export class SqlResultsComponent implements OnInit {
             this.resultColumns.push({
               id: colCfg.id,
               alias: colCfg.alias,
+              // auch hier ist colCfg.name = "ArticlePacking.aName"
               name: colCfg.name,
               orderNumber: rCol.orderNumber
             });
+            
           }
         }
       }
@@ -167,9 +183,10 @@ export class SqlResultsComponent implements OnInit {
       });
   }
 
-  /**
-   * Führt das SQL-Statement aus und befüllt das Array sqlResults.
-   */
+  goHome(): void {
+    this.router.navigate(['']);
+  }
+  
   executeSqlQuery(): void {
     const payload = { sqlQuery: this.sqlStatement };
     this.http.post<any>('http://localhost:3000/execute-sql', payload)
@@ -199,9 +216,7 @@ export class SqlResultsComponent implements OnInit {
     this.router.navigate(['config', targetFile]);
   }
 
-  /**
-   * Hilfsmethode, um die Schlüssel eines Objekts zu erhalten – nützlich, wenn SQL-Ergebnisse raw ausgegeben werden.
-   */
+  
   getKeys(obj: any): string[] {
     return obj ? Object.keys(obj) : [];
   }

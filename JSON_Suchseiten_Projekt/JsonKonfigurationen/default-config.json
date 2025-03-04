@@ -77,6 +77,14 @@
       ],
       "orderNumber": 2,
       "operatorSid": 15
+    },
+    {
+      "id": 3,
+      "columnId": [
+        3
+      ],
+      "orderNumber": 3,
+      "operatorSid": 15
     }
   ],
   "resultColumns": [

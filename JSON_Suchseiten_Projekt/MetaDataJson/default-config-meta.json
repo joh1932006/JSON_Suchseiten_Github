@@ -35,13 +35,14 @@
     },
     {
       "fullColumn": "ArticlePacking.ar.aName",
-      "search": false,
+      "search": true,
       "groupBy": false,
       "orderBy": "none",
       "identifier": false,
       "versteckt": false,
       "operatorSid": 15,
-      "resultOrderNumber": 3
+      "resultOrderNumber": 3,
+      "searchOrderNumber": 3
     }
   ],
   "baseAlias": "ar",

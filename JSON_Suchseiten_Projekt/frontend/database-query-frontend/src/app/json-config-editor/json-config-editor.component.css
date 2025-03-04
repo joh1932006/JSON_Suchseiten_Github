@@ -42,21 +42,31 @@ html, body {
 .home-button-container {
   margin-top: 15px;
   margin-bottom: 10px;
+  /* Falls du den Button an einer festen Position haben willst, 
+     kannst du hier zusätzlich position: fixed; top: 20px; left: 20px; etc. setzen. */
 }
 
 .home-btn {
-  background-color: transparent;
+  background-color: #39475D;   /* Dunkler Hintergrund */
   border: none;
+  border-radius: 50%;          /* Rund */
+  width: 48px;
+  height: 48px;
   cursor: pointer;
   color: #FFFFFF;
   font-size: 24px;
-  margin-right: 20px;
-  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, transform 0.2s;
+  margin-right: 20px;          /* Falls du rechts Platz lassen willst */
 }
 
 .home-btn:hover {
-  color: #3182CE;
+  background-color: #506381;   /* Hover-Farbe */
+  transform: scale(1.1);       /* Leichtes Vergrößern beim Hover */
 }
+
 
 /* -------------------------------------- */
 /* TOP-BAR FÜR KONFIGURATIONSNAME         */

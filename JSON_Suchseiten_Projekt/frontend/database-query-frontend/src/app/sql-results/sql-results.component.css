@@ -1,21 +1,14 @@
-/* 
-   Da du bereits ein globales CSS hast, das den Body und Textfarben
-   (z.B. #1E2532 Hintergrund, #FFFFFF Text) setzt, konzentrieren wir uns 
-   hier auf die Komponente und ihre Tabelle, Buttons etc. 
-*/
-
-/* Container der gesamten Komponente */
 .sql-results {
-  /* Falls du hier zusätzlich einen "Panel"-Hintergrund möchtest,
-     kannst du z.B. noch ein Rahmen und abgerundete Ecken verwenden: */
   background-color: #232A3A;
   border: 1px solid #2F3848;
   border-radius: 8px;
   padding: 20px;
-  margin: 20px 0; /* Abstand nach oben/unten */
-  font-family: Arial, sans-serif; /* Oder was immer du nutzt */
+  margin: 20px auto;   /* auto zentriert den Block */
+  max-width: 1500px;   /* maximale Breite z.B. 1200px */
+  font-family: Arial, sans-serif;
   color: #FFFFFF;
 }
+
 
 /* Zeile oben: Suchfelder + Pagination */
 .top-row {
@@ -55,6 +48,12 @@
 
 .search-field input:focus {
   border-color: #506381;
+}
+
+.wrapper {
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
 }
 
 /* Pagination-Anzeige rechts */
@@ -101,6 +100,7 @@
   padding: 6px 12px;
   cursor: pointer;
   font-size: 14px;
+  margin-top: 15px;
   transition: background-color 0.2s;
 }
 
@@ -114,3 +114,39 @@
   margin-top: 10px;
   font-weight: bold;
 }
+
+/* -------------------------------------- */
+/* HOME-BUTTON (oben links)               */
+/* -------------------------------------- */
+/* Alternativer Home-Button oben links, fixiert */
+.home-button-container {
+  
+  margin-bottom: 10px;
+  margin-left: 15px;
+  position: fixed;
+  /* Falls du den Button an einer festen Position haben willst, 
+     kannst du hier zusätzlich position: fixed; top: 20px; left: 20px; etc. setzen. */
+}
+
+.home-btn {
+  background-color: #39475D;   /* Dunkler Hintergrund */
+  border: none;
+  border-radius: 50%;          /* Rund */
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  color: #FFFFFF;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, transform 0.2s;
+  margin-right: 20px;          /* Falls du rechts Platz lassen willst */
+}
+
+.home-btn:hover {
+  background-color: #506381;   /* Hover-Farbe */
+  transform: scale(1.1);       /* Leichtes Vergrößern beim Hover */
+}
+
+
