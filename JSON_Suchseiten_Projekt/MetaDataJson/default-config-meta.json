@@ -1,55 +1,51 @@
 {
   "configName": "default-config",
   "selectedDatabase": "Fab4Minds",
-  "selectedBaseTable": "ActionGrp",
+  "selectedBaseTable": "Article",
   "joinRows": [
     {
-      "table": "aUser",
+      "table": "ArticlePacking",
       "joinType": "INNER JOIN",
-      "condition": "INNER JOIN aUser au ON au.SID = ac.FK_User_SID",
-      "alias": "au"
-    },
-    {
-      "table": "ITSystem",
-      "joinType": "INNER JOIN",
-      "condition": "INNER JOIN ITSystem it ON it.SID = ac.FK_ITSystem_SID",
-      "alias": "it"
+      "condition": "INNER JOIN ArticlePacking ar ON ar.FK_ArticleChild_SID = ar.SID",
+      "alias": "ar"
     }
   ],
   "selectedColumnConfigs": [
     {
-      "fullColumn": "ActionGrp.ac.SID",
+      "fullColumn": "Article.ar.SID",
       "search": true,
       "groupBy": false,
-      "orderBy": "none",
+      "orderBy": "ASC",
       "identifier": true,
       "versteckt": false,
-      "searchOrderNumber": 2,
-      "operatorSid": "15",
-      "resultOrderNumber": 2
+      "operatorSid": 15,
+      "resultOrderNumber": 3,
+      "searchOrderNumber": 1
     },
     {
-      "fullColumn": "ActionGrp.ac.aDescription",
+      "fullColumn": "ArticlePacking.ar.SID",
       "search": true,
       "groupBy": false,
       "orderBy": "none",
       "identifier": false,
       "versteckt": false,
-      "searchOrderNumber": 1,
-      "operatorSid": "15",
-      "resultOrderNumber": 1
+      "operatorSid": 15,
+      "resultOrderNumber": 1,
+      "searchOrderNumber": 3
     },
     {
-      "fullColumn": "aUser.au.confirmationPending",
-      "search": false,
+      "fullColumn": "ArticlePacking.ar.aName",
+      "search": true,
       "groupBy": false,
       "orderBy": "none",
       "identifier": false,
       "versteckt": false,
-      "resultOrderNumber": 3
+      "operatorSid": 15,
+      "resultOrderNumber": 2,
+      "searchOrderNumber": 2
     }
   ],
-  "baseAlias": "ac",
+  "baseAlias": "ar",
   "userWhereClause": "",
   "dbConfig": {
     "user": "f4mbsappl",

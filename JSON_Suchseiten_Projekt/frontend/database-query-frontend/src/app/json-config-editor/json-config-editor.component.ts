@@ -469,17 +469,27 @@ export class JsonConfigEditorComponent implements OnInit {
           groupBy: false,
           orderBy: 'none',
           identifier: this.selectedColumnConfigs.length === 0, // erste Spalte automatisch als Identifier
-          versteckt: false
+          versteckt: false,
+          operatorSid: 15, // Standardwert "enthält"
+          resultOrderNumber: this.autoResultOrderIndex++ // Automatische fortlaufende Vergabe
         });
       }
     } else {
       this.selectedColumnConfigs = this.selectedColumnConfigs.filter(c => c.fullColumn !== fullColumn);
-      // Hier: Sicherstellen, dass mindestens eine Spalte als Identifier gesetzt ist
+      // Sicherstellen, dass mindestens eine Spalte als Identifier gesetzt ist
       if (this.selectedColumnConfigs.length > 0 && !this.selectedColumnConfigs.some(c => c.identifier)) {
         this.selectedColumnConfigs[0].identifier = true;
       }
     }
   }
+  
+  onSearchToggle(config: ColumnConfig, event: any): void {
+    if (event.target.checked && (!config.searchOrderNumber || config.searchOrderNumber < 1)) {
+      config.searchOrderNumber = this.autoSearchOrderIndex++;
+    }
+  }
+  
+  
   
   setIdentifier(selectedConfig: ColumnConfig, event: any): void {
     if (event.target.checked) {

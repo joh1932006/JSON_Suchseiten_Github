@@ -366,8 +366,9 @@
           <td>Text - Zeile</td>
           <!-- Suchfeld -->
           <td>
-            <input type="checkbox" [(ngModel)]="col.search" />
+            <input type="checkbox" [(ngModel)]="col.search" (change)="onSearchToggle(col, $event)" />
           </td>
+          
           <!-- searchOrderNumber-->
           <td>
             <input
