@@ -15,11 +15,11 @@
       "fullColumn": "Article.ar.SID",
       "search": true,
       "groupBy": false,
-      "orderBy": "ASC",
+      "orderBy": "none",
       "identifier": true,
       "versteckt": false,
       "operatorSid": 15,
-      "resultOrderNumber": 3,
+      "resultOrderNumber": 1,
       "searchOrderNumber": 1
     },
     {
@@ -30,19 +30,18 @@
       "identifier": false,
       "versteckt": false,
       "operatorSid": 15,
-      "resultOrderNumber": 1,
-      "searchOrderNumber": 3
+      "resultOrderNumber": 2,
+      "searchOrderNumber": 2
     },
     {
       "fullColumn": "ArticlePacking.ar.aName",
-      "search": true,
+      "search": false,
       "groupBy": false,
       "orderBy": "none",
       "identifier": false,
       "versteckt": false,
       "operatorSid": 15,
-      "resultOrderNumber": 2,
-      "searchOrderNumber": 2
+      "resultOrderNumber": 3
     }
   ],
   "baseAlias": "ar",

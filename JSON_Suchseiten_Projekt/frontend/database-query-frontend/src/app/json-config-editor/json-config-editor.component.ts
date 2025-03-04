@@ -684,6 +684,27 @@ this.selectedColumnConfigs.forEach(config => {
       }
     });
   }
+
+  getDisplayAlias(fullColumn: string): string {
+    const parts = fullColumn.split('.');
+    if (parts.length >= 3) {
+      return `${parts[0]}_${parts[2]}`;
+    }
+    return fullColumn;
+  }
+  
+  getDataType(col: ColumnConfig): string {
+    // Extrahiere den Spaltennamen aus fullColumn (angenommen, das Format ist "Tabelle.Alias.Spaltenname")
+    const columnName = this.getColumnNameFromFullColumn(col.fullColumn).toLowerCase();
+    
+    // Beispielhafte Logik: Wenn der Spaltenname "sid" lautet, dann Ganzzahl, sonst Text
+    if (columnName === 'sid') {
+      return 'Ganzzahl';
+    }
+    // Hier können Sie weitere Bedingungen hinzufügen, z. B. für Datum oder andere Datentypen
+    return 'Text - Zeile';
+  }
+  
   
   public showSqlResults(): void {
     this.saveJsonConfig(true);

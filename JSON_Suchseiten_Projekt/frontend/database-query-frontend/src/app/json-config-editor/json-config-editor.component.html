@@ -335,8 +335,8 @@
       <thead>
         <tr>
           <th>Select-Clause</th>
-          <th>Tabellenname</th>
           <th>Alias</th>
+          <th>Tabellenname</th>
           <th>Spaltenname</th>
           <th>Datentyp</th>
           <th>Suchfeld</th>
@@ -355,15 +355,15 @@
       <tbody>
         <tr *ngFor="let col of selectedColumnConfigs">
           <!-- Select-Clause -->
-          <td>{{ col.fullColumn }}</td>
+          <td>{{ getAliasFromFullColumn(col.fullColumn) }}.{{ getColumnNameFromFullColumn(col.fullColumn) }}</td>
+          <!-- Alias -->
+          <td>{{ getDisplayAlias(col.fullColumn) }}</td>
           <!-- Tabellenname -->
           <td>{{ getTableNameFromFullColumn(col.fullColumn) }}</td>
-          <!-- Alias -->
-          <td>{{ getAliasFromFullColumn(col.fullColumn) }}</td>
           <!-- Spaltenname -->
           <td>{{ getColumnNameFromFullColumn(col.fullColumn) }}</td>
           <!-- Datentyp -->
-          <td>Text - Zeile</td>
+          <td>{{ getDataType(col) }}</td>
           <!-- Suchfeld -->
           <td>
             <input type="checkbox" [(ngModel)]="col.search" (change)="onSearchToggle(col, $event)" />

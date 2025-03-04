@@ -75,14 +75,6 @@
       "columnId": [
         2
       ],
-      "orderNumber": 3,
-      "operatorSid": 15
-    },
-    {
-      "id": 3,
-      "columnId": [
-        3
-      ],
       "orderNumber": 2,
       "operatorSid": 15
     }
@@ -92,26 +84,21 @@
       "columnId": 1,
       "hidden": false,
       "identity": true,
-      "orderNumber": 3
+      "orderNumber": 1
     },
     {
       "columnId": 2,
       "hidden": false,
       "identity": false,
-      "orderNumber": 1
+      "orderNumber": 2
     },
     {
       "columnId": 3,
       "hidden": false,
       "identity": false,
-      "orderNumber": 2
+      "orderNumber": 3
     }
   ],
-  "orderByColumns": [
-    {
-      "columnId": 1,
-      "ascending": true
-    }
-  ],
+  "orderByColumns": [],
   "groupByColumns": []
 }
