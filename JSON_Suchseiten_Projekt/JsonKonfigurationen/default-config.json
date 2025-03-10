@@ -15,48 +15,58 @@
   "filterRoleSid": null,
   "roleSid": null,
   "interfaceSid": null,
-  "table": "Article ar",
+  "table": "Action act",
   "whereClause": "",
   "joinGroups": [
     {
       "id": 1,
-      "joinClause": "INNER JOIN ArticlePacking ar ON ar.FK_ArticleChild_SID = ar.SID"
+      "joinClause": "INNER JOIN ActionPart ac ON ac.SID = act.FK_ActionPartSrc_SID"
     }
   ],
   "columnGroups": [
     {
       "id": 1,
-      "name": "Group for Article (ar)",
+      "name": "Group for Action (act)",
       "columns": [
         {
           "id": 1,
           "name": "SID",
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
-          "selectClause": "ar.SID",
+          "selectClause": "act.SID",
           "alias": "SID"
+        },
+        {
+          "id": 2,
+          "name": "aDescription",
+          "multiLinugal": false,
+          "enqPropDataTypeSid": 1,
+          "selectClause": "act.aDescription",
+          "alias": "aDescription"
         }
       ]
     },
     {
       "id": 2,
-      "name": "Group for ArticlePacking (ar)",
+      "name": "Group for ActionPart (ac)",
       "columns": [
         {
-          "id": 2,
+          "id": 3,
           "name": "SID",
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
-          "selectClause": "ar.SID",
-          "alias": "SID"
+          "selectClause": "ac.SID",
+          "alias": "SID",
+          "joinGroupId": 1
         },
         {
-          "id": 3,
-          "name": "aName",
+          "id": 4,
+          "name": "aDescription",
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
-          "selectClause": "ar.aName",
-          "alias": "aName"
+          "selectClause": "ac.aDescription",
+          "alias": "aDescription",
+          "joinGroupId": 1
         }
       ]
     }
@@ -73,15 +83,7 @@
     {
       "id": 2,
       "columnId": [
-        2
-      ],
-      "orderNumber": 2,
-      "operatorSid": 15
-    },
-    {
-      "id": 3,
-      "columnId": [
-        3
+        4
       ],
       "orderNumber": 3,
       "operatorSid": 15
@@ -104,7 +106,13 @@
       "columnId": 3,
       "hidden": false,
       "identity": false,
-      "orderNumber": 3
+      "orderNumber": 5
+    },
+    {
+      "columnId": 4,
+      "hidden": false,
+      "identity": false,
+      "orderNumber": 6
     }
   ],
   "orderByColumns": [],

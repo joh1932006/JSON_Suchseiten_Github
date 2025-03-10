@@ -1,18 +1,18 @@
 {
   "configName": "default-config",
   "selectedDatabase": "Fab4Minds",
-  "selectedBaseTable": "Article",
+  "selectedBaseTable": "Action",
   "joinRows": [
     {
-      "table": "ArticlePacking",
+      "table": "ActionPart",
       "joinType": "INNER JOIN",
-      "condition": "INNER JOIN ArticlePacking ar ON ar.FK_ArticleChild_SID = ar.SID",
-      "alias": "ar"
+      "condition": "INNER JOIN ActionPart ac ON ac.SID = act.FK_ActionPartSrc_SID",
+      "alias": "ac"
     }
   ],
   "selectedColumnConfigs": [
     {
-      "fullColumn": "Article.ar.SID",
+      "fullColumn": "Action.act.SID",
       "search": true,
       "groupBy": false,
       "orderBy": "none",
@@ -23,29 +23,40 @@
       "searchOrderNumber": 1
     },
     {
-      "fullColumn": "ArticlePacking.ar.SID",
-      "search": true,
+      "fullColumn": "Action.act.aDescription",
+      "search": false,
       "groupBy": false,
       "orderBy": "none",
       "identifier": false,
       "versteckt": false,
       "operatorSid": 15,
       "resultOrderNumber": 2,
+      "searchOrderNumber": 4
+    },
+    {
+      "fullColumn": "ActionPart.ac.SID",
+      "search": false,
+      "groupBy": false,
+      "orderBy": "none",
+      "identifier": false,
+      "versteckt": false,
+      "operatorSid": 15,
+      "resultOrderNumber": 5,
       "searchOrderNumber": 2
     },
     {
-      "fullColumn": "ArticlePacking.ar.aName",
+      "fullColumn": "ActionPart.ac.aDescription",
       "search": true,
       "groupBy": false,
       "orderBy": "none",
       "identifier": false,
       "versteckt": false,
       "operatorSid": 15,
-      "resultOrderNumber": 3,
+      "resultOrderNumber": 6,
       "searchOrderNumber": 3
     }
   ],
-  "baseAlias": "ar",
+  "baseAlias": "act",
   "userWhereClause": "",
   "dbConfig": {
     "user": "f4mbsappl",

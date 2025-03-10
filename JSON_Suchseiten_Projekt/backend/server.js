@@ -468,6 +468,97 @@ app.get('/get-operators', async (req, res) => {
   }
 });
 
+
+// Definiere den Pfad für die DB-Verbindungen
+const dbConnectionsFile = path.join(__dirname, 'dbConnections.json');
+
+/****************************************************
+ * 17) Speichert eine neue DB-Verbindung dauerhaft
+ ****************************************************/
+app.post('/api/save-database-connection', (req, res) => {
+  const newConnection = req.body;
+  
+  // Lies vorhandene Verbindungen ein
+  fs.readFile(dbConnectionsFile, 'utf8', (err, data) => {
+    let connections = [];
+    if (!err) {
+      try {
+        connections = JSON.parse(data);
+      } catch (parseError) {
+        console.error('Fehler beim Parsen der DB-Verbindungen:', parseError);
+      }
+    }
+    // Neue Verbindung anhängen
+    connections.push(newConnection);
+    fs.writeFile(dbConnectionsFile, JSON.stringify(connections, null, 2), (errWrite) => {
+      if (errWrite) {
+        console.error('Fehler beim Speichern der DB-Verbindung:', errWrite);
+        return res.status(500).json({ error: 'Fehler beim Speichern der DB-Verbindung' });
+      }
+      res.json({ message: 'DB-Verbindung erfolgreich gespeichert' });
+    });
+  });
+});
+
+/****************************************************
+ * 18) Ruft alle gespeicherten DB-Verbindungen ab
+ ****************************************************/
+app.get('/api/get-database-connections', (req, res) => {
+  fs.readFile(dbConnectionsFile, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Fehler beim Lesen der DB-Verbindungen:', err);
+      return res.status(500).json({ error: 'Fehler beim Lesen der DB-Verbindungen' });
+    }
+    try {
+      const connections = JSON.parse(data);
+      res.json({ connections });
+    } catch (parseError) {
+      console.error('Fehler beim Parsen der DB-Verbindungen:', parseError);
+      res.status(500).json({ error: 'Fehler beim Parsen der DB-Verbindungen' });
+    }
+  });
+});
+
+
+/****************************************************
+ * 18) Löscht eine gespeicherte DB-Verbindung anhand des Namens
+ ****************************************************/
+app.delete('/api/delete-database-connection', (req, res) => {
+  const connectionName = req.query.name;
+  if (!connectionName) {
+    return res.status(400).json({ error: 'Kein Verbindungsname angegeben.' });
+  }
+  
+  // Lies vorhandene Verbindungen
+  fs.readFile(dbConnectionsFile, 'utf8', (err, data) => {
+    if (err) {
+      console.error('Fehler beim Lesen der DB-Verbindungen:', err);
+      return res.status(500).json({ error: 'Fehler beim Lesen der DB-Verbindungen.' });
+    }
+    
+    let connections = [];
+    try {
+      connections = JSON.parse(data);
+    } catch (parseError) {
+      console.error('Fehler beim Parsen der DB-Verbindungen:', parseError);
+      return res.status(500).json({ error: 'Fehler beim Parsen der DB-Verbindungen.' });
+    }
+    
+    // Filtere die Verbindung heraus, die gelöscht werden soll
+    const updatedConnections = connections.filter(conn => conn.name !== connectionName);
+    
+    // Speichere die aktualisierte Liste
+    fs.writeFile(dbConnectionsFile, JSON.stringify(updatedConnections, null, 2), (errWrite) => {
+      if (errWrite) {
+        console.error('Fehler beim Schreiben der DB-Verbindungen:', errWrite);
+        return res.status(500).json({ error: 'Fehler beim Speichern der DB-Verbindungen.' });
+      }
+      res.json({ message: `DB-Verbindung "${connectionName}" erfolgreich gelöscht.` });
+    });
+  });
+});
+
+
 /****************************************************
  * Server starten
  ****************************************************/

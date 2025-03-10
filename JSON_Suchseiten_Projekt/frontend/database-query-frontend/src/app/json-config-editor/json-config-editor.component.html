@@ -41,7 +41,7 @@
 
       <button (click)="openDbConfigModal()" class="btn add-btn">+</button>
       <button (click)="editDatabase()" [disabled]="!selectedDatabase" class="btn edit-btn">Edit</button>
-      <button (click)="deleteDatabase()" [disabled]="!selectedDatabase" class="btn delete-btn">Delete</button>
+      <button (click)="deleteDatabase(selectedDatabase)" [disabled]="!selectedDatabase" class="btn delete-btn">Delete</button>
     </div>
 
     <p *ngIf="selectedDatabase" class="selected-db">

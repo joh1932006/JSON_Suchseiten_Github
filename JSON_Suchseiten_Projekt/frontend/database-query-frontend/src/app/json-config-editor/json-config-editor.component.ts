@@ -124,6 +124,7 @@ export class JsonConfigEditorComponent implements OnInit {
       this.loadExistingConfig(this.fileName);
     }
     this.fetchOperators();
+    this.loadStoredDatabaseConnections();
   }
 
   // Laden der Konfiguration (API-konformer JSON)
@@ -176,6 +177,7 @@ export class JsonConfigEditorComponent implements OnInit {
   // ---------------------------
   // DB-Management
   // ---------------------------
+
   openDbConfigModal() {
     this.resetNewDatabaseForm();
     this.showDbConfigModal = true;
@@ -188,16 +190,43 @@ export class JsonConfigEditorComponent implements OnInit {
   }
   addDatabase() {
     if (this.newDatabase.name) {
+      // Lokale Aktualisierung (optional)
       this.databases.push({
         name: this.newDatabase.name,
         config: { ...this.newDatabase }
       });
+      // Persistente Speicherung über den API-Endpunkt
+      this.http.post('http://localhost:3000/api/save-database-connection', this.newDatabase)
+        .subscribe({
+          next: response => {
+            console.log('Datenbankverbindung auf dem Server gespeichert:', response);
+          },
+          error: err => console.error('Fehler beim Speichern der DB-Verbindung:', err)
+        });
       this.closeDbConfigModal();
       this.resetNewDatabaseForm();
     } else {
-      console.error('Database name is required');
+      console.error('Datenbankname ist erforderlich');
     }
   }
+
+  loadStoredDatabaseConnections() {
+    this.http.get<{ connections: any[] }>('http://localhost:3000/api/get-database-connections')
+      .subscribe({
+        next: response => {
+          console.log('Gespeicherte DB-Verbindungen:', response.connections);
+          // Hier kannst du die Struktur anpassen, je nachdem wie deine Verbindungen aufgebaut sind.
+          // Beispiel: Wenn jede Verbindung ein Objekt mit "name" und weiteren Feldern ist,
+          // könntest du das Array direkt zuweisen.
+          this.databases = response.connections.map(conn => ({
+            name: conn.name,
+            config: conn
+          }));
+        },
+        error: err => console.error('Fehler beim Laden der gespeicherten DB-Verbindungen:', err)
+      });
+  }
+  
   fetchTables() {
     if (!this.selectedDatabase) {
       console.error('No database selected');
@@ -263,11 +292,26 @@ export class JsonConfigEditorComponent implements OnInit {
       this.closeEditDbConfigModal();
     }
   }
-  deleteDatabase() {
+  deleteDatabase(connectionName: string) {
     this.databases = this.databases.filter(db => db.name !== this.selectedDatabase);
     this.selectedDatabase = '';
     this.tables = [];
+    if (!connectionName) {
+      console.error('Kein Verbindungsname angegeben.');
+      return;
+    }
+    this.http.delete(`http://localhost:3000/api/delete-database-connection?name=${connectionName}`)
+      .subscribe({
+        next: (response: any) => {
+          console.log(response.message);
+          // Aktualisiere z.B. dein lokales Array, um die gelöschte Verbindung zu entfernen:
+          this.databases = this.databases.filter(db => db.name !== connectionName);
+        },
+        error: (err) => console.error('Fehler beim Löschen der DB-Verbindung:', err)
+      });
   }
+
+  
   resetNewDatabaseForm() {
     this.newDatabase = {
       name: '',

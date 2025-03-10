@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Test",
+    "user": "test",
+    "password": "test",
+    "server": "test",
+    "database": "test",
+    "port": 1433,
+    "options": {
+      "encrypt": false,
+      "trustServerCertificate": true
+    }
+  },
+  {
+    "name": "Fab4Minds",
+    "user": "f4mbsappl",
+    "password": "bTemrHU6Tn3pnkPRBuKc",
+    "server": "192.168.44.137",
+    "database": "f4mbs",
+    "port": 1433,
+    "options": {
+      "encrypt": false,
+      "trustServerCertificate": true
+    }
+  },
+  {
+    "name": "dominik",
+    "user": "haun",
+    "password": "1923",
+    "server": "3952i",
+    "database": "asdjasd",
+    "port": 1433,
+    "options": {
+      "encrypt": false,
+      "trustServerCertificate": true
+    }
+  }
+]
