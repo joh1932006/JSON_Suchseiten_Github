@@ -1,5 +1,5 @@
 {
-  "name": "default-config",
+  "name": "Joh1",
   "itemsPerPage": 100,
   "tableWidth": 1200,
   "preventSearchWithoutRestriction": false,
@@ -15,48 +15,57 @@
   "filterRoleSid": null,
   "roleSid": null,
   "interfaceSid": null,
-  "table": "Article ar",
+  "table": "ActivityFlowPos ac",
   "whereClause": "",
   "joinGroups": [
     {
       "id": 1,
-      "joinClause": "INNER JOIN ArticlePacking ar ON ar.FK_ArticleChild_SID = ar.SID"
+      "joinClause": "INNER JOIN Enquiry en ON en.FK_ActivityFlowPos_SID = ac.SID"
     }
   ],
   "columnGroups": [
     {
       "id": 1,
-      "name": "Group for Article (ar)",
+      "name": "Group for ActivityFlowPos (ac)",
       "columns": [
         {
           "id": 1,
           "name": "SID",
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
-          "selectClause": "ar.SID",
+          "selectClause": "ac.SID",
           "alias": "SID"
+        },
+        {
+          "id": 2,
+          "name": "active",
+          "multiLinugal": false,
+          "enqPropDataTypeSid": 1,
+          "selectClause": "ac.active",
+          "alias": "active"
+        },
+        {
+          "id": 3,
+          "name": "aName",
+          "multiLinugal": false,
+          "enqPropDataTypeSid": 1,
+          "selectClause": "ac.aName",
+          "alias": "aName"
         }
       ]
     },
     {
       "id": 2,
-      "name": "Group for ArticlePacking (ar)",
+      "name": "Group for Enquiry (en)",
       "columns": [
         {
-          "id": 2,
-          "name": "aName",
+          "id": 4,
+          "name": "aDescription",
           "multiLinugal": false,
           "enqPropDataTypeSid": 1,
-          "selectClause": "ar.aName",
-          "alias": "aName"
-        },
-        {
-          "id": 3,
-          "name": "SID",
-          "multiLinugal": false,
-          "enqPropDataTypeSid": 1,
-          "selectClause": "ar.SID",
-          "alias": "SID"
+          "selectClause": "en.aDescription",
+          "alias": "aDescription",
+          "joinGroupId": 1
         }
       ]
     }
@@ -82,10 +91,16 @@
       "columnId": 2,
       "hidden": false,
       "identity": false,
-      "orderNumber": 3
+      "orderNumber": 2
     },
     {
       "columnId": 3,
+      "hidden": false,
+      "identity": false,
+      "orderNumber": 3
+    },
+    {
+      "columnId": 4,
       "hidden": false,
       "identity": false,
       "orderNumber": 4

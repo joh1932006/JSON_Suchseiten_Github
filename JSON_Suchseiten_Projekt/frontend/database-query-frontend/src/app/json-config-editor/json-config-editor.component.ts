@@ -7,16 +7,18 @@ import { APIRequestsComponent } from '../apirequests/apirequests.component';
 
 // Interface für die Spaltenkonfiguration (kombiniert beide Versionen)
 interface ColumnConfig {
-  fullColumn: string;            
-  search: boolean;               
-  groupBy: boolean;            
+  fullColumn: string;
+  search: boolean;
+  groupBy: boolean;
   orderBy: 'none' | 'ASC' | 'DESC';
-  identifier?: boolean;   
+  identifier?: boolean;
   versteckt?: boolean;
   resultOrderNumber?: number;
   searchOrderNumber?: number;
   operatorSid?: number;
+  dataType?: string; // Neuer Eintrag für den echten Datentyp
 }
+
 
 // Interface für eine Join-Zeile
 interface JoinRow {
@@ -215,9 +217,6 @@ export class JsonConfigEditorComponent implements OnInit {
       .subscribe({
         next: response => {
           console.log('Gespeicherte DB-Verbindungen:', response.connections);
-          // Hier kannst du die Struktur anpassen, je nachdem wie deine Verbindungen aufgebaut sind.
-          // Beispiel: Wenn jede Verbindung ein Objekt mit "name" und weiteren Feldern ist,
-          // könntest du das Array direkt zuweisen.
           this.databases = response.connections.map(conn => ({
             name: conn.name,
             config: conn
@@ -304,7 +303,6 @@ export class JsonConfigEditorComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           console.log(response.message);
-          // Aktualisiere z.B. dein lokales Array, um die gelöschte Verbindung zu entfernen:
           this.databases = this.databases.filter(db => db.name !== connectionName);
         },
         error: (err) => console.error('Fehler beim Löschen der DB-Verbindung:', err)
@@ -467,7 +465,7 @@ export class JsonConfigEditorComponent implements OnInit {
     if (fk) {
       if (this.selectedBaseTable === fk.parent_table && joinRow.table === fk.referenced_table) {
         joinRow.condition = `${joinRow.joinType} ${joinRow.table} ${joinRow.alias} ON ${joinRow.alias}.${fk.referenced_column} = ${this.baseAlias}.${fk.parent_column}`;
-      } else if (this.selectedBaseTable === fk.referenced_table && joinRow.table === fk.parent_table) {
+      } else if (this.selectedBaseTable === fk.referenced_table && joinRow.table === fk.parent_table) { // Falls die Basistabelle als referenzierte Tabelle agiert
         joinRow.condition = `${joinRow.joinType} ${joinRow.table} ${joinRow.alias} ON ${joinRow.alias}.${fk.parent_column} = ${this.baseAlias}.${fk.referenced_column}`;
       }
     } else {
@@ -507,25 +505,40 @@ export class JsonConfigEditorComponent implements OnInit {
     const fullColumn = `${tableName}.${this.activeAlias}.${column}`;
     if (event.target.checked) {
       if (!this.selectedColumnConfigs.find(c => c.fullColumn === fullColumn)) {
-        this.selectedColumnConfigs.push({
+        const newColumnConfig: ColumnConfig = {
           fullColumn,
           search: false,
           groupBy: false,
           orderBy: 'none',
-          identifier: this.selectedColumnConfigs.length === 0, // erste Spalte automatisch als Identifier
+          identifier: this.selectedColumnConfigs.length === 0,
           versteckt: false,
-          operatorSid: 15, // Standardwert "enthält"
-          resultOrderNumber: this.autoResultOrderIndex++ // Automatische fortlaufende Vergabe
-        });
+          operatorSid: 15,
+          resultOrderNumber: this.autoResultOrderIndex++
+        };
+  
+        // API-Aufruf, um den Datentyp zu ermitteln
+        this.http.get<{ dataType: string }>(`http://localhost:3000/api/get-column-type?table=${tableName}&column=${column}`)
+          .subscribe({
+            next: (response) => {
+              newColumnConfig.dataType = response.dataType;
+              this.selectedColumnConfigs.push(newColumnConfig);
+            },
+            error: (err) => {
+              console.error('Fehler beim Abrufen des Datentyps:', err);
+              // Fallback: Standardwert setzen
+              newColumnConfig.dataType = 'unbekannt';
+              this.selectedColumnConfigs.push(newColumnConfig);
+            }
+          });
       }
     } else {
       this.selectedColumnConfigs = this.selectedColumnConfigs.filter(c => c.fullColumn !== fullColumn);
-      // Sicherstellen, dass mindestens eine Spalte als Identifier gesetzt ist
       if (this.selectedColumnConfigs.length > 0 && !this.selectedColumnConfigs.some(c => c.identifier)) {
         this.selectedColumnConfigs[0].identifier = true;
       }
     }
   }
+  
   
   onSearchToggle(config: ColumnConfig, event: any): void {
     if (event.target.checked && (!config.searchOrderNumber || config.searchOrderNumber < 1)) {
@@ -660,7 +673,7 @@ this.selectedColumnConfigs.forEach(config => {
       }
     });
   
-    // Aufbau des JSON-Objekts – beachte, dass columnGroups und resultColumns nun getrennt sind
+    // Aufbau des JSON-Objekts:
     const jsonData = {
       name: this.configName || 'default-config',
       itemsPerPage: 100,
@@ -738,16 +751,9 @@ this.selectedColumnConfigs.forEach(config => {
   }
   
   getDataType(col: ColumnConfig): string {
-    // Extrahiere den Spaltennamen aus fullColumn (angenommen, das Format ist "Tabelle.Alias.Spaltenname")
-    const columnName = this.getColumnNameFromFullColumn(col.fullColumn).toLowerCase();
-    
-    // Beispielhafte Logik: Wenn der Spaltenname "sid" lautet, dann Ganzzahl, sonst Text
-    if (columnName === 'sid') {
-      return 'Ganzzahl';
-    }
-    // Hier können Sie weitere Bedingungen hinzufügen, z. B. für Datum oder andere Datentypen
-    return 'Text - Zeile';
+    return col.dataType ? col.dataType : 'unbekannt';
   }
+  
   
   
   public showSqlResults(): void {

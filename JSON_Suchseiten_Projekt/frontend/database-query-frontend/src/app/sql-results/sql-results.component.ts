@@ -217,13 +217,8 @@ export class SqlResultsComponent implements OnInit {
   }
 
   
-  getKeys(obj: any): string[] {
-    return obj ? Object.keys(obj) : [];
-  }
-
-  /**
-   * Clientseitiges Filtern der SQL-Ergebnisse anhand der searchColumns[].value.
-   */
+  
+  // Clientseitiges Filtern der SQL-Ergebnisse anhand der searchColumns[].value.
   get filteredResults(): any[] {
     if (!this.sqlResults || this.sqlResults.length === 0) {
       return [];
@@ -239,11 +234,7 @@ export class SqlResultsComponent implements OnInit {
       });
     });
   }
-
-  /**
-   * Wird aufgerufen, wenn sich die Eingaben in den Suchfeldern ändern.
-   * Hier wird nur ein Re-Rendering ausgelöst.
-   */
+  
   onSearchChange(): void {
     // Bei Bedarf kann hier serverseitiges Filtern implementiert werden.
   }

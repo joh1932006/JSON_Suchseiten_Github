@@ -1,7 +1,3 @@
-/****************************************************
- * server.js – komplett angepasste Version
- ****************************************************/
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
@@ -25,10 +21,6 @@ if (!fs.existsSync(configsFolder)) {
   fs.mkdirSync(configsFolder, { recursive: true });
 }
 
-/** 
- * Variable, um die aktuelle DB-Konfiguration zu speichern,
- * sobald /set-database aufgerufen wird.
- */
 let currentDbConfig = null;
 
 /****************************************************
@@ -469,7 +461,7 @@ app.get('/get-operators', async (req, res) => {
 });
 
 
-// Definiere den Pfad für die DB-Verbindungen
+
 const dbConnectionsFile = path.join(__dirname, 'dbConnections.json');
 
 /****************************************************
@@ -557,6 +549,51 @@ app.delete('/api/delete-database-connection', (req, res) => {
     });
   });
 });
+
+
+// GET /api/get-column-type?schema=dbo&table=ActivityFlow&column=assFrom
+app.get('/api/get-column-type', async (req, res) => {
+  if (!currentDbConfig) {
+    return res.status(400).json({ error: 'No database configuration set' });
+  }
+
+  // Parameter auslesen (Schema optional, Standard: dbo)
+  const { schema, table, column } = req.query;
+  if (!table || !column) {
+    return res.status(400).json({ error: 'Missing table or column parameter' });
+  }
+  const effectiveSchema = schema || 'dbo';
+
+  try {
+    const pool = await sql.connect(currentDbConfig);
+    const query = `
+      SELECT DATA_TYPE
+      FROM INFORMATION_SCHEMA.COLUMNS
+      WHERE TABLE_SCHEMA = @schema
+        AND TABLE_NAME = @table
+        AND COLUMN_NAME = @column
+    `;
+    const result = await pool.request()
+      .input('schema', sql.VarChar, effectiveSchema)
+      .input('table', sql.VarChar, table)
+      .input('column', sql.VarChar, column)
+      .query(query);
+
+    if (result.recordset && result.recordset.length > 0) {
+      return res.json({ dataType: result.recordset[0].DATA_TYPE });
+    } else {
+      return res.status(404).json({ error: `Spalte '${column}' in Tabelle '${effectiveSchema}.${table}' nicht gefunden.` });
+    }
+  } catch (error) {
+    console.error('Error fetching column type:', error);
+    return res.status(500).json({ error: 'Fehler beim Abrufen des Datentyps' });
+  } finally {
+    sql.close();
+  }
+});
+
+
+
 
 
 /****************************************************
