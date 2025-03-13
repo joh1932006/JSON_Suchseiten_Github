@@ -58,9 +58,7 @@ export class ConfigListComponent implements OnInit {
       });
   }
 
-  /**
-   * Neuer Button: Lädt die JSON-Konfiguration und wechselt direkt zur sql-results-Seite.
-   */
+ 
   onResultsClick(fileName: string) {
     // 1) Hole die JSON-Konfiguration vom Server
     this.http.get<any>(`http://localhost:3000/api/read-config?fileName=${fileName}`).subscribe({

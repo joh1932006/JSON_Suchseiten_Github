@@ -12,8 +12,7 @@ const port = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// Konfigurationsordner – hier werden sowohl die API‑konformen JSONs als auch die UI‑Meta-Daten gespeichert.
-// Passe den Pfad ggf. an deine Ordnerstruktur an.
+// Konfigurationsordner
 const configsFolder = path.join(__dirname, '../JsonKonfigurationen');
 
 // Stelle sicher, dass der Ordner existiert:
@@ -290,7 +289,7 @@ const metaJsonFolder = path.join(__dirname, '../MetaDataJson');
 app.post('/api/save-meta', (req, res) => {
   const metaData = req.body;
   
-  // Füge, wenn vorhanden, die aktuelle DB-Konfiguration in die Meta-Daten ein.
+  // wenn vorhanden, dann die DB-Konfiguration in der Meta-Datei speichern
   if (currentDbConfig) {
     metaData.dbConfig = currentDbConfig;
   }
@@ -316,11 +315,11 @@ app.post('/api/save-meta', (req, res) => {
  * 12) UI‑Meta-Daten laden (z. B. config-meta.json)
  ****************************************************/
 app.get('/api/read-meta', (req, res) => {
-  const fileName = req.query.fileName; // Erwartet z. B. "myConfig.json"
+  const fileName = req.query.fileName;
   if (!fileName) {
     return res.status(400).json({ error: 'Kein Dateiname angegeben.' });
   }
-  // Erzeuge den Meta-Dateinamen, z. B. "myConfig-meta.json"
+  // Meta-Dateinamen erzeugen, z. B. "myConfig-meta.json"
   const baseName = fileName.replace('.json', '');
   const metaFileName = `${baseName}-meta.json`;
   const filePath = path.join(metaJsonFolder, metaFileName);
@@ -356,7 +355,7 @@ app.delete('/api/delete-config', (req, res) => {
   }
   
   const filePath = path.join(configsFolder, fileName);
-  // Entferne die Endung ".json" und hänge "-meta.json" an, um den korrekten Meta-Dateinamen zu erhalten
+  // die Endung ".json" entfernen und hänge "-meta.json" an, um den korrekten Meta-Dateinamen zu erhalten
   const baseName = fileName.replace('.json', '');
   const metaFileName = `${baseName}-meta.json`;
   const filePathMeta = path.join(metaJsonFolder, metaFileName);
@@ -396,7 +395,7 @@ app.get('/get-sample-row', async (req, res) => {
 
   try {
     const pool = await sql.connect(currentDbConfig);
-    // Verwende TOP 1, um eine einzelne Zeile abzurufen.
+    // TOP 1 verwenden, um eine einzelne Zeile abzurufen.
     const query = `SELECT TOP 1 * FROM [${table}]`;
     const result = await pool.request().query(query);
     
@@ -459,7 +458,6 @@ app.get('/get-operators', async (req, res) => {
     sql.close();
   }
 });
-
 
 
 const dbConnectionsFile = path.join(__dirname, 'dbConnections.json');
@@ -536,10 +534,10 @@ app.delete('/api/delete-database-connection', (req, res) => {
       return res.status(500).json({ error: 'Fehler beim Parsen der DB-Verbindungen.' });
     }
     
-    // Filtere die Verbindung heraus, die gelöscht werden soll
+    // Verbindung filtern, die gelöscht werden soll
     const updatedConnections = connections.filter(conn => conn.name !== connectionName);
     
-    // Speichere die aktualisierte Liste
+    // aktualisierte Liste speichern
     fs.writeFile(dbConnectionsFile, JSON.stringify(updatedConnections, null, 2), (errWrite) => {
       if (errWrite) {
         console.error('Fehler beim Schreiben der DB-Verbindungen:', errWrite);
@@ -551,7 +549,9 @@ app.delete('/api/delete-database-connection', (req, res) => {
 });
 
 
-// GET /api/get-column-type?schema=dbo&table=ActivityFlow&column=assFrom
+/****************************************************
+ * 19) Datentyp von einer Spalte herausfinden
+ ****************************************************/
 app.get('/api/get-column-type', async (req, res) => {
   if (!currentDbConfig) {
     return res.status(400).json({ error: 'No database configuration set' });
@@ -591,8 +591,6 @@ app.get('/api/get-column-type', async (req, res) => {
     sql.close();
   }
 });
-
-
 
 
 

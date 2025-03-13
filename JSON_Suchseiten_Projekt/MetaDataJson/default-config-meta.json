@@ -4,9 +4,9 @@
   "selectedBaseTable": "Article",
   "joinRows": [
     {
-      "table": "ArticlePacking",
+      "table": "ArticleLang",
       "joinType": "INNER JOIN",
-      "condition": "INNER JOIN ArticlePacking ar ON ar.FK_ArticleChild_SID = ar.SID",
+      "condition": "INNER JOIN ArticleLang ar ON ar.FK_Article_SID = ar.SID",
       "alias": "ar"
     }
   ],
@@ -15,32 +15,25 @@
       "fullColumn": "Article.ar.SID",
       "search": true,
       "groupBy": false,
-      "orderBy": "none",
+      "orderBy": "ASC",
       "identifier": true,
       "versteckt": false,
       "operatorSid": 15,
       "resultOrderNumber": 1,
+      "dataType": "int",
+      "searchOrderNumber": 2
+    },
+    {
+      "fullColumn": "ArticleLang.ar.aName",
+      "search": true,
+      "groupBy": false,
+      "orderBy": "none",
+      "identifier": false,
+      "versteckt": false,
+      "operatorSid": 15,
+      "resultOrderNumber": 2,
+      "dataType": "nvarchar",
       "searchOrderNumber": 1
-    },
-    {
-      "fullColumn": "ArticlePacking.ar.aName",
-      "search": false,
-      "groupBy": false,
-      "orderBy": "none",
-      "identifier": false,
-      "versteckt": false,
-      "operatorSid": 15,
-      "resultOrderNumber": 3
-    },
-    {
-      "fullColumn": "ArticlePacking.ar.SID",
-      "search": false,
-      "groupBy": false,
-      "orderBy": "none",
-      "identifier": false,
-      "versteckt": false,
-      "operatorSid": 15,
-      "resultOrderNumber": 4
     }
   ],
   "baseAlias": "ar",

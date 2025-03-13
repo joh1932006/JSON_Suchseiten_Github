@@ -6,9 +6,9 @@ import { FormsModule } from '@angular/forms';
 
 interface IColumnConfig {
   id: number;
-  name: string;        // z.B. "confirmationPending"
-  alias: string;       // z.B. "confirmationPending"
-  tableName?: string;  // Neu: z.B. "Trans"
+  name: string;        
+  alias: string;       
+  tableName?: string; 
   orderNumber?: number;
   hidden?: boolean;
 }
@@ -67,12 +67,11 @@ export class SqlResultsComponent implements OnInit {
 
   /**
    * Parst den JSON-String und befüllt die Arrays:
-   * - this.searchColumns (z.B. ["SID", "confirmationPending"])
-   * - this.resultColumns (z.B. ["SID", "confirmationPending", "createDate"])
+   * - this.searchColumns
+   * - this.resultColumns
    */
   parseJsonConfig(): void {
     try {
-      // Es wird erwartet, dass compactJson so aufgebaut ist: { "jsonString": "..." }
       const outer = JSON.parse(this.compactJson);
       const data = JSON.parse(outer.jsonString);
 
@@ -81,7 +80,7 @@ export class SqlResultsComponent implements OnInit {
         this.configFileName = data.name + '.json';
       }
 
-      // 1) Erzeuge eine Map: columnId -> IColumnConfig
+      // 1) eine Map erzeugen: columnId -> IColumnConfig
       let columnMap: Record<number, IColumnConfig> = {};
       for (const group of data.columnGroups || []) {
         let tableName = "";
@@ -90,7 +89,6 @@ export class SqlResultsComponent implements OnInit {
           const end = group.name.indexOf(" (");
           tableName = group.name.substring(start, end !== -1 ? end : group.name.length);
         }
-        // In parseJsonConfig(), dort wo Du columnMap[col.id] = { ... } aufbaust:
         for (const col of group.columns || []) {
           const fullName = tableName ? `${tableName}.${col.name}` : col.name;
           columnMap[col.id] = {

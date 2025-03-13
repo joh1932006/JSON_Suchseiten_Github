@@ -20,7 +20,7 @@
   "joinGroups": [
     {
       "id": 1,
-      "joinClause": "INNER JOIN ArticlePacking ar ON ar.FK_ArticleChild_SID = ar.SID"
+      "joinClause": "INNER JOIN ArticleLang ar ON ar.FK_Article_SID = ar.SID"
     }
   ],
   "columnGroups": [
@@ -40,7 +40,7 @@
     },
     {
       "id": 2,
-      "name": "Group for ArticlePacking (ar)",
+      "name": "Group for ArticleLang (ar)",
       "columns": [
         {
           "id": 2,
@@ -49,14 +49,6 @@
           "enqPropDataTypeSid": 1,
           "selectClause": "ar.aName",
           "alias": "aName"
-        },
-        {
-          "id": 3,
-          "name": "SID",
-          "multiLinugal": false,
-          "enqPropDataTypeSid": 1,
-          "selectClause": "ar.SID",
-          "alias": "SID"
         }
       ]
     }
@@ -66,6 +58,14 @@
       "id": 1,
       "columnId": [
         1
+      ],
+      "orderNumber": 2,
+      "operatorSid": 15
+    },
+    {
+      "id": 2,
+      "columnId": [
+        2
       ],
       "orderNumber": 1,
       "operatorSid": 15
@@ -82,15 +82,14 @@
       "columnId": 2,
       "hidden": false,
       "identity": false,
-      "orderNumber": 3
-    },
-    {
-      "columnId": 3,
-      "hidden": false,
-      "identity": false,
-      "orderNumber": 4
+      "orderNumber": 2
     }
   ],
-  "orderByColumns": [],
+  "orderByColumns": [
+    {
+      "columnId": 1,
+      "ascending": true
+    }
+  ],
   "groupByColumns": []
 }

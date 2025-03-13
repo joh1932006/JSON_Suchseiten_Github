@@ -754,14 +754,11 @@ this.selectedColumnConfigs.forEach(config => {
     return col.dataType ? col.dataType : 'unbekannt';
   }
   
-  
-  
   public showSqlResults(): void {
     this.saveJsonConfig(true);
   }
-  // ---------------------------
+  
   // Navigation
-  // ---------------------------
   goHome(): void {
     this.router.navigate(['']);
   }

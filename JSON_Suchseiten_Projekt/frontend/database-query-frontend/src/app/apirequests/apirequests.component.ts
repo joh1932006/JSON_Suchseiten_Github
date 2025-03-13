@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { CommonModule } from '@angular/common'; // CommonModule importieren
+import { CommonModule } from '@angular/common'; 
 
 @Component({
   selector: 'app-apirequests',
@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common'; // CommonModule importieren
 export class APIRequestsComponent {
   inputText: string = ''; 
   sqlStatement: string = ''; 
-  errorMessage: string = ''; // Neue Variable für Fehlernachricht
+  errorMessage: string = ''; 
 
   constructor(private http: HttpClient) {}
 
