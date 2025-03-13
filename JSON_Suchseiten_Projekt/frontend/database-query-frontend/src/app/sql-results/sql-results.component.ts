@@ -6,13 +6,14 @@ import { FormsModule } from '@angular/forms';
 
 interface IColumnConfig {
   id: number;
-  name: string;        
-  alias: string;       
-  tableName?: string; 
+  name: string;
+  alias: string;
+  tableName?: string;
   orderNumber?: number;
   hidden?: boolean;
+  decimals?: number;
+  width?: number;  // Diese Eigenschaft aufnehmen
 }
-
 
 @Component({
   selector: 'app-sql-results',
@@ -42,7 +43,6 @@ export class SqlResultsComponent implements OnInit {
   constructor(private router: Router, private http: HttpClient) {}
 
   ngOnInit(): void {
-    // Lese den kompakt formatierten JSON-String und den Dateinamen aus dem Router-State
     const nav = this.router.getCurrentNavigation();
     if (nav?.extras?.state) {
       if (nav.extras.state['compactJson']) {
@@ -52,11 +52,9 @@ export class SqlResultsComponent implements OnInit {
         this.configFileName = nav.extras.state['fileName'];
       }
     } else {
-      // Fallback bei Reloads
       this.compactJson = history.state['compactJson'] || '';
       this.configFileName = history.state['fileName'] || '';
     }
-
     if (this.compactJson) {
       this.parseJsonConfig();
       this.sendJsonToApi();
@@ -74,13 +72,10 @@ export class SqlResultsComponent implements OnInit {
     try {
       const outer = JSON.parse(this.compactJson);
       const data = JSON.parse(outer.jsonString);
-
-      // Falls kein Dateiname (configFileName) gesetzt wurde, verwende data.name als Basis
       if (!this.configFileName && data.name) {
         this.configFileName = data.name + '.json';
       }
-
-      // 1) eine Map erzeugen: columnId -> IColumnConfig
+      // Erzeuge eine Map: columnId -> IColumnConfig, inkl. width
       let columnMap: Record<number, IColumnConfig> = {};
       for (const group of data.columnGroups || []) {
         let tableName = "";
@@ -93,37 +88,34 @@ export class SqlResultsComponent implements OnInit {
           const fullName = tableName ? `${tableName}.${col.name}` : col.name;
           columnMap[col.id] = {
             id: col.id,
-            // name wird jetzt direkt mit dem Tabellennamen verknüpft
             name: fullName,
             alias: col.alias,
-            tableName: tableName
+            tableName: tableName,
+            decimals: col.decimals,
+            width: col.width   // Hier wird die Breite übernommen
           };
         }
       }
-
-
-      // 2) Erzeuge das Array der Suchspalten (searchColumns) in der richtigen Reihenfolge
+      
+      // Suchspalten
       this.searchColumns = [];
       const sortedSearchCols = (data.searchColumns || []).sort(
         (a: any, b: any) => a.orderNumber - b.orderNumber
       );
       for (const sCol of sortedSearchCols) {
-        // Hier wird nur der erste Eintrag in columnId berücksichtigt
         const colId = sCol.columnId?.[0];
         if (colId && columnMap[colId]) {
           const colCfg = columnMap[colId];
           this.searchColumns.push({
             id: colCfg.id,
             alias: colCfg.alias,
-            // label wird nun der fertige Name, also z.B. "ArticlePacking.aName"
             label: colCfg.name,
             value: ''
-          });          
+          });
         }
       }
-
-
-      // 3) Erzeuge das Array der Ergebnis-Spalten (resultColumns) in der richtigen Reihenfolge
+      
+      // Ergebnis-Spalten
       this.resultColumns = [];
       const sortedResultCols = (data.resultColumns || []).sort(
         (a: any, b: any) => a.orderNumber - b.orderNumber
@@ -132,16 +124,15 @@ export class SqlResultsComponent implements OnInit {
         const colId = rCol.columnId;
         if (colId && columnMap[colId]) {
           const colCfg = columnMap[colId];
-          // Falls rCol.hidden == true, kann man die Spalte auch auslassen
           if (!rCol.hidden) {
             this.resultColumns.push({
               id: colCfg.id,
               alias: colCfg.alias,
-              // auch hier ist colCfg.name = "ArticlePacking.aName"
               name: colCfg.name,
-              orderNumber: rCol.orderNumber
+              orderNumber: rCol.orderNumber,
+              decimals: colCfg.decimals,
+              width: colCfg.width   // Hier ebenfalls
             });
-            
           }
         }
       }
@@ -151,10 +142,6 @@ export class SqlResultsComponent implements OnInit {
     }
   }
 
-  /**
-   * Sendet den kompakt formatierten JSON-String an den Endpoint "convert-json-to-sql"
-   * und leitet anschließend die SQL-Ausführung ein.
-   */
   sendJsonToApi(): void {
     const payload = { jsonString: this.compactJson };
     this.http.post<any>('http://localhost:3000/convert-json-to-sql', payload)
@@ -171,7 +158,6 @@ export class SqlResultsComponent implements OnInit {
             this.errorMessage = 'Kein SQL-Statement in der Antwort enthalten.';
             return;
           }
-          // Führe die SQL-Abfrage aus
           this.executeSqlQuery();
         },
         error: (err) => {
@@ -204,28 +190,19 @@ export class SqlResultsComponent implements OnInit {
       });
   }
 
-  /**
-   * Navigiert zurück zum JSON-Konfiguration Editor und öffnet genau die Konfiguration,
-   * von der die SQL-Ergebnisse stammen.
-   */
   goBack(): void {
-    // Falls kein Dateiname vorhanden ist, wird 'new' als Default verwendet
     const targetFile = this.configFileName || 'new';
     this.router.navigate(['config', targetFile]);
   }
-
   
-  
-  // Clientseitiges Filtern der SQL-Ergebnisse anhand der searchColumns[].value.
   get filteredResults(): any[] {
     if (!this.sqlResults || this.sqlResults.length === 0) {
       return [];
     }
-    // Jede Suchspalte muss den eingegebenen Wert enthalten
     return this.sqlResults.filter((row) => {
       return this.searchColumns.every((sc) => {
         if (!sc.value) {
-          return true; // Kein Filter, wenn nichts eingegeben wurde
+          return true;
         }
         const cellValue = String(row[sc.alias] ?? '');
         return cellValue.includes(sc.value);
@@ -234,6 +211,6 @@ export class SqlResultsComponent implements OnInit {
   }
   
   onSearchChange(): void {
-    // Bei Bedarf kann hier serverseitiges Filtern implementiert werden.
+    // Optional: serverseitiges Filtern
   }
 }

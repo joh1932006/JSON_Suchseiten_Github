@@ -1,19 +1,19 @@
 {
   "configName": "Joh1",
   "selectedDatabase": "Fab4Minds",
-  "selectedBaseTable": "ActivityFlowPos",
+  "selectedBaseTable": "Article",
   "joinRows": [
     {
-      "table": "Enquiry",
+      "table": "ArticlePacking",
       "joinType": "INNER JOIN",
-      "condition": "INNER JOIN Enquiry en ON en.FK_ActivityFlowPos_SID = ac.SID",
-      "alias": "en"
+      "condition": "INNER JOIN ArticlePacking ar ON ar.FK_ArticleChild_SID = ar.SID",
+      "alias": "ar"
     }
   ],
   "selectedColumnConfigs": [
     {
-      "fullColumn": "ActivityFlowPos.ac.SID",
-      "search": true,
+      "fullColumn": "Article.ar.SID",
+      "search": false,
       "groupBy": false,
       "orderBy": "none",
       "identifier": true,
@@ -21,10 +21,10 @@
       "operatorSid": 15,
       "resultOrderNumber": 1,
       "dataType": "int",
-      "searchOrderNumber": 1
+      "width": 1400
     },
     {
-      "fullColumn": "ActivityFlowPos.ac.active",
+      "fullColumn": "ArticlePacking.ar.aName",
       "search": false,
       "groupBy": false,
       "orderBy": "none",
@@ -32,32 +32,11 @@
       "versteckt": false,
       "operatorSid": 15,
       "resultOrderNumber": 2,
-      "dataType": "bit"
-    },
-    {
-      "fullColumn": "ActivityFlowPos.ac.aName",
-      "search": false,
-      "groupBy": false,
-      "orderBy": "none",
-      "identifier": false,
-      "versteckt": false,
-      "operatorSid": 15,
-      "resultOrderNumber": 3,
-      "dataType": "nvarchar"
-    },
-    {
-      "fullColumn": "Enquiry.en.aDescription",
-      "search": false,
-      "groupBy": false,
-      "orderBy": "none",
-      "identifier": false,
-      "versteckt": false,
-      "operatorSid": 15,
-      "resultOrderNumber": 4,
-      "dataType": "nvarchar"
+      "dataType": "nvarchar",
+      "width": 100
     }
   ],
-  "baseAlias": "ac",
+  "baseAlias": "ar",
   "userWhereClause": "",
   "dbConfig": {
     "user": "f4mbsappl",

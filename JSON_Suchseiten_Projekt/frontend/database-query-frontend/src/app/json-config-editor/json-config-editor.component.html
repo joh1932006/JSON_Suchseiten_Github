@@ -335,7 +335,7 @@
     <table class="columns-config-table">
       <thead>
         <tr>
-          <th>Select-Clause</th>
+          <th>SelectClause</th>
           <th>Alias</th>
           <th>Tabellenname</th>
           <th>Spaltenname</th>
@@ -343,14 +343,14 @@
           <th>Suchfeld</th>
           <th>Search OrderNumber</th>
           <th>OperatorSID</th>
-          <th>GroupBy</th>
+        <!--<th>GroupBy</th>-->
           <th>OrderBy</th>
           <th>Identifier</th>
           <th>Versteckt</th>
           <th>Result OrderNumber</th>
-          <th>Nachkomma-stellen</th>
+          <th>Nachkommastellen</th>
           <th>Breite</th>
-          <th>Bedingung</th>
+          <!--<th>Bedingung</th>-->
         </tr>
       </thead>      
       <tbody>
@@ -386,10 +386,10 @@
               <option *ngFor="let op of operators" [value]="op.sid">{{ op.aName }}</option>
             </select>              
           </td>
-          <!-- GroupBy -->
+          <!-- GroupBy 
           <td>
             <input type="checkbox" [(ngModel)]="col.groupBy" />
-          </td>
+          </td> -->
           <!-- OrderBy -->
           <td
             (click)="cycleOrderBy(col)"
@@ -426,16 +426,26 @@
           </td>
           <!-- Nachkommastellen -->
           <td>
-            <input type="number" style="width: 60px;" />
+            <ng-container *ngIf="isDecimalType(col.dataType)">
+              <input type="number" style="width: 60px;" [(ngModel)]="col.decimals" />
+            </ng-container>
           </td>
+
           <!-- Breite -->
           <td>
-            <input type="number" style="width: 60px;" />
+            <input 
+              type="number" 
+              style="width: 60px;" 
+              [(ngModel)]="col.width" 
+              (ngModelChange)="onWidthChange(col)" 
+              placeholder="px"
+            />
           </td>
-          <!-- Bedingung -->
+
+          <!-- Bedingung 
           <td>
             <input type="text" style="width: 100px;" />
-          </td>
+          </td>-->
         </tr>
       </tbody>
     </table>

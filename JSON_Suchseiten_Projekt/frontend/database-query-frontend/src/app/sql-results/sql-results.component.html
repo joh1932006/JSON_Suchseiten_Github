@@ -1,20 +1,16 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-
 <div class="home-button-container">
   <button class="home-btn" (click)="goHome()">
     <i class="fa fa-home"></i>
   </button>
 </div>
 
-
-
 <div class="sql-results">
-  <!-- Zeile oben mit Suchfeldern links + Pagination rechts -->
+  <!-- Zeile oben mit Suchfeldern und Pagination -->
   <div class="top-row">
     <div class="search-container">
-      <!-- Dynamisch für jede Suchspalte -->
       <div class="search-field" *ngFor="let sc of searchColumns">
         <label [for]="sc.alias">{{ sc.label }}</label>
         <input
@@ -38,31 +34,40 @@
 
   <!-- Tabelle mit Ergebnissen -->
   <div *ngIf="filteredResults && filteredResults.length > 0; else noResults">
-    <table class="results-table">
+    <table class="results-table" style="table-layout: fixed; width: 100%;">
       <thead>
         <tr>
-          <!-- Kopfzeilen -->
-          <th *ngFor="let col of resultColumns">
+          <!-- Kopfzeilen: Spaltenbreite anwenden -->
+          <th 
+            *ngFor="let col of resultColumns"
+            [style.width.px]="col.width"
+            style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+          >
             {{ col.name }}
           </th>
         </tr>
       </thead>
       <tbody>
-        <!-- Zeilen dynamisch -->
         <tr *ngFor="let row of filteredResults">
-          <!-- Zellen dynamisch -->
-          <td *ngFor="let col of resultColumns">
-            {{ row[col.alias] }}
+          <td
+            *ngFor="let col of resultColumns"
+            [style.width.px]="col.width"
+            style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+          >
+            <span *ngIf="col.decimals != null">
+              {{ (row[col.alias] * 1) | number: ('1.' + col.decimals + '-' + col.decimals) }}
+            </span>
+            <span *ngIf="col.decimals == null">
+              {{ row[col.alias] }}
+            </span>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-  
   <ng-template #noResults>
     <p>Keine Ergebnisse vorhanden.</p>
   </ng-template>
   
-  <!-- Zurück-Button unten -->
   <button (click)="goBack()" class="btn">Zurück</button>
 </div>

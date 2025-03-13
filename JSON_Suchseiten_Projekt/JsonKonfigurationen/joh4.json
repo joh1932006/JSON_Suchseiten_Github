@@ -1,0 +1,129 @@
+{
+  "name": "joh4",
+  "itemsPerPage": 100,
+  "tableWidth": 1200,
+  "preventSearchWithoutRestriction": false,
+  "showInStartMenu": false,
+  "selectSingleEntity": true,
+  "searchOnType": true,
+  "hideHeadersOnNoRestriction": false,
+  "automaticRun": true,
+  "implementationId": 1,
+  "querySid": null,
+  "filterXDJoinGroupId": null,
+  "filterChooseRoleSid": null,
+  "filterRoleSid": null,
+  "roleSid": null,
+  "interfaceSid": null,
+  "table": "Article ar",
+  "whereClause": "",
+  "joinGroups": [
+    {
+      "id": 1,
+      "joinClause": "INNER JOIN ArticlePacking ar ON ar.FK_ArticleChild_SID = ar.SID"
+    }
+  ],
+  "columnGroups": [
+    {
+      "id": 1,
+      "name": "Group for Article (ar)",
+      "columns": [
+        {
+          "id": 1,
+          "name": "SID",
+          "alias": "SID",
+          "selectClause": "ar.SID",
+          "width": 0
+        },
+        {
+          "id": 2,
+          "name": "amount",
+          "alias": "amount",
+          "selectClause": "ar.amount",
+          "width": 0
+        },
+        {
+          "id": 3,
+          "name": "AmountSinglePieces",
+          "alias": "AmountSinglePieces",
+          "selectClause": "ar.AmountSinglePieces",
+          "width": 0
+        },
+        {
+          "id": 4,
+          "name": "aNameOnCoPosChAllow",
+          "alias": "aNameOnCoPosChAllow",
+          "selectClause": "ar.aNameOnCoPosChAllow",
+          "width": 0
+        },
+        {
+          "id": 5,
+          "name": "ArticleAltDesc",
+          "alias": "ArticleAltDesc",
+          "selectClause": "ar.ArticleAltDesc",
+          "width": 0
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Group for ArticlePacking (ar)",
+      "columns": [
+        {
+          "id": 6,
+          "name": "aName",
+          "alias": "aName",
+          "selectClause": "ar.aName",
+          "width": 0
+        }
+      ]
+    }
+  ],
+  "searchColumns": [],
+  "resultColumns": [
+    {
+      "columnId": 1,
+      "hidden": false,
+      "identity": true,
+      "orderNumber": 1,
+      "width": 0
+    },
+    {
+      "columnId": 6,
+      "hidden": false,
+      "identity": false,
+      "orderNumber": 3,
+      "width": 0
+    },
+    {
+      "columnId": 2,
+      "hidden": false,
+      "identity": false,
+      "orderNumber": 3,
+      "width": 0
+    },
+    {
+      "columnId": 3,
+      "hidden": false,
+      "identity": false,
+      "orderNumber": 4,
+      "width": 0
+    },
+    {
+      "columnId": 4,
+      "hidden": false,
+      "identity": false,
+      "orderNumber": 5,
+      "width": 0
+    },
+    {
+      "columnId": 5,
+      "hidden": false,
+      "identity": false,
+      "orderNumber": 6,
+      "width": 0
+    }
+  ],
+  "orderByColumns": [],
+  "groupByColumns": []
+}

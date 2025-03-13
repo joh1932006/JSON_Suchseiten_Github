@@ -16,8 +16,12 @@ interface ColumnConfig {
   resultOrderNumber?: number;
   searchOrderNumber?: number;
   operatorSid?: number;
-  dataType?: string; // Neuer Eintrag für den echten Datentyp
+  dataType?: string; 
+  decimals?: number; 
+  width?: number;      
 }
+
+
 
 
 // Interface für eine Join-Zeile
@@ -513,8 +517,10 @@ export class JsonConfigEditorComponent implements OnInit {
           identifier: this.selectedColumnConfigs.length === 0,
           versteckt: false,
           operatorSid: 15,
-          resultOrderNumber: this.autoResultOrderIndex++
+          resultOrderNumber: this.autoResultOrderIndex++,
+          decimals: undefined
         };
+        
   
         // API-Aufruf, um den Datentyp zu ermitteln
         this.http.get<{ dataType: string }>(`http://localhost:3000/api/get-column-type?table=${tableName}&column=${column}`)
@@ -597,11 +603,12 @@ export class JsonConfigEditorComponent implements OnInit {
         const columnObj: any = {
           id: globalColumnId,
           name: colName,
-          multiLinugal: false,
-          enqPropDataTypeSid: 1,
+          alias: colName,
           selectClause: `${tableAlias}.${colName}`,
-          alias: colName
-        };
+          decimals: config.decimals,
+          width: config.width || 0  
+        };        
+              
         if (tableAlias !== this.baseAlias) {
           const joinIndex = this.joinRows.findIndex(row => row.alias === tableAlias);
           if (joinIndex !== -1) {
@@ -648,11 +655,14 @@ this.selectedColumnConfigs.forEach(config => {
         columnId: colId,
         hidden: config.versteckt || false,
         identity: config.identifier || false,
-        orderNumber: (typeof config.resultOrderNumber === 'number')
-          ? config.resultOrderNumber
-          : colId
+        orderNumber: (typeof config.resultOrderNumber === 'number') ? config.resultOrderNumber : colId,
+        decimals: config.decimals,
+        width: config.width || 0  // Hier übernehmen
       };
     });
+    
+    
+    
   
     // OrderBy- und GroupBy-Spalten
     let orderByColumns: any[] = [];
@@ -757,6 +767,40 @@ this.selectedColumnConfigs.forEach(config => {
   public showSqlResults(): void {
     this.saveJsonConfig(true);
   }
+
+  isDecimalType(dataType: string | undefined): boolean {
+    if (!dataType) return false;
+    const dt = dataType.toLowerCase();
+    // Liste nach Bedarf anpassen (decimal, numeric, float, real, double precision, money, etc.)
+    return dt.includes('decimal')
+        || dt.includes('numeric')
+        || dt.includes('float')
+        || dt.includes('real');
+  }
+  onWidthChange(changedCol: ColumnConfig): void {
+    // Falls kein Wert eingetragen wurde, interpretiere es als 0
+    if (!changedCol.width) {
+      changedCol.width = 0;
+    }
+  
+    // Summiere die Breiten aller anderen Spalten
+    const sumOfOthers = this.selectedColumnConfigs
+      .filter(c => c !== changedCol)
+      .reduce((acc, c) => acc + (c.width || 0), 0);
+  
+    // Prüfe, ob wir das Limit von 1500 überschreiten
+    const newTotal = sumOfOthers + changedCol.width;
+    if (newTotal > 1500) {
+      // Maximal mögliche Breite für diese Spalte
+      const maxPossible = 1400 - sumOfOthers;
+      changedCol.width = Math.max(0, maxPossible);
+  
+      // Ggf. Meldung an den User
+      alert(`Die Gesamtbreite darf 1400px nicht überschreiten. 
+  Spalte wird auf ${changedCol.width}px reduziert.`);
+    }
+  }
+  
   
   // Navigation
   goHome(): void {
