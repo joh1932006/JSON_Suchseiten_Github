@@ -415,20 +415,44 @@ tbody tr:hover td {
 /* COLUMNS-CONFIG TABLE                   */
 /* -------------------------------------- */
 .columns-config-table {
-  width: 100%;
+  width: 100%;              /* Kann bleiben, damit die Tabelle den Container ausfüllt */
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: fixed;       /* Statt fixed jetzt auto */
   font-size: 12px;
   margin-top: 20px;
 }
+
 
 .columns-config-table th,
 .columns-config-table td {
   padding: 8px;
   border: 1px solid #39475D;
   text-align: left;
-  word-wrap: break-word;
+  word-wrap: break-word; 
 }
+/* Nur für Spalten 9 bis 14 */
+.columns-config-table th:nth-child(7),
+.columns-config-table td:nth-child(7),
+.columns-config-table th:nth-child(9),
+.columns-config-table td:nth-child(9),
+.columns-config-table th:nth-child(10),
+.columns-config-table td:nth-child(10),
+.columns-config-table th:nth-child(11),
+.columns-config-table td:nth-child(11),
+.columns-config-table th:nth-child(12),
+.columns-config-table td:nth-child(12),
+.columns-config-table th:nth-child(13),
+.columns-config-table td:nth-child(13),
+.columns-config-table th:nth-child(14),
+.columns-config-table td:nth-child(14) {
+  white-space: nowrap;    /* Alles in einer Zeile */
+  min-width: 70px;        /* z.B. 70px, kannst du anpassen */
+  text-align: center;     /* oder left, wie du magst */
+  /* optional etwas padding, falls du es nicht zu eng magst: */
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 
 .columns-config-table th {
   background-color: #2F3848;

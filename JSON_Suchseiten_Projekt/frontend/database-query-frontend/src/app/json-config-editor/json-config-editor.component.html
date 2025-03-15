@@ -335,24 +335,24 @@
     <table class="columns-config-table">
       <thead>
         <tr>
-          <th>SelectClause</th>
-          <th>Alias</th>
-          <th>Tabellenname</th>
-          <th>Spaltenname</th>
-          <th>Datentyp</th>
-          <th>Suchfeld</th>
-          <th>Search OrderNumber</th>
-          <th>OperatorSID</th>
+          <th style="text-align: center;">SelectClause</th>
+          <th style="text-align: center;">Alias</th>
+          <th style="text-align: center;">Tabellenname</th>
+          <th style="text-align: center;">Spaltenname</th>
+          <th style="text-align: center;">Datentyp</th>
+          <th style="text-align: center;">Suchfeld</th>
+          <th style="text-align: center;">Search<p></p> OrderNumber</th>
+          <th style="text-align: center;">OperatorSID</th>
         <!--<th>GroupBy</th>-->
           <th>OrderBy</th>
           <th>Identifier</th>
           <th>Versteckt</th>
-          <th>Result OrderNumber</th>
-          <th>Nachkommastellen</th>
+          <th>Result<p></p>OrderNumber</th>
+          <th>Nachkomma-<p></p>stellen</th>
           <th>Breite</th>
           <!--<th>Bedingung</th>-->
         </tr>
-      </thead>      
+      </thead>
       <tbody>
         <tr *ngFor="let col of selectedColumnConfigs">
           <!-- Select-Clause -->
@@ -438,7 +438,7 @@
           <td>
             <input 
               type="number" 
-              style="width: 60px;" 
+              style="width: 75px;" 
               [(ngModel)]="col.width" 
               (ngModelChange)="onWidthChange(col)" 
               placeholder="px"
