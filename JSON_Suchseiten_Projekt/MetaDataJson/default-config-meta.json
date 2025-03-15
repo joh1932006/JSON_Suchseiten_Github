@@ -1,0 +1,52 @@
+{
+  "configName": "default-config",
+  "selectedDatabase": "Fab4Minds",
+  "selectedBaseTable": "Action",
+  "joinRows": [
+    {
+      "table": "aUser",
+      "joinType": "INNER JOIN",
+      "condition": "INNER JOIN aUser au ON au.SID = act.FK_User_SID",
+      "alias": "au"
+    }
+  ],
+  "selectedColumnConfigs": [
+    {
+      "fullColumn": "Action.act.SID",
+      "search": true,
+      "groupBy": false,
+      "orderBy": "none",
+      "identifier": true,
+      "versteckt": false,
+      "operatorSid": 15,
+      "resultOrderNumber": 1,
+      "dataType": "int",
+      "searchOrderNumber": 1
+    },
+    {
+      "fullColumn": "Action.act.aDescription",
+      "search": true,
+      "groupBy": false,
+      "orderBy": "none",
+      "identifier": false,
+      "versteckt": false,
+      "operatorSid": 15,
+      "resultOrderNumber": 1,
+      "dataType": "nvarchar",
+      "searchOrderNumber": 1
+    }
+  ],
+  "baseAlias": "act",
+  "userWhereClause": "",
+  "dbConfig": {
+    "user": "f4mbsappl",
+    "password": "bTemrHU6Tn3pnkPRBuKc",
+    "server": "192.168.44.137",
+    "database": "f4mbs",
+    "port": 1433,
+    "options": {
+      "encrypt": false,
+      "trustServerCertificate": true
+    }
+  }
+}

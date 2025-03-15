@@ -1,0 +1,48 @@
+{
+  "configName": "test",
+  "selectedDatabase": "Fab4Minds",
+  "selectedBaseTable": "Action",
+  "joinRows": [],
+  "selectedColumnConfigs": [
+    {
+      "fullColumn": "Action.act.SID",
+      "search": true,
+      "groupBy": false,
+      "orderBy": "none",
+      "identifier": true,
+      "versteckt": false,
+      "operatorSid": 15,
+      "resultOrderNumber": 2,
+      "dataType": "int",
+      "searchOrderNumber": 1,
+      "prevResultOrderNumber": 2
+    },
+    {
+      "fullColumn": "Action.act.aDescription",
+      "search": true,
+      "groupBy": false,
+      "orderBy": "none",
+      "identifier": false,
+      "versteckt": false,
+      "operatorSid": 15,
+      "resultOrderNumber": 1,
+      "dataType": "nvarchar",
+      "searchOrderNumber": 2,
+      "prevSearchOrderNumber": 2,
+      "prevResultOrderNumber": 1
+    }
+  ],
+  "baseAlias": "act",
+  "userWhereClause": "",
+  "dbConfig": {
+    "user": "f4mbsappl",
+    "password": "bTemrHU6Tn3pnkPRBuKc",
+    "server": "192.168.44.137",
+    "database": "f4mbs",
+    "port": 1433,
+    "options": {
+      "encrypt": false,
+      "trustServerCertificate": true
+    }
+  }
+}

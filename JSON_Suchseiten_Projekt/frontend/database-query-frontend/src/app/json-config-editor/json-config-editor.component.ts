@@ -19,6 +19,8 @@ interface ColumnConfig {
   dataType?: string; 
   decimals?: number; 
   width?: number;      
+  prevResultOrderNumber?: number;
+  prevSearchOrderNumber?: number;
 }
 
 
@@ -426,20 +428,58 @@ export class JsonConfigEditorComponent implements OnInit {
     }
     return table.substring(0, 2).toLowerCase();
   }
-  public onOrderNumberChange(event: any, changedCol: ColumnConfig): void {
-    const oldNumber = changedCol.resultOrderNumber;
-    const newNumber = parseInt(event.target.value, 10);
-    if (!newNumber || newNumber < 1) {
-      event.target.value = oldNumber;
+  public onResultOrderNumberChange(newValue: number, changedCol: ColumnConfig): void {
+    newValue = Number(newValue);
+    if (!newValue || newValue < 1) {
       return;
     }
-    const conflictingCol = this.selectedColumnConfigs.find(c => c !== changedCol && c.resultOrderNumber === newNumber);
+    // Suche eine Spalte, die bereits den neuen Wert hat
+    const conflictingCol = this.selectedColumnConfigs.find(c =>
+      c !== changedCol && c.resultOrderNumber === newValue
+    );
     if (conflictingCol) {
-      conflictingCol.resultOrderNumber = oldNumber;
+      // Verwende den zuvor gespeicherten Wert
+      const oldValue = changedCol.prevResultOrderNumber ?? changedCol.resultOrderNumber;
+      changedCol.resultOrderNumber = newValue;
+      conflictingCol.resultOrderNumber = oldValue;
     } else {
-      changedCol.resultOrderNumber = newNumber;
+      changedCol.resultOrderNumber = newValue;
     }
+    // Aktualisiere den gespeicherten Wert
+    changedCol.prevResultOrderNumber = changedCol.resultOrderNumber;
+    // Erzwinge die Aktualisierung der Ansicht
+    this.selectedColumnConfigs = [...this.selectedColumnConfigs];
   }
+  
+  public onSearchOrderNumberChange(newValue: number, changedCol: ColumnConfig): void {
+    newValue = Number(newValue);
+    if (!newValue || newValue < 1) {
+      return;
+    }
+    const conflictingCol = this.selectedColumnConfigs.find(c =>
+      c !== changedCol && c.searchOrderNumber === newValue
+    );
+    if (conflictingCol) {
+      const oldValue = changedCol.prevSearchOrderNumber ?? changedCol.searchOrderNumber;
+      changedCol.searchOrderNumber = newValue;
+      conflictingCol.searchOrderNumber = oldValue;
+    } else {
+      changedCol.searchOrderNumber = newValue;
+    }
+    changedCol.prevSearchOrderNumber = changedCol.searchOrderNumber;
+    this.selectedColumnConfigs = [...this.selectedColumnConfigs];
+  }
+  
+  
+  storePrevResultOrderNumber(col: ColumnConfig): void {
+    col.prevResultOrderNumber = col.resultOrderNumber;
+  }
+  
+  storePrevSearchOrderNumber(col: ColumnConfig): void {
+    col.prevSearchOrderNumber = col.searchOrderNumber;
+  }
+  
+  
   updateAliases(): void {
     // Alias für die Ausgangstabelle setzen
     if (this.selectedBaseTable) {

@@ -1,0 +1,79 @@
+{
+  "name": "test",
+  "itemsPerPage": 100,
+  "tableWidth": 1200,
+  "preventSearchWithoutRestriction": false,
+  "showInStartMenu": false,
+  "selectSingleEntity": true,
+  "searchOnType": true,
+  "hideHeadersOnNoRestriction": false,
+  "automaticRun": true,
+  "implementationId": 1,
+  "querySid": null,
+  "filterXDJoinGroupId": null,
+  "filterChooseRoleSid": null,
+  "filterRoleSid": null,
+  "roleSid": null,
+  "interfaceSid": null,
+  "table": "Action act",
+  "whereClause": "",
+  "joinGroups": [],
+  "columnGroups": [
+    {
+      "id": 1,
+      "name": "Group for Action (act)",
+      "columns": [
+        {
+          "id": 1,
+          "name": "SID",
+          "alias": "SID",
+          "selectClause": "act.SID",
+          "width": 0
+        },
+        {
+          "id": 2,
+          "name": "aDescription",
+          "alias": "aDescription",
+          "selectClause": "act.aDescription",
+          "width": 0
+        }
+      ]
+    }
+  ],
+  "searchColumns": [
+    {
+      "id": 1,
+      "columnId": [
+        1
+      ],
+      "orderNumber": 1,
+      "operatorSid": 15
+    },
+    {
+      "id": 2,
+      "columnId": [
+        2
+      ],
+      "orderNumber": 2,
+      "operatorSid": 15
+    }
+  ],
+  "resultColumns": [
+    {
+      "columnId": 1,
+      "hidden": false,
+      "identity": true,
+      "orderNumber": 2,
+      "width": 0
+    },
+    {
+      "columnId": 2,
+      "hidden": false,
+      "identity": false,
+      "orderNumber": 1,
+      "width": 0
+    }
+  ],
+  "orderByColumns": [],
+  "groupByColumns": []
+}

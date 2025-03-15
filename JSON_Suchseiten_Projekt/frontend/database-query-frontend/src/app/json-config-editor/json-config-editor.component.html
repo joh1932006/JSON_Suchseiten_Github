@@ -377,6 +377,8 @@
               type="number"
               style="width: 60px;"
               [(ngModel)]="col.searchOrderNumber"
+              (focus)="storePrevSearchOrderNumber(col)"
+              (ngModelChange)="onSearchOrderNumberChange($event, col)"
               placeholder="1"
             />
           </td>
@@ -421,7 +423,8 @@
               style="width: 60px;"
               [(ngModel)]="col.resultOrderNumber"
               placeholder="1"
-              (change)="onOrderNumberChange($event, col)"
+              (focus)="storePrevResultOrderNumber(col)"
+              (ngModelChange)="onResultOrderNumberChange($event, col)"
             />
           </td>
           <!-- Nachkommastellen -->
