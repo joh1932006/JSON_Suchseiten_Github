@@ -196,7 +196,7 @@
     <select
       id="joinType-{{ i }}"
       [(ngModel)]="row.joinType"
-      (change)="generateJoinCondition(i)"
+      (ngModelChange)="onJoinTypeChange(i, $event)"
     >
       <option value="INNER JOIN">INNER JOIN</option>
       <option value="LEFT OUTER JOIN">LEFT OUTER JOIN</option>
@@ -205,6 +205,7 @@
       <option value="CROSS JOIN">CROSS JOIN</option>
     </select>
   </div>
+  
 
   <!-- Tabelle -->
   <div>
@@ -462,6 +463,8 @@
     Ergebnisse anzeigen
   </button>
 </div>
+
+<app-apirequests></app-apirequests>
 
 <div *ngIf="saveMessage" class="save-message">
   {{ saveMessage }}

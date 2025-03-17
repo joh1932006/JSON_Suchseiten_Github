@@ -1,42 +1,84 @@
 {
   "configName": "default-config",
   "selectedDatabase": "Fab4Minds",
-  "selectedBaseTable": "Action",
+  "selectedBaseTable": "Article",
   "joinRows": [
     {
-      "table": "aUser",
-      "joinType": "INNER JOIN",
-      "condition": "INNER JOIN aUser au ON au.SID = act.FK_User_SID",
-      "alias": "au"
+      "table": "ArticlePacking",
+      "joinType": "LEFT OUTER JOIN",
+      "condition": "LEFT OUTER JOIN ArticlePacking ar2 ON ar2.FK_ArticleChild_SID = ar.SID",
+      "alias": "ar2"
     }
   ],
   "selectedColumnConfigs": [
     {
-      "fullColumn": "Action.act.SID",
-      "search": true,
+      "fullColumn": "Article.ar.SID",
+      "search": false,
       "groupBy": false,
       "orderBy": "none",
       "identifier": true,
       "versteckt": false,
       "operatorSid": 15,
       "resultOrderNumber": 1,
-      "dataType": "int",
-      "searchOrderNumber": 1
+      "dataType": "int"
     },
     {
-      "fullColumn": "Action.act.aDescription",
-      "search": true,
+      "fullColumn": "ArticlePacking.ar2.SID",
+      "search": false,
       "groupBy": false,
       "orderBy": "none",
       "identifier": false,
       "versteckt": false,
       "operatorSid": 15,
-      "resultOrderNumber": 1,
-      "dataType": "nvarchar",
-      "searchOrderNumber": 1
+      "resultOrderNumber": 2,
+      "dataType": "int"
+    },
+    {
+      "fullColumn": "ArticlePacking.ar2.aName",
+      "search": false,
+      "groupBy": false,
+      "orderBy": "none",
+      "identifier": false,
+      "versteckt": false,
+      "operatorSid": 15,
+      "resultOrderNumber": 3,
+      "dataType": "nvarchar"
+    },
+    {
+      "fullColumn": "ArticlePacking.ar2.aDescription",
+      "search": false,
+      "groupBy": false,
+      "orderBy": "none",
+      "identifier": false,
+      "versteckt": false,
+      "operatorSid": 15,
+      "resultOrderNumber": 4,
+      "dataType": "nvarchar"
+    },
+    {
+      "fullColumn": "Article.ar.addRemark1",
+      "search": false,
+      "groupBy": false,
+      "orderBy": "none",
+      "identifier": false,
+      "versteckt": false,
+      "operatorSid": 15,
+      "resultOrderNumber": 5,
+      "dataType": "nvarchar"
+    },
+    {
+      "fullColumn": "Article.ar.aDescription2",
+      "search": false,
+      "groupBy": false,
+      "orderBy": "none",
+      "identifier": false,
+      "versteckt": false,
+      "operatorSid": 15,
+      "resultOrderNumber": 6,
+      "dataType": "nvarchar"
     }
   ],
-  "baseAlias": "act",
+  "baseAlias": "ar",
   "userWhereClause": "",
   "dbConfig": {
     "user": "f4mbsappl",

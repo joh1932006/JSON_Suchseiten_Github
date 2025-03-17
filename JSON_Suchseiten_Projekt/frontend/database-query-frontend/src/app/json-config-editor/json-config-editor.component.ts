@@ -175,12 +175,15 @@ export class JsonConfigEditorComponent implements OnInit {
           if (this.selectedBaseTable) {
             this.fetchJoinableTables(this.selectedBaseTable);
           }
+          // Nach dem Laden der Meta-Daten werden die Join-Bedingungen regeneriert:
+          this.regenerateAllJoinConditions();
         },
         error: (err) => {
           console.error('Fehler beim Laden der Meta-Daten:', err);
         }
       });
   }
+  
 
   // ---------------------------
   // DB-Management
@@ -417,6 +420,7 @@ export class JsonConfigEditorComponent implements OnInit {
       });
   }
   getAbbreviationForTable(table: string): string {
+    // Du kannst hier gern eine Mapping-Liste pflegen:
     const mapping: { [key: string]: string } = {
       trans: 't',
       crmadress: 'ca',
@@ -426,8 +430,10 @@ export class JsonConfigEditorComponent implements OnInit {
     if (mapping[lowerTable]) {
       return mapping[lowerTable];
     }
+    // Standard: nimm die ersten 2 Buchstaben
     return table.substring(0, 2).toLowerCase();
   }
+  
   public onResultOrderNumberChange(newValue: number, changedCol: ColumnConfig): void {
     newValue = Number(newValue);
     if (!newValue || newValue < 1) {
@@ -481,24 +487,42 @@ export class JsonConfigEditorComponent implements OnInit {
   
   
   updateAliases(): void {
-    // Alias für die Ausgangstabelle setzen
+    // Dictionary, um zu zählen, wie oft eine bestimmte Abkürzung schon verwendet wurde
+    const aliasOccurrences: { [abbr: string]: number } = {};
+  
+    // Hilfsfunktion, um die nächste verfügbare Abkürzung zu holen
+    const getNextAvailableAlias = (baseAbbr: string): string => {
+      if (!aliasOccurrences[baseAbbr]) {
+        // Erster Treffer dieser Abkürzung
+        aliasOccurrences[baseAbbr] = 1;
+        return baseAbbr; // z.B. "ar"
+      } else {
+        // Abkürzung schon vergeben → hochzählen
+        aliasOccurrences[baseAbbr]++;
+        // z.B. "ar2", "ar3" usw.
+        return baseAbbr + aliasOccurrences[baseAbbr];
+      }
+    };
+  
+    // 1) Alias für die Basistabelle
     if (this.selectedBaseTable) {
-      this.baseAlias = this.getAbbreviationForTable(this.selectedBaseTable);
+      const baseAbbr = this.getAbbreviationForTable(this.selectedBaseTable);
+      this.baseAlias = getNextAvailableAlias(baseAbbr);
     } else {
       this.baseAlias = '';
     }
-    // Alias für die Join-Zeilen aktualisieren
-    const tableCount: { [table: string]: number } = {};
+  
+    // 2) Alias für jede Join-Zeile
     this.joinRows.forEach(row => {
       if (row.table) {
-        tableCount[row.table] = (tableCount[row.table] || 0) + 1;
         const baseAbbr = this.getAbbreviationForTable(row.table);
-        row.alias = tableCount[row.table] === 1 ? baseAbbr : baseAbbr + tableCount[row.table];
+        row.alias = getNextAvailableAlias(baseAbbr);
       } else {
         row.alias = '';
       }
     });
   }
+  
   generateJoinCondition(index: number) {
     this.updateAliases();
     const joinRow = this.joinRows[index];
@@ -623,8 +647,11 @@ export class JsonConfigEditorComponent implements OnInit {
     let groupId = 0;
     let globalColumnId = 0;
     const fullColumnToId: { [key: string]: number } = {};
+  
+    // Gruppiere nach "Tabellenname.Alias"
     const grouped = this.selectedColumnConfigs.reduce((acc: { [groupKey: string]: ColumnConfig[] }, curr: ColumnConfig) => {
       const parts = curr.fullColumn.split('.');
+      // parts[0] = Tabellenname, parts[1] = Tabellenalias, parts[2] = Spaltenname
       const groupKey = parts[0] + '.' + parts[1];
       if (!acc[groupKey]) {
         acc[groupKey] = [];
@@ -632,23 +659,31 @@ export class JsonConfigEditorComponent implements OnInit {
       acc[groupKey].push(curr);
       return acc;
     }, {});
+  
+    // Baue nun die 'columnGroups' auf
     const columnGroups = Object.keys(grouped).map((groupKey: string) => {
       const [tableName, tableAlias] = groupKey.split('.');
       groupId++;
+  
+      // Für jede Spalte in dieser Tabelle
       const groupColumns = grouped[groupKey].map((config: ColumnConfig) => {
         globalColumnId++;
         fullColumnToId[config.fullColumn] = globalColumnId;
         const parts = config.fullColumn.split('.');
+        // Falls parts[2] leer ist, nimm fullColumn als Fallback
         const colName = parts[2] || config.fullColumn;
+  
         const columnObj: any = {
           id: globalColumnId,
-          name: colName,
-          alias: colName,
+          name: colName,  // Nur zur internen Anzeige
+          // Wichtig: Hier generieren wir einen eindeutigen Alias
+          alias: `${tableAlias}_${colName}`,
           selectClause: `${tableAlias}.${colName}`,
           decimals: config.decimals,
-          width: config.width || 0  
-        };        
-              
+          width: config.width || 0
+        };
+  
+        // joinGroupId bleibt wie gehabt
         if (tableAlias !== this.baseAlias) {
           const joinIndex = this.joinRows.findIndex(row => row.alias === tableAlias);
           if (joinIndex !== -1) {
@@ -657,14 +692,45 @@ export class JsonConfigEditorComponent implements OnInit {
         }
         return columnObj;
       });
+  
       return {
         id: groupId,
         name: `Group for ${tableName} (${tableAlias})`,
         columns: groupColumns
       };
     });
+  
     return { columnGroups, fullColumnToId };
   }
+
+  onJoinTypeChange(index: number, newJoinType: string): void {
+    // 1) Speichere den neuen Join-Typ
+    this.joinRows[index].joinType = newJoinType;
+    // 2) Erzeuge die Join-Bedingung neu
+    this.generateJoinCondition(index);
+  }
+  
+  regenerateAllJoinConditions(): void {
+    if (!this.selectedBaseTable) {
+      return;
+    }
+    // Hole die Fremdschlüssel für die Basistabelle
+    this.http.get<{ foreignKeys: any[] }>(`http://localhost:3000/get-foreign-keys?table=${this.selectedBaseTable}`)
+      .subscribe({
+        next: (response) => {
+          this.foreignKeys = response.foreignKeys;
+          // Erzeuge für jede Join-Zeile die Join-Bedingung neu
+          this.joinRows.forEach((_, i) => this.generateJoinCondition(i));
+          this.activeTable = '';
+          this.activeAlias = '';
+        },
+        error: err => {
+          console.error("Fehler beim Laden der FK-Daten:", err);
+        }
+      });
+  }
+  
+  
   public saveJsonConfig(navigateAfterSave: boolean = false): void {
     // Erzeuge zunächst die columnGroups, die nur zur Strukturierung dienen
     const { columnGroups, fullColumnToId } = this.generateColumnGroups();

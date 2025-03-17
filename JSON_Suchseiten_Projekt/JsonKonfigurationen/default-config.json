@@ -15,54 +15,74 @@
   "filterRoleSid": null,
   "roleSid": null,
   "interfaceSid": null,
-  "table": "Action act",
+  "table": "Article ar",
   "whereClause": "",
   "joinGroups": [
     {
       "id": 1,
-      "joinClause": "INNER JOIN aUser au ON au.SID = act.FK_User_SID"
+      "joinClause": "LEFT OUTER JOIN ArticlePacking ar2 ON ar2.FK_ArticleChild_SID = ar.SID"
     }
   ],
   "columnGroups": [
     {
       "id": 1,
-      "name": "Group for Action (act)",
+      "name": "Group for Article (ar)",
       "columns": [
         {
           "id": 1,
           "name": "SID",
-          "alias": "SID",
-          "selectClause": "act.SID",
+          "alias": "ar_SID",
+          "selectClause": "ar.SID",
           "width": 0
         },
         {
           "id": 2,
-          "name": "aDescription",
-          "alias": "aDescription",
-          "selectClause": "act.aDescription",
+          "name": "addRemark1",
+          "alias": "ar_addRemark1",
+          "selectClause": "ar.addRemark1",
           "width": 0
+        },
+        {
+          "id": 3,
+          "name": "aDescription2",
+          "alias": "ar_aDescription2",
+          "selectClause": "ar.aDescription2",
+          "width": 0
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Group for ArticlePacking (ar2)",
+      "columns": [
+        {
+          "id": 4,
+          "name": "SID",
+          "alias": "ar2_SID",
+          "selectClause": "ar2.SID",
+          "width": 0,
+          "joinGroupId": 1
+        },
+        {
+          "id": 5,
+          "name": "aName",
+          "alias": "ar2_aName",
+          "selectClause": "ar2.aName",
+          "width": 0,
+          "joinGroupId": 1
+        },
+        {
+          "id": 6,
+          "name": "aDescription",
+          "alias": "ar2_aDescription",
+          "selectClause": "ar2.aDescription",
+          "width": 0,
+          "joinGroupId": 1
         }
       ]
     }
   ],
-  "searchColumns": [
-    {
-      "id": 1,
-      "columnId": [
-        1
-      ],
-      "orderNumber": 1,
-      "operatorSid": 15
-    },
-    {
-      "id": 2,
-      "columnId": [
-        2
-      ],
-      "orderNumber": 1,
-      "operatorSid": 15
-    }
-  ],
+  "searchColumns": [],
   "resultColumns": [
     {
       "columnId": 1,
@@ -72,10 +92,38 @@
       "width": 0
     },
     {
+      "columnId": 4,
+      "hidden": false,
+      "identity": false,
+      "orderNumber": 2,
+      "width": 0
+    },
+    {
+      "columnId": 5,
+      "hidden": false,
+      "identity": false,
+      "orderNumber": 3,
+      "width": 0
+    },
+    {
+      "columnId": 6,
+      "hidden": false,
+      "identity": false,
+      "orderNumber": 4,
+      "width": 0
+    },
+    {
       "columnId": 2,
       "hidden": false,
       "identity": false,
-      "orderNumber": 1,
+      "orderNumber": 5,
+      "width": 0
+    },
+    {
+      "columnId": 3,
+      "hidden": false,
+      "identity": false,
+      "orderNumber": 6,
       "width": 0
     }
   ],
