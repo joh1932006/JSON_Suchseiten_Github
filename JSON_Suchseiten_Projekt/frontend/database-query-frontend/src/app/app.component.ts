@@ -7,9 +7,8 @@ import { RouterOutlet } from '@angular/router';
   standalone: true,
   imports: [
     CommonModule,
-    RouterOutlet // <-- Wichtig, damit <router-outlet> bekannt ist
+    RouterOutlet 
   ],
-  // Kein templateUrl, sondern Inline-Template:
   template: `
     <router-outlet></router-outlet>
   `,

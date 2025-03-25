@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { APIRequestsComponent } from '../apirequests/apirequests.component';
 
-// Interface für die Spaltenkonfiguration (kombiniert beide Versionen)
+// Interface für die Spaltenkonfiguration
 interface ColumnConfig {
   fullColumn: string;
   search: boolean;
@@ -22,9 +22,6 @@ interface ColumnConfig {
   prevResultOrderNumber?: number;
   prevSearchOrderNumber?: number;
 }
-
-
-
 
 // Interface für eine Join-Zeile
 interface JoinRow {
@@ -188,7 +185,6 @@ export class JsonConfigEditorComponent implements OnInit {
   // ---------------------------
   // DB-Management
   // ---------------------------
-
   openDbConfigModal() {
     this.resetNewDatabaseForm();
     this.showDbConfigModal = true;
@@ -383,6 +379,8 @@ export class JsonConfigEditorComponent implements OnInit {
     });
     this.updateAliases();
   }
+
+
   removeJoinRow(index: number) {
     // Entferne zugehörige Spalten
     const row = this.joinRows[index];
@@ -397,6 +395,8 @@ export class JsonConfigEditorComponent implements OnInit {
     this.activeTable = '';
     this.activeAlias = '';
   }
+
+
   onJoinTableChange(index: number, newTable: string) {
     const oldTable = this.joinRows[index].table;
     const oldAlias = this.joinRows[index].alias;
@@ -420,7 +420,7 @@ export class JsonConfigEditorComponent implements OnInit {
       });
   }
   getAbbreviationForTable(table: string): string {
-    // Du kannst hier gern eine Mapping-Liste pflegen:
+    // Hier kann man eine Mapping-Liste einpflegen:
     const mapping: { [key: string]: string } = {
       trans: 't',
       crmadress: 'ca',
@@ -430,7 +430,7 @@ export class JsonConfigEditorComponent implements OnInit {
     if (mapping[lowerTable]) {
       return mapping[lowerTable];
     }
-    // Standard: nimm die ersten 2 Buchstaben
+    // Standard: die ersten 2 Buchstaben nehmen
     return table.substring(0, 2).toLowerCase();
   }
   
@@ -620,7 +620,7 @@ export class JsonConfigEditorComponent implements OnInit {
   
   setIdentifier(selectedConfig: ColumnConfig, event: any): void {
     if (event.target.checked) {
-      // Setze alle anderen Identifier auf false, damit nur einer ausgewählt ist
+      // alle anderen Identifier auf false setzen, damit nur einer ausgewählt ist
       this.selectedColumnConfigs.forEach(c => c.identifier = false);
       selectedConfig.identifier = true;
     } else {
@@ -675,9 +675,8 @@ export class JsonConfigEditorComponent implements OnInit {
   
         const columnObj: any = {
           id: globalColumnId,
-          name: colName,  // Nur zur internen Anzeige
-          // Wichtig: Hier generieren wir einen eindeutigen Alias
-          alias: `${tableAlias}_${colName}`,
+          name: colName,
+          alias: `${tableAlias}_${colName}`, // Hier generieren wir einen eindeutigen Alias
           selectClause: `${tableAlias}.${colName}`,
           decimals: config.decimals,
           width: config.width || 0
@@ -732,7 +731,7 @@ export class JsonConfigEditorComponent implements OnInit {
   
   
   public saveJsonConfig(navigateAfterSave: boolean = false): void {
-    // Erzeuge zunächst die columnGroups, die nur zur Strukturierung dienen
+    // columnGroups erzeugen, die nur zur Strukturierung dienen
     const { columnGroups, fullColumnToId } = this.generateColumnGroups();
   
     // Suche-Spalten (bleiben unverändert)
@@ -763,11 +762,9 @@ this.selectedColumnConfigs.forEach(config => {
         identity: config.identifier || false,
         orderNumber: (typeof config.resultOrderNumber === 'number') ? config.resultOrderNumber : colId,
         decimals: config.decimals,
-        width: config.width || 0  // Hier übernehmen
+        width: config.width || 0
       };
     });
-    
-    
     
   
     // OrderBy- und GroupBy-Spalten
@@ -901,7 +898,7 @@ this.selectedColumnConfigs.forEach(config => {
       const maxPossible = 1400 - sumOfOthers;
       changedCol.width = Math.max(0, maxPossible);
   
-      // Ggf. Meldung an den User
+      // Alert
       alert(`Die Gesamtbreite darf 1400px nicht überschreiten. 
   Spalte wird auf ${changedCol.width}px reduziert.`);
     }

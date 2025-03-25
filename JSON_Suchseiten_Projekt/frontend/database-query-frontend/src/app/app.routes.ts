@@ -7,10 +7,10 @@ export const routes: Routes = [
   // Startseite: Liste aller Konfigurationen
   { path: '', component: ConfigListComponent },
   
-  // Neuerstellen einer Konfiguration -> Editor im "Neuerstellen"-Modus
+  // Neuerstellen einer Konfiguration
   { path: 'config/new', component: JsonConfigEditorComponent },
   
-  // Bearbeiten einer bestehenden Konfiguration -> Editor im "Bearbeiten"-Modus
+  // Bearbeiten einer bestehenden Konfiguration
   { path: 'config/:filename', component: JsonConfigEditorComponent },
 
   // SQL-Ergebnisse anzeigen (standalone Komponente)

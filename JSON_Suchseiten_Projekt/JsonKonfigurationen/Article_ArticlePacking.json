@@ -1,5 +1,5 @@
 {
-  "name": "default-config",
+  "name": "Article_ArticlePacking",
   "itemsPerPage": 100,
   "tableWidth": 1200,
   "preventSearchWithoutRestriction": false,
@@ -16,11 +16,11 @@
   "roleSid": null,
   "interfaceSid": null,
   "table": "Article ar",
-  "whereClause": "",
+  "whereClause": "ar.aName is not null",
   "joinGroups": [
     {
       "id": 1,
-      "joinClause": "LEFT OUTER JOIN ArticlePacking ar2 ON ar2.FK_ArticleChild_SID = ar.SID"
+      "joinClause": "INNER JOIN ArticlePacking ar2 ON ar2.FK_ArticleChild_SID = ar.SID AND ar2.aDescription is null"
     }
   ],
   "columnGroups": [
@@ -33,7 +33,14 @@
           "name": "SID",
           "alias": "ar_SID",
           "selectClause": "ar.SID",
-          "width": 0
+          "width": 200
+        },
+        {
+          "id": 2,
+          "name": "aName",
+          "alias": "ar_aName",
+          "selectClause": "ar.aName",
+          "width": 500
         }
       ]
     },
@@ -42,27 +49,19 @@
       "name": "Group for ArticlePacking (ar2)",
       "columns": [
         {
-          "id": 2,
-          "name": "aDescription",
-          "alias": "ar2_aDescription",
-          "selectClause": "ar2.aDescription",
-          "width": 0,
-          "joinGroupId": 1
-        },
-        {
           "id": 3,
           "name": "SID",
           "alias": "ar2_SID",
           "selectClause": "ar2.SID",
-          "width": 0,
+          "width": 200,
           "joinGroupId": 1
         },
         {
           "id": 4,
-          "name": "dispOnShop",
-          "alias": "ar2_dispOnShop",
-          "selectClause": "ar2.dispOnShop",
-          "width": 0,
+          "name": "lengthDefault",
+          "alias": "ar2_lengthDefault",
+          "selectClause": "ar2.lengthDefault",
+          "width": 500,
           "joinGroupId": 1
         }
       ]
@@ -76,6 +75,14 @@
       ],
       "orderNumber": 1,
       "operatorSid": 15
+    },
+    {
+      "id": 2,
+      "columnId": [
+        3
+      ],
+      "orderNumber": 2,
+      "operatorSid": 15
     }
   ],
   "resultColumns": [
@@ -84,30 +91,39 @@
       "hidden": false,
       "identity": true,
       "orderNumber": 1,
-      "width": 0
+      "width": 200
     },
     {
       "columnId": 2,
       "hidden": false,
       "identity": false,
-      "orderNumber": 2,
-      "width": 0
+      "orderNumber": 4,
+      "width": 500
     },
     {
       "columnId": 3,
-      "hidden": false,
+      "hidden": true,
       "identity": false,
-      "orderNumber": 3,
-      "width": 0
+      "orderNumber": 2,
+      "width": 200
     },
     {
       "columnId": 4,
       "hidden": false,
       "identity": false,
-      "orderNumber": 4,
-      "width": 0
+      "orderNumber": 3,
+      "width": 500
     }
   ],
-  "orderByColumns": [],
+  "orderByColumns": [
+    {
+      "columnId": 1,
+      "ascending": true
+    },
+    {
+      "columnId": 3,
+      "ascending": true
+    }
+  ],
   "groupByColumns": []
 }

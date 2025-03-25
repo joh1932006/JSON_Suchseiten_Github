@@ -128,10 +128,10 @@ tbody tr:hover {
 /* "Löschen" Button (wird beim Hover rot) */
 .delete-btn {
   background-color: #39475d;
-  margin-right: 0; /* Kann entfernt werden, da gap genutzt wird, aber falls du den alten Stil willst, lass es stehen */
+  margin-right: 0; 
 }
 .delete-btn:hover {
-  background-color: #c53030; /* Rot beim Hover */
+  background-color: #c53030; 
 }
 
 /* "Ergebnisse" Button */

@@ -3,8 +3,8 @@
   border: 1px solid #2F3848;
   border-radius: 8px;
   padding: 20px;
-  margin: 20px auto;   /* auto zentriert den Block */
-  max-width: 1500px;   /* maximale Breite z.B. 1200px */
+  margin: 20px auto;
+  max-width: 1500px;   
   font-family: Arial, sans-serif;
   color: #FFFFFF;
 }
@@ -86,7 +86,6 @@
   border: 1px solid #2F3848;
 }
 
-/* Alternierende Zeilenfarbe */
 .results-table tbody tr:nth-child(even) td {
   background-color: #2D3545;
 }
@@ -110,7 +109,7 @@
 
 /* Fehleranzeige in Rot */
 .error {
-  color: #E53E3E; /* z.B. Rot, anpassbar */
+  color: #E53E3E; 
   margin-top: 10px;
   font-weight: bold;
 }
@@ -118,20 +117,17 @@
 /* -------------------------------------- */
 /* HOME-BUTTON (oben links)               */
 /* -------------------------------------- */
-/* Alternativer Home-Button oben links, fixiert */
 .home-button-container {
   
   margin-bottom: 10px;
   margin-left: 15px;
   position: fixed;
-  /* Falls du den Button an einer festen Position haben willst, 
-     kannst du hier zusätzlich position: fixed; top: 20px; left: 20px; etc. setzen. */
 }
 
 .home-btn {
-  background-color: #39475D;   /* Dunkler Hintergrund */
+  background-color: #39475D; 
   border: none;
-  border-radius: 50%;          /* Rund */
+  border-radius: 50%;         
   width: 48px;
   height: 48px;
   cursor: pointer;
@@ -141,12 +137,12 @@
   align-items: center;
   justify-content: center;
   transition: background-color 0.2s, transform 0.2s;
-  margin-right: 20px;          /* Falls du rechts Platz lassen willst */
+  margin-right: 20px;          
 }
 
 .home-btn:hover {
-  background-color: #506381;   /* Hover-Farbe */
-  transform: scale(1.1);       /* Leichtes Vergrößern beim Hover */
+  background-color: #506381;  
+  transform: scale(1.1);     
 }
 
 

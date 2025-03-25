@@ -1,7 +1,7 @@
+
 /* -------------------------------------- */
 /* GLOBAL / BODY                          */
 /* -------------------------------------- */
-
 *,
 *::before,
 *::after {
@@ -15,15 +15,15 @@
 }
 
 html, body, body * {
-  color: #FFFFFF !important; /* Macht sämtliche Texte weiß */
+  color: #FFFFFF !important; 
 }
 
 html, body {
   margin: 0;
-  padding: 20px; /* Globaler Abstand */
+  padding: 20px; 
   width: 100%;
   height: 100%;
-  background-color: #1E2532; /* Dunkles Navy-Blau */
+  background-color: #1E2532; 
   font-family: Arial, sans-serif;
   color: #FFFFFF;
   box-sizing: border-box;
@@ -42,14 +42,12 @@ html, body {
 .home-button-container {
   margin-top: 15px;
   margin-bottom: 10px;
-  /* Falls du den Button an einer festen Position haben willst, 
-     kannst du hier zusätzlich position: fixed; top: 20px; left: 20px; etc. setzen. */
 }
 
 .home-btn {
-  background-color: #39475D;   /* Dunkler Hintergrund */
+  background-color: #39475D;  
   border: none;
-  border-radius: 50%;          /* Rund */
+  border-radius: 50%;       
   width: 48px;
   height: 48px;
   cursor: pointer;
@@ -59,12 +57,12 @@ html, body {
   align-items: center;
   justify-content: center;
   transition: background-color 0.2s, transform 0.2s;
-  margin-right: 20px;          /* Falls du rechts Platz lassen willst */
+  margin-right: 20px;       
 }
 
 .home-btn:hover {
-  background-color: #506381;   /* Hover-Farbe */
-  transform: scale(1.1);       /* Leichtes Vergrößern beim Hover */
+  background-color: #506381; 
+  transform: scale(1.1);       
 }
 
 
@@ -415,9 +413,9 @@ tbody tr:hover td {
 /* COLUMNS-CONFIG TABLE                   */
 /* -------------------------------------- */
 .columns-config-table {
-  width: 100%;              /* Kann bleiben, damit die Tabelle den Container ausfüllt */
+  width: 100%;              
   border-collapse: collapse;
-  table-layout: fixed;       /* Statt fixed jetzt auto */
+  table-layout: fixed;       
   font-size: 12px;
   margin-top: 20px;
 }
@@ -430,7 +428,6 @@ tbody tr:hover td {
   text-align: left;
   word-wrap: break-word; 
 }
-/* Nur für Spalten 9 bis 14 */
 .columns-config-table th:nth-child(7),
 .columns-config-table td:nth-child(7),
 .columns-config-table th:nth-child(9),
@@ -445,10 +442,9 @@ tbody tr:hover td {
 .columns-config-table td:nth-child(13),
 .columns-config-table th:nth-child(14),
 .columns-config-table td:nth-child(14) {
-  white-space: nowrap;    /* Alles in einer Zeile */
-  min-width: 70px;        /* z.B. 70px, kannst du anpassen */
-  text-align: center;     /* oder left, wie du magst */
-  /* optional etwas padding, falls du es nicht zu eng magst: */
+  white-space: nowrap;
+  min-width: 70px;        
+  text-align: center;     
   padding-left: 10px;
   padding-right: 10px;
 }
@@ -477,7 +473,6 @@ tbody tr:hover td {
   margin-left: 5px;
 }
 
-
 /* Container für die Buttons */
 .json-config-save-container {
   margin: 20px 0;
@@ -497,7 +492,7 @@ tbody tr:hover td {
 
 /* Speichern-Button (Suchseite speichern) */
 .save-btn {
-  background-color: #4CAF50; /* Grünton */
+  background-color: #4CAF50;
   color: white;
 }
 
@@ -507,7 +502,7 @@ tbody tr:hover td {
 
 /* Ergebnisse anzeigen-Button */
 .results-btn {
-  background-color: #008CBA; /* Blauton */
+  background-color: #008CBA;
   color: white;
 }
 
@@ -520,5 +515,5 @@ tbody tr:hover td {
   margin-top: 15px;
   font-size: 16px;
   text-align: center;
-  color: #4CAF50;  /* Grüner Text für Erfolgsmeldungen */
+  color: #4CAF50;
 }

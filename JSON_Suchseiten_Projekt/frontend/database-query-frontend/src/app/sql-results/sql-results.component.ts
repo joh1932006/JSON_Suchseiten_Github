@@ -12,7 +12,7 @@ interface IColumnConfig {
   orderNumber?: number;
   hidden?: boolean;
   decimals?: number;
-  width?: number;  // Diese Eigenschaft aufnehmen
+  width?: number; 
 }
 
 @Component({
@@ -75,7 +75,7 @@ export class SqlResultsComponent implements OnInit {
       if (!this.configFileName && data.name) {
         this.configFileName = data.name + '.json';
       }
-      // Erzeuge eine Map: columnId -> IColumnConfig, inkl. width
+      // Erzeuge eine Map: columnId -> IColumnConfig
       let columnMap: Record<number, IColumnConfig> = {};
       for (const group of data.columnGroups || []) {
         let tableName = "";
@@ -92,7 +92,7 @@ export class SqlResultsComponent implements OnInit {
             alias: col.alias,
             tableName: tableName,
             decimals: col.decimals,
-            width: col.width   // Hier wird die Breite übernommen
+            width: col.width
           };
         }
       }
@@ -131,7 +131,7 @@ export class SqlResultsComponent implements OnInit {
               name: colCfg.name,
               orderNumber: rCol.orderNumber,
               decimals: colCfg.decimals,
-              width: colCfg.width   // Hier ebenfalls
+              width: colCfg.width
             });
           }
         }

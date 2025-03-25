@@ -1,13 +1,14 @@
 {
-  "configName": "default-config",
+  "configName": "Article_ArticlePacking",
   "selectedDatabase": "Fab4Minds",
   "selectedBaseTable": "Article",
   "joinRows": [
     {
       "table": "ArticlePacking",
-      "joinType": "LEFT OUTER JOIN",
-      "condition": "LEFT OUTER JOIN ArticlePacking ar2 ON ar2.FK_ArticleChild_SID = ar.SID",
-      "alias": "ar2"
+      "joinType": "INNER JOIN",
+      "condition": "INNER JOIN ArticlePacking ar2 ON ar2.FK_ArticleChild_SID = ar.SID",
+      "alias": "ar2",
+      "optionalCondition": "ar2.aDescription is null"
     }
   ],
   "selectedColumnConfigs": [
@@ -15,38 +16,18 @@
       "fullColumn": "Article.ar.SID",
       "search": true,
       "groupBy": false,
-      "orderBy": "none",
+      "orderBy": "ASC",
       "identifier": true,
       "versteckt": false,
       "operatorSid": 15,
       "resultOrderNumber": 1,
       "dataType": "int",
-      "searchOrderNumber": 1
+      "searchOrderNumber": 1,
+      "prevResultOrderNumber": 1,
+      "width": 200
     },
     {
-      "fullColumn": "ArticlePacking.ar2.aDescription",
-      "search": false,
-      "groupBy": false,
-      "orderBy": "none",
-      "identifier": false,
-      "versteckt": false,
-      "operatorSid": 15,
-      "resultOrderNumber": 2,
-      "dataType": "nvarchar"
-    },
-    {
-      "fullColumn": "ArticlePacking.ar2.SID",
-      "search": false,
-      "groupBy": false,
-      "orderBy": "none",
-      "identifier": false,
-      "versteckt": false,
-      "operatorSid": 15,
-      "resultOrderNumber": 3,
-      "dataType": "int"
-    },
-    {
-      "fullColumn": "ArticlePacking.ar2.dispOnShop",
+      "fullColumn": "Article.ar.aName",
       "search": false,
       "groupBy": false,
       "orderBy": "none",
@@ -54,11 +35,42 @@
       "versteckt": false,
       "operatorSid": 15,
       "resultOrderNumber": 4,
-      "dataType": "bit"
+      "dataType": "nvarchar",
+      "searchOrderNumber": 3,
+      "prevResultOrderNumber": 3,
+      "width": 500
+    },
+    {
+      "fullColumn": "ArticlePacking.ar2.SID",
+      "search": true,
+      "groupBy": false,
+      "orderBy": "ASC",
+      "identifier": false,
+      "versteckt": true,
+      "operatorSid": 15,
+      "resultOrderNumber": 2,
+      "dataType": "int",
+      "searchOrderNumber": 2,
+      "prevSearchOrderNumber": 2,
+      "prevResultOrderNumber": 2,
+      "width": 200
+    },
+    {
+      "fullColumn": "ArticlePacking.ar2.lengthDefault",
+      "search": false,
+      "groupBy": false,
+      "orderBy": "none",
+      "identifier": false,
+      "versteckt": false,
+      "operatorSid": 15,
+      "resultOrderNumber": 3,
+      "dataType": "numeric",
+      "prevResultOrderNumber": 4,
+      "width": 500
     }
   ],
   "baseAlias": "ar",
-  "userWhereClause": "",
+  "userWhereClause": "ar.aName is not null",
   "dbConfig": {
     "user": "f4mbsappl",
     "password": "bTemrHU6Tn3pnkPRBuKc",

@@ -15,6 +15,8 @@ app.use(bodyParser.json());
 // Konfigurationsordner
 const configsFolder = path.join(__dirname, '../JsonKonfigurationen');
 
+
+
 // Stelle sicher, dass der Ordner existiert:
 if (!fs.existsSync(configsFolder)) {
   fs.mkdirSync(configsFolder, { recursive: true });
@@ -591,7 +593,6 @@ app.get('/api/get-column-type', async (req, res) => {
     sql.close();
   }
 });
-
 
 
 /****************************************************
