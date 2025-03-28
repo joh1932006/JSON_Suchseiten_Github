@@ -4,9 +4,9 @@
   "selectedBaseTable": "Article",
   "joinRows": [
     {
-      "table": "ArticlePacking",
-      "joinType": "LEFT OUTER JOIN",
-      "condition": "LEFT OUTER JOIN ArticlePacking ar2 ON ar2.FK_ArticleChild_SID = ar.SID",
+      "table": "ArticleGroup",
+      "joinType": "INNER JOIN",
+      "condition": "INNER JOIN ArticleGroup ar2 ON ar2.SID = ar.FK_ArticleGroup_SID",
       "alias": "ar2"
     }
   ],
@@ -15,46 +15,37 @@
       "fullColumn": "Article.ar.SID",
       "search": true,
       "groupBy": false,
-      "orderBy": "none",
+      "orderBy": "ASC",
       "identifier": true,
       "versteckt": false,
       "operatorSid": 15,
       "resultOrderNumber": 1,
       "dataType": "int",
-      "searchOrderNumber": 1
+      "searchOrderNumber": 2,
+      "prevSearchOrderNumber": 2
     },
     {
-      "fullColumn": "ArticlePacking.ar2.aDescription",
-      "search": false,
+      "fullColumn": "ArticleGroup.ar2.SID",
+      "search": true,
       "groupBy": false,
       "orderBy": "none",
       "identifier": false,
       "versteckt": false,
       "operatorSid": 15,
       "resultOrderNumber": 2,
-      "dataType": "nvarchar"
+      "dataType": "int",
+      "searchOrderNumber": 1
     },
     {
-      "fullColumn": "ArticlePacking.ar2.SID",
+      "fullColumn": "ArticleGroup.ar2.aName",
       "search": false,
       "groupBy": false,
-      "orderBy": "none",
+      "orderBy": "DESC",
       "identifier": false,
       "versteckt": false,
       "operatorSid": 15,
       "resultOrderNumber": 3,
-      "dataType": "int"
-    },
-    {
-      "fullColumn": "ArticlePacking.ar2.dispOnShop",
-      "search": false,
-      "groupBy": false,
-      "orderBy": "none",
-      "identifier": false,
-      "versteckt": false,
-      "operatorSid": 15,
-      "resultOrderNumber": 4,
-      "dataType": "bit"
+      "dataType": "nvarchar"
     }
   ],
   "baseAlias": "ar",

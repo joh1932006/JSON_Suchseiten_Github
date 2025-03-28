@@ -90,6 +90,7 @@ Dieses Projekt besteht aus zwei Hauptkomponenten:
 1. **Repository klonen und Abhängigkeiten installieren:**
 
    ```bash
+   cd .
    npm install
    ```
 - Node.js installieren über 'https://nodejs.org'
@@ -116,6 +117,7 @@ Dieses Projekt besteht aus zwei Hauptkomponenten:
 1. **Angular-Projekt klonen und Abhängigkeiten installieren:**
 
    ```bash
+   cd .
    npm install -g @angular/cli
    ```
 

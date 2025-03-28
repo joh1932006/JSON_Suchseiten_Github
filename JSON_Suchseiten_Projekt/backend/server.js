@@ -513,7 +513,7 @@ app.get('/api/get-database-connections', (req, res) => {
 
 
 /****************************************************
- * 18) Löscht eine gespeicherte DB-Verbindung anhand des Namens
+ * 19) Löscht eine gespeicherte DB-Verbindung anhand des Namens
  ****************************************************/
 app.delete('/api/delete-database-connection', (req, res) => {
   const connectionName = req.query.name;
@@ -552,7 +552,7 @@ app.delete('/api/delete-database-connection', (req, res) => {
 
 
 /****************************************************
- * 19) Datentyp von einer Spalte herausfinden
+ * 20) Datentyp von einer Spalte herausfinden
  ****************************************************/
 app.get('/api/get-column-type', async (req, res) => {
   if (!currentDbConfig) {
